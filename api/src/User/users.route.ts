@@ -1,8 +1,15 @@
-import { Router, Request, Response, NextFunction } from 'express';
+import { Router } from 'express';
+import { getAllUsers, getUserById, createUser, deleteUser } from '../User/users.controller';
+import { verifyToken } from '../middlewares/auth.middleware';
+
 const router = Router();
 
-router.get('/', (req: Request, res: Response, next: NextFunction) => {
-    res.send('User route');
-});
+router.use(verifyToken);
+
+// Routes
+router.get('/', getAllUsers);
+router.get('/:id', getUserById);
+router.post('/', createUser);
+router.delete('/:id', deleteUser);
 
 export default router;

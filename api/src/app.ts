@@ -9,6 +9,7 @@ import http from 'http';
 import prisma from './db';
 
 import indexRouter from './routes/index';
+import userRouter from './User/users.route';
 
 const debug = debugLib('src:server');
 const app = express();
@@ -20,6 +21,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+app.use('/users', userRouter);
 
 /**
  * Get port from environment and store in Express.
