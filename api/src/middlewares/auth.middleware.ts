@@ -1,9 +1,18 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
 
 // Définir l'interface pour le payload du JWT
 interface JwtPayload {
     id: string;
+}
+
+// Clé secrète pour le JWT
+const secretKey = process.env.TOKEN_SECRET_KEY
+
+if (!secretKey) {
+    throw new Error('TOKEN_SECRET_KEY is not defined');
 }
 
 export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
@@ -12,7 +21,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
         return res.status(403).json({ error: 'No token provided' });
     }
 
-    jwt.verify(token, 'your_secret_key', (err, decoded) => {
+    jwt.verify(token, secretKey, (err, decoded) => {
         if (err) {
             return res.status(500).json({ error: 'Failed to authenticate token' });
         }
