@@ -3,6 +3,7 @@ Pour le côté mobile
 Lancez 
 
 ```
+cd app
 npm i -g expo-cli
 ```
 
@@ -10,8 +11,6 @@ puis
 
 ```
 yarn
-cd app
-npm i
 ```
 
 Il faut un compte expo
@@ -38,3 +37,10 @@ Puis suivez le tuto de "Set up Android Studio" et "Set up an emulator"
 
 
 https://docs.expo.dev/workflow/android-studio-emulator/
+
+
+Pour lancer l'application :
+
+```
+yarn start
+```
