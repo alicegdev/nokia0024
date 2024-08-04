@@ -3,6 +3,7 @@ import useFonts from "../../../hooks/useFonts";
 import { Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
 import { Screen } from "../../../components";
 import styles from "./styles";
+import { navFooters } from "../../../constants";
 
 export const HomeFooter = () => {
     const navigation: any = useNavigation();
@@ -15,29 +16,17 @@ export const HomeFooter = () => {
     return (
         <Screen>
             <View style={styles.main}>
-                <View style={styles.container}>
-                    <TouchableOpacity style={styles.box} onPress={() => navigation.navigate('Contacts')}>
-                        <Text style={styles.textStyle}>A</Text>
-                    </TouchableOpacity>
-                </View>
-
-                <View style={styles.container}>
-                    <TouchableOpacity style={styles.box} onPress={() => navigation.navigate('Internet')}>
-                        <Text style={styles.textStyle}>B</Text>
-                    </TouchableOpacity>
-                </View>
-
-                <View style={styles.container}>
-                    <TouchableOpacity style={styles.box} onPress={() => navigation.navigate('Text')}>
-                        <Text style={styles.textStyle}>C</Text>
-                    </TouchableOpacity>
-                </View>
-
-                <View style={styles.container}>
-                    <TouchableOpacity style={styles.box} onPress={() => navigation.navigate('Music')}>
-                        <Text style={styles.textStyle}>D</Text>
-                    </TouchableOpacity>
-                </View>
+                {navFooters.map(navFooter => (
+                    <View key={navFooter.id} style={styles.container}>
+                        <TouchableOpacity
+                            style={styles.box}
+                            onPress={() => navigation.navigate(navFooter.navigateTo)}
+                        >
+                            <Text style={styles.textStyle}>{navFooter.id}</Text>
+                        </TouchableOpacity>
+                        <Text style={styles.labelStyle}>{navFooter.label}</Text>
+                    </View>
+                ))}
             </View>
         </Screen>
     )
