@@ -35,11 +35,4 @@ export default StyleSheet.create({
     fontSize: 12,
     fontFamily: 'Nokia',
   },
-  labelStyle: {
-    marginTop: 4,
-    color: color.black,
-    fontSize: 8,
-    fontFamily: 'Nokia',
-    textAlign: 'center'
-  },
 });

@@ -24,7 +24,6 @@ export const HomeFooter = () => {
                         >
                             <Text style={styles.textStyle}>{navFooter.id}</Text>
                         </TouchableOpacity>
-                        <Text style={styles.labelStyle}>{navFooter.label}</Text>
                     </View>
                 ))}
             </View>

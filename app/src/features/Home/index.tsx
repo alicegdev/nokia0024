@@ -31,6 +31,7 @@ const HomePage = () => {
                     </View>
                 ))}
             </View>
+            
             <View style={styles.footer}>
               <HomeFooter></HomeFooter>
             </View>

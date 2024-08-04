@@ -7,8 +7,8 @@ export const navHomes = [
 ];
 
 export const navFooters = [
-    { id: "A", label: 'test signin', navigateTo: 'Contacts' },
-    { id: "B", label: 'Games', navigateTo: 'Internet' },
-    { id: "C", label: 'Settings', navigateTo: 'Text' },
-    { id: "D", label: 'Placeholder', navigateTo: 'Music' },
+    { id: "A", navigateTo: 'Contacts' },
+    { id: "B", navigateTo: 'Internet' },
+    { id: "C", navigateTo: 'Text' },
+    { id: "D", navigateTo: 'Music' },
 ]
