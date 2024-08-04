@@ -1,10 +1,10 @@
 
-import HomePage from "../components/Menu";
-import Signin from "../components/Setting/Signin";
+import HomePage from "../features/Home";
+import Signin from "../features/Setting/Signin";
 
 // Ordered by folder
 const routesConfig = [
-  //Menu
+  //Home
   { name: 'HomePage', component: HomePage },
 
   //Game
