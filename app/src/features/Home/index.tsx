@@ -6,6 +6,7 @@ import styles from "./styles";
 import { color } from "../../styles";
 import useFonts from "../../hooks/useFonts";
 import { HomeFooter } from "./Footer";
+import { navHomes } from "../../constants";
 
 const HomePage = () => {
     const navigation: any = useNavigation();
@@ -18,40 +19,17 @@ const HomePage = () => {
     return (
         <Screen style={{ backgroundColor: color.menu }}>
             <View style={styles.main}>
-                <View style={styles.container}>
-                    <TouchableOpacity style={styles.box} onPress={() => navigation.navigate('Signin')}>
-                        <Text style={styles.textStyle}>1</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.labelStyle}>test signin</Text>
-                </View>
-
-                <View style={styles.container}>
-                    <TouchableOpacity style={styles.box} onPress={() => navigation.navigate('Game')}>
-                        <Text style={styles.textStyle}>2</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.labelStyle}>Games</Text>
-                </View>
-
-                <View style={styles.container}>
-                    <TouchableOpacity style={styles.box} onPress={() => navigation.navigate('Setting')}>
-                        <Text style={styles.textStyle}>3</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.labelStyle}>Settings</Text>
-                </View>
-
-                <View style={styles.container}>
-                    <TouchableOpacity style={styles.box} onPress={() => navigation.navigate('Placeholder')}>
-                        <Text style={styles.textStyle}>4</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.labelStyle}>Placeholder</Text>
-                </View>
-
-                <View style={styles.container}>
-                    <TouchableOpacity style={styles.box} onPress={() => navigation.navigate('Placeholder')}>
-                        <Text style={styles.textStyle}>5</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.labelStyle}>Placeholder</Text>
-                </View>
+                {navHomes.map(navHome => (
+                    <View key={navHome.id} style={styles.container}>
+                        <TouchableOpacity
+                            style={styles.box}
+                            onPress={() => navigation.navigate(navHome.navigateTo)}
+                        >
+                            <Text style={styles.textStyle}>{navHome.id}</Text>
+                        </TouchableOpacity>
+                        <Text style={styles.labelStyle}>{navHome.label}</Text>
+                    </View>
+                ))}
             </View>
             <View style={styles.footer}>
               <HomeFooter></HomeFooter>
