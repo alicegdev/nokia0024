@@ -1,12 +1,12 @@
 import React from "react";
 import { useNavigation } from '@react-navigation/native';
 import { Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
-import { Screen } from "../../components";
+import { Screen } from "src/components";
 import styles from "./styles";
-import { color } from "../../styles";
-import useFonts from "../../hooks/useFonts";
+import { color } from "src/styles";
+import useFonts from "src/hooks/useFonts";
 import { HomeFooter } from "./Footer";
-import { navHomes } from "../../constants";
+import { navHomes } from "src/constants";
 
 const HomePage = () => {
     const navigation: any = useNavigation();

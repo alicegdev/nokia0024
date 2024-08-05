@@ -1,3 +1,8 @@
+import InternetImage from "src/assets/icones/internet.png"
+import PhoneImage from "src/assets/icones/phone.png"
+import MessageImage from "src/assets/icones/message.png"
+import MusicImage from "src/assets/icones/music.png"
+
 export const navHomes = [
     { id: 1, label: 'test signin', navigateTo: 'Signin' },
     { id: 2, label: 'Games', navigateTo: 'Games' },
@@ -7,8 +12,8 @@ export const navHomes = [
 ];
 
 export const navFooters = [
-    { id: "A", navigateTo: 'Contacts' },
-    { id: "B", navigateTo: 'Internet' },
-    { id: "C", navigateTo: 'Text' },
-    { id: "D", navigateTo: 'Music' },
+    { id: PhoneImage, navigateTo: 'Contacts' },
+    { id: InternetImage, navigateTo: 'Internet', type: 'image' },
+    { id: MessageImage, navigateTo: 'Text' },
+    { id: MusicImage, navigateTo: 'Music' },
 ]
