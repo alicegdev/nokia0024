@@ -1,11 +1,11 @@
 // footer.tsx
 import { useNavigation } from "@react-navigation/native";
-import useFonts from "../../../hooks/useFonts";
-import { Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
-import { Screen } from "../../../components";
+import useFonts from "src/hooks/useFonts";
+import { Image, TouchableOpacity, View, ActivityIndicator } from "react-native";
+import { Screen } from "src/components";
 import styles from "./styles";
-import { navFooters } from "../../../constants";
-import { Internet } from "../../../utils/Internet";
+import { navFooters } from "src/constants";
+import { Internet } from "src/utils/Internet";
 
 export const HomeFooter = () => {
     const navigation: any = useNavigation();
@@ -15,7 +15,7 @@ export const HomeFooter = () => {
         return <ActivityIndicator size="large" color="#0000ff" />;
     }
 
-    const handlePress = (navigateTo) => {
+    const handlePress = (navigateTo: any) => {
         if (navigateTo === 'Internet') {
             Internet('https://oldgoogle.neocities.org/1998/');
         } else {
@@ -32,7 +32,7 @@ export const HomeFooter = () => {
                             style={styles.box}
                             onPress={() => handlePress(navFooter.navigateTo)}
                         >
-                            <Text style={styles.textStyle}>{navFooter.id}</Text>
+                            <Image source={navFooter.id}/>
                         </TouchableOpacity>
                     </View>
                 ))}
