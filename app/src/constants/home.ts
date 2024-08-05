@@ -13,7 +13,7 @@ export const navHomes = [
 
 export const navFooters = [
     { id: PhoneImage, navigateTo: 'Contacts' },
-    { id: InternetImage, navigateTo: 'Internet', type: 'image' },
+    { id: InternetImage, navigateTo: 'Internet' },
     { id: MessageImage, navigateTo: 'Text' },
     { id: MusicImage, navigateTo: 'Music' },
 ]
