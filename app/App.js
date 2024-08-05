@@ -20,7 +20,7 @@ export default function App() {
   }
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName="HomePage">
         {routesConfig.map(({ name, component }) => (
           <Stack.Screen key={name} name={name} component={component} />
         ))}
