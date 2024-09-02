@@ -7,7 +7,13 @@
     "strict": true, // Activer les vérifications strictes
     "esModuleInterop": true, // Interopérabilité avec les modules ES6
     "skipLibCheck": true, // Ignorer la vérification des fichiers de déclaration
-    "forceConsistentCasingInFileNames": true // Forcer la casse cohérente dans les noms de fichiers
+    "forceConsistentCasingInFileNames": true, // Forcer la casse cohérente dans les noms de fichiers
+    "baseUrl": ".",
+    "paths": {
+      "src/*": [
+        "src/*"
+      ],
+    }
   },
   "include": [
     "src/**/*" // Inclure tous les fichiers TypeScript dans le répertoire src
