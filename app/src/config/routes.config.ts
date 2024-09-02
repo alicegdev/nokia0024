@@ -1,6 +1,7 @@
 
 import HomePage from "src/features/Home";
 import Signin from "src/features/Setting/Signin";
+import Signup from "src/features/Setting/Signup";
 
 // Ordered by folder
 const routesConfig = [
@@ -12,7 +13,7 @@ const routesConfig = [
 
   //Setting
   { name: 'Signin', component: Signin },
-  // { name: 'Signup', component: Signup },
+  { name: 'Signup', component: Signup },
 ];
 
 export default routesConfig;

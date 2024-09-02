@@ -1,5 +1,50 @@
 import { Request, Response, NextFunction } from 'express';
-import prisma from 'src/db';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
+import prisma from '../db/index';
+
+dotenv.config();
+
+const secretKey = process.env.TOKEN_SECRET_KEY;
+
+if (!secretKey) {
+    throw new Error('TOKEN_SECRET_KEY is not defined');
+}
+
+// Login user
+export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email, password } = req.body;
+
+        // Find the user by email
+        const user = await prisma.user.findUnique({
+            where: {
+                email: email
+            }
+        });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Compare the password with the stored hashed password
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordValid) {
+            return res.status(401).json({ error: 'Invalid password' });
+        }
+
+        // Create a token
+        const token = jwt.sign({ id: user.id }, secretKey, {
+            expiresIn: '1h', // Token expiration time
+        });
+
+        res.json({ token });
+    } catch (error) {
+        res.status(500).json({ error: 'Something went wrong' });
+    }
+};
 
 // Get all users
 export const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
@@ -30,12 +75,13 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
 export const createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { username, email, password } = req.body;
+        const hashedPassword = await bcrypt.hash(password, 10); // Hash the password with a salt round of 10
         const musiques: never[] = [];
         const user = await prisma.user.create({
             data: {
                 username,
                 email,
-                password,
+                password: hashedPassword,
                 musiques: {
                     create: musiques
                 }
