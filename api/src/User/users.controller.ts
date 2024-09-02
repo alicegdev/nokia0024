@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import prisma from '../db';
+import prisma from 'src/db';
 
 // Get all users
 export const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
