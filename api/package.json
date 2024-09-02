@@ -10,7 +10,7 @@
     "clean": "rimraf build",
     "build": "npm run clean && tsc",
     "start-api": "node ./build/app.js",
-    "dev": "concurrently \"npx tsc --watch\" \"node -q dist/app.js\""
+    "dev": "concurrently \"npx tsc --watch\" \"node -q build/app.js\""
   },
   "dependencies": {
     "@prisma/client": "^5.16.1",

@@ -22,3 +22,6 @@ ENV SHELL=/bin/bash
 WORKDIR /home/dev
 
 RUN /bin/bash
+
+# À ajouter à la fin de votre Dockerfile
+CMD ["npm", "run", "dev"]
