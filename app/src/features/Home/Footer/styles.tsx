@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions } from "react-native";
-import { color, radius, spacing } from "../../../styles";
+import { color, radius, spacing } from "src/styles";
 
 const screenWidth = Dimensions.get('window').width;
 const boxMargin = 16;

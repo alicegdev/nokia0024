@@ -1,6 +1,6 @@
 
-import HomePage from "../features/Home";
-import Signin from "../features/Setting/Signin";
+import HomePage from "src/features/Home";
+import Signin from "src/features/Setting/Signin";
 
 // Ordered by folder
 const routesConfig = [
