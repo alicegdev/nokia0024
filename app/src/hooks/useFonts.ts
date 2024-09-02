@@ -7,7 +7,7 @@ const useFonts = () => {
   useEffect(() => {
     const loadFonts = async () => {
       await Font.loadAsync({
-        'Nokia': require('../assets/fonts/nokia.ttf'),
+        'Nokia': require('src/assets/fonts/nokia.ttf'),
       });
       setFontsLoaded(true);
     };
