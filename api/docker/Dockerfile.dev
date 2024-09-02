@@ -13,12 +13,13 @@ RUN apt-get update \
     && npm install -g ts-node 
 
 # Fixer le fuseau horaire
-ENV TZ Europe/Paris
+ENV TZ=Europe/Paris
 
 # L'interprète par défaut
-ENV SHELL /bin/bash
+ENV SHELL=/bin/bash
 
 # Le repertoire maison par défaut
 WORKDIR /home/dev
 
 RUN /bin/bash
+
