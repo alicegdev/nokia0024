@@ -1,1 +1,0 @@
-Redontant css style for the app should be placed here
