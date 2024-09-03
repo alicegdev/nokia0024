@@ -35,7 +35,8 @@ services:
       - "443:443"
     restart: always
     volumes:
-      - ./nginx/api-dev.nginx.conf:/etc/nginx/conf.d/api.nginx.conf
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./conf.d/api-dev.nginx.conf:/etc/nginx/conf.d/api-dev.nginx.conf
     networks:
       - api-network  
 
