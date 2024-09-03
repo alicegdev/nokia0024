@@ -12,10 +12,8 @@ export default StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginHorizontal: spacing.md,
-    marginVertical: spacing.sm,
+    marginVertical: spacing.lg,
     justifyContent: 'space-between',
-    backgroundColor: color.footer,
-    borderRadius: radius.xlg,
   },
   container: {
     width: boxWidth,
@@ -30,4 +28,20 @@ export default StyleSheet.create({
     alignItems: 'center',
     borderRadius: radius.lg,
   },
+  textStyle: {
+    color: color.white,
+    fontSize: 12,
+    fontFamily: 'Nokia',
+  },
+  labelStyle: {
+    marginTop: 4,
+    color: color.black,
+    fontSize: 8,
+    fontFamily: 'Nokia',
+    textAlign: 'center'
+  },
+  footer: {
+    position: "absolute",
+    bottom: 0,
+  }
 });
