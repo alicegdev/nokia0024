@@ -6,6 +6,7 @@ WORKDIR /api
 
 # Copier les fichiers de dépendances
 COPY package*.json ./
+COPY . .
 RUN npm install
 RUN npm install -g typescript
 
@@ -35,8 +36,9 @@ COPY package*.json ./
 # Installer les dépendances nécessaires pour l'exécution
 RUN npm install --omit=dev
 
+# Exposer le port utilisé par l'application
+EXPOSE 5050
+
 # Définir la commande par défaut
 CMD ["npm", "run", "start-api"]
 
-# Exposer le port utilisé par l'application
-EXPOSE 5050
