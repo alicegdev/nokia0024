@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+  api:
+    build: 
+      context: ./
+      dockerfile: ./docker/Dockerfile
+    expose:
+      "5050"
+    ports:
+      - "5050:5050"
+    environment:
+      - TOKEN_SECRET_KEY=dev
+      - PORT=5050      
+    networks:
+      - api-network
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "500m"
+    
+    db:
+      image: postgres:latest
+      expose:
+        - "5433"
+      ports:
+        - "5433:5433"
+      environment:
+        POSTGRES_USER: root
+        POSTGRES_PASSWORD: password
+      volumes:
+        - ./api/db/db-data:/var/lib/postgresql/data
+        - ./api/db/postgres.cnf:/etc/postgresql/postgresql.conf
+      command: -p 5433
+      networks:
+      - api-network
+
+  networks:
+    api-network:
+    driver: bridge    
