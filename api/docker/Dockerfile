@@ -3,11 +3,13 @@ WORKDIR api
 COPY . .
 RUN npm install
 RUN npm install -g typescript
+RUN npm install prisma --save-dev
 RUN npm run clean
-RUN npm run prisma generate
+RUN npx prisma init
+RUN npx prisma generate
 RUN npm run build
-RUN npm run prisma migrate deploy
-RUN npm run prisma migrate status
+RUN npx prisma migrate deploy
+EXPOSE 5050
 
 FROM node:18-alpine AS api
 WORKDIR api
