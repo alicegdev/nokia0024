@@ -9,13 +9,10 @@ COPY package*.json ./
 COPY . .
 RUN npm install
 RUN npm install -g typescript
-RUN npm install @prisma/client
 
 # Copier le reste des fichiers de l'application
 COPY . .
 
-# Nettoyer les fichiers de build précédents et générer le client Prisma
-RUN npm run clean
 RUN npx prisma generate --schema src/prisma/schema.prisma
 
 # Construire le projet
