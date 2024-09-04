@@ -6,9 +6,9 @@ RUN npm install -g typescript
 RUN npm install prisma --save-dev
 COPY . .
 RUN npm run clean
-RUN npx prisma generate --schema=./src/prisma/schema.prisma
+RUN npm run prisma:generate
 RUN npm run build
-RUN npx prisma migrate deploy --schema=./src/prisma/schema.prisma
+RUN npm run prisma:migrate
 EXPOSE 5050
 
 FROM node:18-alpine AS api
