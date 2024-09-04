@@ -9,6 +9,7 @@ COPY package*.json ./
 COPY . .
 RUN npm install
 RUN npm install -g typescript
+RUN npm install @prisma/client
 
 # Copier le reste des fichiers de l'application
 COPY . .
