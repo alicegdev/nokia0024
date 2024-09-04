@@ -37,6 +37,6 @@ services:
     networks:
       - api-network
 
-  networks:
-    api-network:
+networks:
+  api-network:
     driver: bridge    
