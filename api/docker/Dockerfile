@@ -1,5 +1,6 @@
 FROM node:18-alpine AS api-builder
 WORKDIR api
+COPY package*.json ./
 RUN npm install
 RUN npm install -g typescript
 RUN npm install prisma --save-dev
