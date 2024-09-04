@@ -1,19 +1,42 @@
-FROM node:18-alpine AS api-builder
-WORKDIR api
+# Étape 1 : Construction de l'application
+FROM node:18-alpine AS builder
+
+# Définir le répertoire de travail
+WORKDIR /api
+
+# Copier les fichiers de dépendances
 COPY package*.json ./
 RUN npm install
 RUN npm install -g typescript
-RUN npm install prisma --save-dev
-COPY . .
-RUN npm run clean
-RUN npm run prisma:generate
-RUN npm run build
-RUN npm run prisma:migrate
-EXPOSE 5050
 
-FROM node:18-alpine AS api
-WORKDIR api
-COPY --from=api-builder /api/build ./build
-COPY package* ./
+# Copier le reste des fichiers de l'application
+COPY . .
+
+# Nettoyer les fichiers de build précédents et générer le client Prisma
+RUN npm run clean
+RUN npx prisma generate
+
+# Construire le projet
+RUN npm run build
+
+# Exécuter les migrations Prisma
+RUN npx prisma migrate deploy
+
+# Étape 2 : Préparation de l'image finale
+FROM node:18-alpine
+
+# Définir le répertoire de travail
+WORKDIR /api
+
+# Copier les fichiers construits et les dépendances de l'étape précédente
+COPY --from=builder /api/build ./build
+COPY package*.json ./
+
+# Installer les dépendances nécessaires pour l'exécution
 RUN npm install --omit=dev
-CMD npm run start-api
+
+# Définir la commande par défaut
+CMD ["npm", "run", "start-api"]
+
+# Exposer le port utilisé par l'application
+EXPOSE 5050
