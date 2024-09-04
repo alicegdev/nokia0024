@@ -3,6 +3,8 @@ WORKDIR api
 COPY . .
 RUN npm install
 RUN npm install -g typescript
+RUN npm run prisma:generate
+RUN npm run prisma:migrate
 RUN npm run clean
 RUN npm run build
 
