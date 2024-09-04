@@ -6,7 +6,6 @@ import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import debugLib from 'debug';
 import http from 'http';
-import prisma from './db/index';
 
 import indexRouter from './routes/index';
 import userRouter from './User/users.route';
