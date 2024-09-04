@@ -14,13 +14,13 @@ COPY . .
 
 # Nettoyer les fichiers de build précédents et générer le client Prisma
 RUN npm run clean
-RUN npx prisma generate
+RUN npx prisma generate --schema src/prisma/schema.prisma
 
 # Construire le projet
 RUN npm run build
 
 # Exécuter les migrations Prisma
-RUN npx prisma migrate deploy
+RUN npx prisma migrate dev --name init --schema src/prisma/schema.prisma
 
 # Étape 2 : Préparation de l'image finale
 FROM node:18-alpine
