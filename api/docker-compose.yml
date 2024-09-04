@@ -29,7 +29,7 @@ services:
     volumes:
       - ./api/db/db-data:/var/lib/postgresql/data
       - ./api/db/postgres.cnf:/etc/postgresql/postgresql.conf
-    command: postgres -c config_file=/etc/postgresql/postgresql.conf -p 5433  # Ensure the config is properly loaded
+    command: -p 5433
     networks:
       - api-network
 
