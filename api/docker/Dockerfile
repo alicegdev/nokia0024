@@ -8,7 +8,7 @@ RUN npm run build
 
 FROM node:18-alpine AS api
 WORKDIR api
-COPY --from=api-builder /app/build ./build
+COPY --from=api-builder /api/build ./build
 COPY package* ./
 RUN npm install --omit=dev
 CMD npm run start-api
