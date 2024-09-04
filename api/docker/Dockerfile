@@ -1,9 +1,9 @@
 FROM node:18-alpine AS api-builder
 WORKDIR api
-COPY . .
 RUN npm install
 RUN npm install -g typescript
 RUN npm install prisma --save-dev
+COPY . .
 RUN npm run clean
 RUN npx prisma generate --schema=./src/prisma/schema.prisma
 RUN npm run build
