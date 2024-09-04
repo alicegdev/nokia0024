@@ -3,3 +3,4 @@ dist/
 build/
 .env
 db-data/
+api/db/
