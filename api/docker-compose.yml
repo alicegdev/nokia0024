@@ -5,8 +5,6 @@ services:
     build: 
       context: ./
       dockerfile: ./docker/Dockerfile
-    expose:
-      - "5050"
     ports:
       - "5050:5050"
     environment:
@@ -23,8 +21,6 @@ services:
     
   db:
     image: postgres:latest
-    expose:
-      - "5433"
     ports:
       - "5433:5433"
     environment:
@@ -33,7 +29,7 @@ services:
     volumes:
       - ./api/db/db-data:/var/lib/postgresql/data
       - ./api/db/postgres.cnf:/etc/postgresql/postgresql.conf
-    command: -p 5433
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf -p 5433  # Ensure the config is properly loaded
     networks:
       - api-network
 
