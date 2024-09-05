@@ -1,0 +1,30 @@
+image: node:latest
+
+variables:
+  TOKEN_SECRET_KEY: test
+  POSTGRES_USER: root
+  POSTGRES_PASSWORD: password
+
+services:
+- postgres:latest
+
+cache:
+  paths:
+  - node_modules/
+
+stages:
+- backend_tests
+
+backend_tests-job:
+  stage: backend_tests # Nom de l'étape
+  script:
+  - npm install
+  - npm run test
+  artifacts:
+    when: always # Génère des artefacts même en cas d'échec
+
+# TODO: Ajouter une étape de déploiement si nécessaire
+# deploy:
+#   stage: deploy
+#   script: echo "Define your deployment script!"
+#   environment: production
