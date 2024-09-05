@@ -32,7 +32,7 @@ COPY --from=builder /api/build ./build
 COPY package*.json ./
 
 # Installer les dépendances nécessaires pour l'exécution
-RUN npm install --omit=dev
+RUN npm install
 
 # Exposer le port utilisé par l'application
 EXPOSE 5050
