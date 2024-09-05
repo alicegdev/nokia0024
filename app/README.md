@@ -1,6 +1,6 @@
 Pour le côté mobile
 
-Lancez 
+Lancez
 
 ```
 cd app
@@ -23,7 +23,7 @@ et se connecter avec le terminal en lancant la commande
 expo login
 ```
 
-Pour voir si vous etes bien connecté 
+Pour voir si vous etes bien connecté
 
 ```
 expo whoami
@@ -35,7 +35,6 @@ https://developer.android.com/studio
 
 Puis suivez le tuto de "Set up Android Studio" et "Set up an emulator"
 
-
 https://docs.expo.dev/workflow/android-studio-emulator/
 
 
@@ -44,3 +43,10 @@ Pour lancer l'application :
 ```
 yarn start
 ```
+Pour lancer le linter sur le code :
+npm run lint
+
+Pour fixer automatiquement les erreurs remontées par le linter :
+npm run lint --fix
+
+Merci d'installer PrettierESLint comme extension VSCode pour faciliter votre travail et uniformiser la mise en page du code
