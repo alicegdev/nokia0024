@@ -13,13 +13,8 @@ RUN npm install -g typescript
 # Copier le reste des fichiers de l'application
 COPY . .
 
-RUN npx prisma generate --schema src/prisma/schema.prisma
-
 # Construire le projet
 RUN npm run build
-
-# Exécuter les migrations Prisma
-RUN npx prisma migrate dev --name init --schema src/prisma/schema.prisma
 
 # Étape 2 : Préparation de l'image finale
 FROM node:18-alpine
@@ -30,6 +25,7 @@ WORKDIR /api
 # Copier les fichiers construits et les dépendances de l'étape précédente
 COPY --from=builder /api/build ./build
 COPY package*.json ./
+COPY ./src/prisma ./src/prisma
 
 # Installer les dépendances nécessaires pour l'exécution
 RUN npm install
