@@ -12,7 +12,7 @@ export const navHomes = [
 ];
 
 export const navFooters = [
-    { id: PhoneImage, navigateTo: 'Contacts' },
+    { id: PhoneImage, navigateTo: 'ContactList' },
     { id: InternetImage, navigateTo: 'Internet' },
     { id: MessageImage, navigateTo: 'Text' },
     { id: MusicImage, navigateTo: 'Music' },
