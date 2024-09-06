@@ -27,7 +27,7 @@ const MusicPlayerFooter = () => {
         }
     };
 
-    const handleReadDir = async (path: any) => {
+    const handleReadDir = async (path: string) => {
         if (await requestExternalStoragePermission()) {
             try {
                 const result = await RNFS.readDir(path);
