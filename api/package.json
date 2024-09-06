@@ -4,12 +4,12 @@
   "private": true,
   "scripts": {
     "start": "node build/app.js",
-    "prisma:migrate": "npx prisma migrate deploy --name init --schema src/prisma/schema.prisma",
+    "prisma:migrate": "npx prisma migrate dev --name init --schema src/prisma/schema.prisma",
     "prisma:generate": "npx prisma generate --schema src/prisma/schema.prisma",
     "server": "node src/app.ts",
     "clean": "rimraf build",
     "build": "npm run clean && tsc",
-    "start-api": "npx prisma generate --schema src/prisma/schema.prisma && npx prisma migrate dev --name init --schema src/prisma/schema.prisma && node ./build/app.js",
+    "start-api": "npx prisma generate --schema src/prisma/schema.prisma && npx prisma migrate deploy --name init --schema src/prisma/schema.prisma && node ./build/app.js",
     "dev": "concurrently \"npx tsc --watch\" \"node -q build/app.js\"",
     "test": "npm run clean && jest"
   },
