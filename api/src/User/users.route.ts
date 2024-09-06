@@ -4,13 +4,15 @@ import { verifyToken } from '../middlewares/auth.middleware';
 
 const router = Router();
 
+router.post('/', createUser);
+router.post('/login', loginUser);
+
 router.use(verifyToken);
 
 // Routes
 router.get('/', getAllUsers);
 router.get('/:id', getUserById);
-router.post('/', createUser);
 router.delete('/:id', deleteUser);
-router.post('/login', loginUser);
+
 
 export default router;

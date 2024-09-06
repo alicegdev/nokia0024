@@ -9,6 +9,7 @@ import http from 'http';
 
 import indexRouter from './routes/index';
 import userRouter from './User/users.route';
+import contactRoutes from './Contact/contacts.route';
 
 const debug = debugLib('src:server');
 const app = express();
@@ -21,6 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', userRouter);
+app.use('/contacts', contactRoutes);
 
 /**
  * Get port from environment and store in Express.

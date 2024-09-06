@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, Alert, StyleSheet } from "react-native";
 import { useNavigation } from '@react-navigation/native';
+import axios from "axios";
 
 function Signup() {
     const [username, setUsername] = useState("");
@@ -10,24 +11,20 @@ function Signup() {
 
     const handleSignup = async () => {
         try {
-            const response = await fetch('http://localhost:5050/users/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, email, password }),
+            const response = await axios.post('http://10.93.161.61:5050/users/', {
+                username,
+                email,
+                password,
             });
 
-            const data = await response.json();
 
-            if (response.ok) {
+            const data = await response.data;
+
                 Alert.alert("Success", "Your account has been created!");
                 
                 // Optionally, navigate to login or home screen after successful signup
-                navigation.navigate('SignIn');
-            } else {
-                Alert.alert("Signup Failed", data.error || "Something went wrong.");
-            }
+                navigation.navigate('Signin');
+
         } catch (error) {
             console.error(error);
             Alert.alert("Error", "An error occurred during signup.");
