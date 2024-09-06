@@ -24,7 +24,7 @@ const ContactDetails = () => {
 
   const fetchContact = async () => {
     try {
-      const response: any = await axios.get(`http://10.93.161.61:5050/contacts/${contactId}`);
+      const response: any = await axios.get(`http://51.158.69.60:5050/contacts/${contactId}`);
       setContact(response.data);
     } catch (error) {
       console.error(error);

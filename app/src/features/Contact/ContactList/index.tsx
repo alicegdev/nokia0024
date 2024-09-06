@@ -24,7 +24,7 @@ const ContactList = () => {
 
   const fetchContacts = async () => {
     try {
-      const response: any = await axios.get('http://10.93.161.61:5050/contacts');
+      const response: any = await axios.get('http://51.158.69.60:5050/contacts');
       setContacts(response.data);
     } catch (error) {
       console.error(error);
@@ -33,7 +33,7 @@ const ContactList = () => {
 
   const deleteContact = async (id: number) => {
     try {
-        await axios.delete(`http://10.93.161.61:5050/contacts/${id}`);
+        await axios.delete(`http://51.158.69.60:5050/contacts/${id}`);
       fetchContacts(); // Refresh the list after deletion
     } catch (error) {
       console.error(error);
