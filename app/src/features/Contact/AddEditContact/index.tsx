@@ -20,40 +20,42 @@ const AddEditContact = () => {
 
   const route = useRoute();
   const navigation: any = useNavigation();
-//  const { contactId } = route.params as { contactId?: number };
 
-//   useEffect(() => {
-//     // Si contactId est défini, on veut modifier un contact existant, donc on le récupère
-//     if (contactId) {
-//       fetchContact();
-//     }
-//   }, [contactId]);
+  // Vérification si les paramètres existent
+  const contactId = route.params ? (route.params as { contactId?: number }).contactId : undefined;
 
-//   // Fonction pour récupérer les détails du contact
-//   const fetchContact = async () => {
-//     try {
-//       const response = await axios.get(`http://10.93.160.191:5050/contacts/${contactId}`);
-//       setForm({
-//         firstName: response.data.firstName,
-//         lastName: response.data.lastName,
-//         phoneNumber: response.data.phoneNumber,
-//         isFavorite: response.data.isFavorite,
-//       });
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   };
+  useEffect(() => {
+    // Si contactId est défini, on veut modifier un contact existant, donc on le récupère
+    if (contactId) {
+      fetchContact();
+    }
+  }, [contactId]);
+
+  // Fonction pour récupérer les détails du contact
+  const fetchContact = async () => {
+    try {
+      const response = await axios.get(`http://10.93.161.61:5050/contacts/${contactId}`);
+      setForm({
+        firstName: response.data.firstName,
+        lastName: response.data.lastName,
+        phoneNumber: response.data.phoneNumber,
+        isFavorite: response.data.isFavorite,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   // Fonction pour gérer l'enregistrement ou la mise à jour du contact
   const handleSave = async () => {
     try {
-    //   if (contactId) {
-    //     // Si contactId existe, on modifie le contact
-    //     await axios.put(`http://10.93.160.191:5050/contacts/${contactId}`, form);
-    //   } else {
+      if (contactId) {
+        // Si contactId existe, on modifie le contact
+        await axios.put(`http://10.93.161.61:5050/contacts/${contactId}`, form);
+      } else {
         // Si contactId n'existe pas, on crée un nouveau contact
-        await axios.post('http://10.93.160.191:5050/contacts', form);
-
+        await axios.post('http://10.93.161.61:5050/contacts', form);
+      }
       navigation.navigate('ContactList'); // Redirection vers la liste des contacts après l'opération
     } catch (error) {
       console.error(error);

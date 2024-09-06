@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Button, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native'; 
 import axios from 'axios';
 
 interface Contact {
@@ -14,14 +14,17 @@ interface Contact {
 const ContactList = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const navigation: any = useNavigation();
+  const isFocused = useIsFocused(); // Hook pour savoir si l'écran est en focus
 
   useEffect(() => {
-    fetchContacts();
-  }, []);
+    if (isFocused) {
+      fetchContacts(); // Recharger les contacts chaque fois que l'écran est en focus
+    }
+  }, [isFocused]);
 
   const fetchContacts = async () => {
     try {
-      const response: any = await axios.get('http://10.93.160.191:5050/contacts');
+      const response: any = await axios.get('http://10.93.161.61:5050/contacts');
       setContacts(response.data);
     } catch (error) {
       console.error(error);
@@ -30,7 +33,7 @@ const ContactList = () => {
 
   const deleteContact = async (id: number) => {
     try {
-        await axios.delete(`http://10.93.160.191:5050/contacts/${id}`);
+        await axios.delete(`http://10.93.161.61:5050/contacts/${id}`);
       fetchContacts(); // Refresh the list after deletion
     } catch (error) {
       console.error(error);
