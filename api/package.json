@@ -9,9 +9,9 @@
     "server": "node src/app.ts",
     "clean": "rimraf build",
     "build": "npm run clean && tsc",
-    "start-api": "npx prisma generate --schema src/prisma/schema.prisma && npx prisma migrate dev --name init --schema src/prisma/schema.prisma && node ./build/app.js",
+    "start-api": "npx prisma generate --schema src/prisma/schema.prisma && npx prisma migrate deploy --schema src/prisma/schema.prisma && node ./build/app.js",
     "dev": "concurrently \"npx tsc --watch\" \"node -q build/app.js\"",
-    "test": "jest"
+    "test": "npm run clean && jest"
   },
   "dependencies": {
     "@prisma/client": "^5.16.1",
