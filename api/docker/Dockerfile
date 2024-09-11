@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 # Étape 2 : Préparation de l'image finale
-FROM node:18-alpine
+FROM node:18-alpine as api
 
 # Définir le répertoire de travail
 WORKDIR /api

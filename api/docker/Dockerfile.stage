@@ -1,17 +1,22 @@
-# Étape de construction
-FROM node:18-bullseye-slim AS api-builder
-WORKDIR /api
-COPY . .
+# Étape 1 : Construction de l'application
+FROM node:18-alpine AS builder
 
+WORKDIR /api
+COPY package*.json ./
+COPY . .
 RUN npm install
+RUN npm install -g typescript
+COPY . .
 RUN npm run clean
 RUN npm run build
+
 
 # Étape de production
 FROM node:18-bullseye-slim AS api
 WORKDIR /api
-COPY --from=api-builder /api/build ./build
+COPY --from=builder /api/build ./build
 COPY package* ./
-RUN npm install --omit=dev
+RUN npm install
+COPY ./src/prisma ./src/prisma
 EXPOSE 5050
 CMD npm run start-api
