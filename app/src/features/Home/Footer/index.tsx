@@ -5,7 +5,7 @@ import { Image, TouchableOpacity, View, ActivityIndicator } from "react-native";
 import { Screen } from "src/components";
 import styles from "./styles";
 import { navFooters } from "src/constants";
-import { Internet } from "src/utils/Internet";
+import { internet } from "src/utils/internet";
 
 export const HomeFooter = () => {
     const navigation: any = useNavigation();
@@ -17,7 +17,7 @@ export const HomeFooter = () => {
 
     const handlePress = (navigateTo: any) => {
         if (navigateTo === 'Internet') {
-            Internet('https://oldgoogle.neocities.org/1998/');
+            internet('https://oldgoogle.neocities.org/1998/');
         } else {
             navigation.navigate(navigateTo);
         }

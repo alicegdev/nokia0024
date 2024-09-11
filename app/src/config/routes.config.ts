@@ -13,14 +13,6 @@ import AddEditContact from "src/features/Contact/AddEditContact";
 import ContactDetails from "src/features/Contact/ContactDetails";
 import Onboarding from "src/features/Onboarding";
 
-
-
-
-
-
-
-
-
 // Ordered by folder
 const routesConfig = [
   //Home
@@ -41,7 +33,7 @@ const routesConfig = [
   { name: 'ContactList', component: ContactList },
   { name: 'AddEditContact', component: AddEditContact },
   { name: 'ContactDetails', component: ContactDetails },
-  
+
   // Music
   { name: 'Music', component: Music },
   { name: 'MusicFavorite', component: MusicFavorite },
