@@ -10,25 +10,16 @@ const boxWidth = (screenWidth - totalHorizontalMargin - totalBoxSpacing) / 4;
 export default StyleSheet.create({
   main: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
+    justifyContent: 'space-around',
+    padding: spacing.md,
     backgroundColor: color.relief,
-    padding: spacing.sm
+    borderBottomWidth: 1,
+    borderColor: 'white'
   },
-  container: {
-    alignItems: 'center',
-    flex: 1
-  },
-  box: {
-    width: "100%",
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  labelStyle: {
-    marginTop: 4,
-    color: color.white,
-    fontSize: 8,
-    fontFamily: 'Nokia',
-    textAlign: 'center'
-  },
+    textList: {
+      color: color.white,
+      fontFamily: 'Nokia',
+      fontSize: 10,
+      lineHeight: 24
+    }
 });

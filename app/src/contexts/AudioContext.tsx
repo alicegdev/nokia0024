@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { Audio } from 'expo-av';
 
 interface AudioContextType {
-    playSound: (uri: string) => Promise<void>;
+    playSound: (uri: string, filename: string) => Promise<void>;
     pauseSound: () => Promise<void>;
     rewindSound: () => Promise<void>;
     currentTrack: { uri?: string, filename?: string } | null;
@@ -26,7 +26,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         };
     }, [sound]);
 
-    const playSound = async (uri: string) => {
+    const playSound = async (uri: string, filename: string) => {
+        const cleanFilename = filename.replace(/\.mp3$/, '');
         if (sound && currentTrack?.uri === uri) {
             await sound.playAsync();
             setIsPlaying(true);
@@ -36,7 +37,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
             }
             const { sound: newSound } = await Audio.Sound.createAsync({ uri }, { shouldPlay: true });
             setSound(newSound);
-            setCurrentTrack({ uri });
+            setCurrentTrack({ uri, filename: cleanFilename });
             setIsPlaying(true);
         }
     };
