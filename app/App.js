@@ -1,30 +1,66 @@
 import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import routesConfig from "./src/config/routes.config";
 import LoadingAnimation from "./src/components/LoadingAnimation";
+import Onboarding from './src/features/Onboarding';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
+  const [isFirstLaunch, setIsFirstLaunch] = useState(false);
+
+  useEffect(() => {
+    const checkFirstLaunch = async () => {
+      try {
+        const hasLaunched = await AsyncStorage.getItem('hasLaunched');
+        if (hasLaunched === null) {
+          // Si l'application n'a jamais été lancée
+          await AsyncStorage.setItem('hasLaunched', 'true');
+          setIsFirstLaunch(true);
+        } else {
+          setIsFirstLaunch(false);
+        }
+      } catch (error) {
+        console.error('Failed to load AsyncStorage', error);
+      }
+    };
+
+    checkFirstLaunch();
+  }, []);
+
+  if (isFirstLaunch === null) {
+    // Optionnel : Afficher un écran de chargement pendant que AsyncStorage est vérifié
+    return null;
+  }
 
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
-    }, 5000);
+    }, 5000);  // Simule un chargement de 5 secondes
   }, []);
 
   if (isLoading) {
     return <LoadingAnimation />;
   }
+
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="HomePage" screenOptions={{ headerShown: false }}>
-        {routesConfig.map(({ name, component }) => (
-          <Stack.Screen key={name} name={name} component={component} />
-        ))}
-      </Stack.Navigator>
+      {isFirstLaunch ? (
+        <Stack.Navigator initialRouteName="Onboarding" screenOptions={{ headerShown: false }}>
+          {routesConfig.map(({ name, component }) => (
+            <Stack.Screen key={name} name={name} component={component} />
+          ))}
+        </Stack.Navigator>
+      ) : (
+        <Stack.Navigator initialRouteName="HomePage" screenOptions={{ headerShown: false }}>
+          {routesConfig.map(({ name, component }) => (
+            <Stack.Screen key={name} name={name} component={component} />
+          ))}
+        </Stack.Navigator>
+      )}
     </NavigationContainer>
   );
 }

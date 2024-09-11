@@ -7,11 +7,13 @@ import Signup from "src/features/Setting/Signup";
 import ContactList from "src/features/Contact/ContactList";
 import AddEditContact from "src/features/Contact/AddEditContact";
 import ContactDetails from "src/features/Contact/ContactDetails";
+import Onboarding from "src/features/Onboarding";
 
 // Ordered by folder
 const routesConfig = [
   //Home
   { name: 'HomePage', component: HomePage },
+  { name: 'Onboarding', component: Onboarding },
 
   //Games
   { name: 'Games', component: Games },
