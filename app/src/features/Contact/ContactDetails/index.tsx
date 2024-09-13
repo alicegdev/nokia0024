@@ -9,6 +9,7 @@ interface Contact {
   firstName: string;
   lastName: string;
   phoneNumber: string;
+  email: string;
   isFavorite: boolean;
 }
 
@@ -40,6 +41,7 @@ const ContactDetails = () => {
       <Text>First Name: {contact.firstName}</Text>
       <Text>Last Name: {contact.lastName}</Text>
       <Text>Phone Number: {contact.phoneNumber}</Text>
+      <Text>Email: {contact.email}</Text>
       <Text>Favorite: {contact.isFavorite ? 'Yes' : 'No'}</Text>
       <Button title="Edit" onPress={() => navigation.navigate('AddEditContact', { contactId: contact.id })} />
     </View>
