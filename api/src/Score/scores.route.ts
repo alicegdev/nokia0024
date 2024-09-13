@@ -4,9 +4,9 @@ import { verifyToken } from '../middlewares/auth.middleware';
 
 const router = Router();
 
-router.post('/score', addScore);
+router.post('/add', addScore);
 router.use(verifyToken);
-router.get('/scores', getScores);
+router.get('/', getScores);
 
 
 
