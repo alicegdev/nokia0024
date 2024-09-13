@@ -12,6 +12,8 @@ import Header from "./Header";
 import { Text } from "react-native";
 import "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import GameModal from "../GameModal";
+import axios from "axios";
 
 const SNAKE_INITIAL_POSITION = [{ x: 5, y: 5 }];
 const FOOD_INITIAL_POSITION = { x: 5, y: 20 };
@@ -33,6 +35,26 @@ export default function Snake(): JSX.Element {
   const [isGameOver, setIsGameOver] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [score, setScore] = useState(0);
+  const [finalScore, setFinalScore] = useState(0);
+
+  const [isVisible, setIsVisible] = useState(true);
+  //TODO: When button is clicked -> user is redirected to a Score Screen
+
+  const handleModal = () => {
+    setIsVisible(false);
+  };
+
+  const handleGameOver = () => {
+    setIsVisible(true);
+    setFinalScore(score);
+    return async () => {
+      try {
+        await axios.post(`http://51.158.69.60:5050/score`);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+  };
 
   useEffect(() => {
     if (!isGameOver) {
@@ -42,6 +64,9 @@ export default function Snake(): JSX.Element {
         }
       }, MOVE_INTERVAL);
       return () => clearInterval(intervalId);
+    }
+    if (isGameOver) {
+      handleGameOver();
     }
   }, [snake, isGameOver, isPaused]);
 
@@ -80,7 +105,9 @@ export default function Snake(): JSX.Element {
     }
   };
 
-  const handleGesture = (event: { nativeEvent: { translationX: any; translationY: any; }; }) => {
+  const handleGesture = (event: {
+    nativeEvent: { translationX: any; translationY: any };
+  }) => {
     const { translationX, translationY } = event.nativeEvent;
 
     if (Math.abs(translationX) > Math.abs(translationY)) {
@@ -112,31 +139,42 @@ export default function Snake(): JSX.Element {
   };
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <PanGestureHandler onGestureEvent={handleGesture}>
-        <SafeAreaView style={styles.container}>
-          <Header
-            isPaused={isPaused}
-            pauseGame={pauseGame}
-            reloadGame={reloadGame}
-          >
-            <Text
-              style={{
-                fontSize: 22,
-                fontWeight: "bold",
-                color: Colors.primary,
-              }}
-            >
-              {score}
-            </Text>
-          </Header>
-          <View style={styles.boundaries}>
-            <SnakeComponent snake={snake} />
-            <Food x={food.x} y={food.y} />
-          </View>
-        </SafeAreaView>
-      </PanGestureHandler>
-    </GestureHandlerRootView>
+    <>
+      {isVisible ? (
+        <GameModal
+          game={"Snake"}
+          gameDesign={"Snake"}
+          isGameOver={isGameOver}
+          onEvent={handleModal}
+        />
+      ) : (
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <PanGestureHandler onGestureEvent={handleGesture}>
+            <SafeAreaView style={styles.container}>
+              <Header
+                isPaused={isPaused}
+                pauseGame={pauseGame}
+                reloadGame={reloadGame}
+              >
+                <Text
+                  style={{
+                    fontSize: 22,
+                    fontWeight: "bold",
+                    color: Colors.primary,
+                  }}
+                >
+                  {score}
+                </Text>
+              </Header>
+              <View style={styles.boundaries}>
+                <SnakeComponent snake={snake} />
+                <Food x={food.x} y={food.y} />
+              </View>
+            </SafeAreaView>
+          </PanGestureHandler>
+        </GestureHandlerRootView>
+      )}
+    </>
   );
 }
 
