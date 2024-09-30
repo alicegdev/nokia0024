@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import routesConfig from "./src/config/routes.config";
 import LoadingAnimation from "./src/components/LoadingAnimation";
-import Onboarding from './src/features/Onboarding';
+import Onboarding from "./src/features/Onboarding";
+import { AudioProvider } from "./src/contexts/AudioContext";
 
 const Stack = createNativeStackNavigator();
 
@@ -15,16 +16,16 @@ export default function App() {
   useEffect(() => {
     const checkFirstLaunch = async () => {
       try {
-        const hasLaunched = await AsyncStorage.getItem('hasLaunched');
+        const hasLaunched = await AsyncStorage.getItem("hasLaunched");
         if (hasLaunched === null) {
           // Si l'application n'a jamais été lancée
-          await AsyncStorage.setItem('hasLaunched', 'true');
+          await AsyncStorage.setItem("hasLaunched", "true");
           setIsFirstLaunch(true);
         } else {
           setIsFirstLaunch(false);
         }
       } catch (error) {
-        console.error('Failed to load AsyncStorage', error);
+        console.error("Failed to load AsyncStorage", error);
       }
     };
 
@@ -39,7 +40,7 @@ export default function App() {
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
-    }, 5000);  // Simule un chargement de 5 secondes
+    }, 5000); // Simule un chargement de 5 secondes
   }, []);
 
   if (isLoading) {
@@ -48,19 +49,27 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      {isFirstLaunch ? (
-        <Stack.Navigator initialRouteName="Onboarding" screenOptions={{ headerShown: false }}>
-          {routesConfig.map(({ name, component }) => (
-            <Stack.Screen key={name} name={name} component={component} />
-          ))}
-        </Stack.Navigator>
-      ) : (
-        <Stack.Navigator initialRouteName="HomePage" screenOptions={{ headerShown: false }}>
-          {routesConfig.map(({ name, component }) => (
-            <Stack.Screen key={name} name={name} component={component} />
-          ))}
-        </Stack.Navigator>
-      )}
+      <AudioProvider>
+        {isFirstLaunch ? (
+          <Stack.Navigator
+            initialRouteName="Onboarding"
+            screenOptions={{ headerShown: false }}
+          >
+            {routesConfig.map(({ name, component }) => (
+              <Stack.Screen key={name} name={name} component={component} />
+            ))}
+          </Stack.Navigator>
+        ) : (
+          <Stack.Navigator
+            initialRouteName="HomePage"
+            screenOptions={{ headerShown: false }}
+          >
+            {routesConfig.map(({ name, component }) => (
+              <Stack.Screen key={name} name={name} component={component} />
+            ))}
+          </Stack.Navigator>
+        )}
+      </AudioProvider>
     </NavigationContainer>
   );
 }
