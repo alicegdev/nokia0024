@@ -36,10 +36,10 @@ const MusicPlayerFooter = () => {
                 <TouchableOpacity onPress={handlePlayPause}>
                     <FontAwesome name={isPlaying ? "pause" : "play"} size={24} color="white" />
                 </TouchableOpacity>
-                <Text style={styles.textList}>{currentTrack?.filename}</Text>
+                <Text style={styles.textList}>{currentTrack?.filename.replace(/\.mp3$/, '')}</Text>
             </TouchableOpacity>
 
-            {/* Modal Section */}
+            {/* Modal */}
             <Modal
                 visible={isModalVisible}
                 animationType="slide"

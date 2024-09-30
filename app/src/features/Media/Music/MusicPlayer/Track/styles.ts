@@ -7,11 +7,15 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: color.menu,
-        // padding: spacing.lg,
     },
     closeButton: {
-        // alignSelf: 'flex-end',
-        padding: spacing.md,
+        padding: "10%",
+        position: "absolute",
+        right: 0,
+        borderRadius: radius.xlg,
+        borderColor: "gray",
+        borderWidth: 1,
+
     },
     closeText: {
         color: 'white',
@@ -20,13 +24,23 @@ export default StyleSheet.create({
     trackTitle: {
         color: color.white,
         fontFamily: 'Nokia',
-        // fontSize: 24,
-        // marginVertical: spacing.md,
+        marginVertical: spacing.md,
+    },
+    trackTime: {
+        color: color.white,
+        fontFamily: 'Nokia',
+        fontSize: 8,
     },
     track: {
         backgroundColor: color.relief,
-        padding: "20%",
-        fontFamily: 'Nokia',
-        borderRadius: radius.xlg
+        padding: "10%",
+        borderRadius: radius.xlg,
+        width: "80%",
+    },
+    playerControls: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-around',
+        marginTop: spacing.md,
     }
 });
