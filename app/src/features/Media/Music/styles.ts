@@ -6,10 +6,12 @@ export default StyleSheet.create({
     color: color.relief,
     fontFamily: 'Nokia',
     fontSize: spacing.lg,
-    padding: spacing.sm
+    padding: spacing.sm,
+    marginBottom: spacing.sm,
   },
   footer: {
     position: "absolute",
     bottom: 0,
+    width: "100%",
   }
 });

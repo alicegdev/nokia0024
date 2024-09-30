@@ -1,19 +1,20 @@
-import React from 'react';
-import { View, TouchableOpacity, Text } from 'react-native';
+import React, { useState } from 'react';
+import { TouchableOpacity, Text, Modal } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useAudioContext } from 'src/contexts/AudioContext';
-import { color, spacing } from 'src/styles';
 import styles from './styles';
+import Track from '../Track'; 
 
 const MusicPlayerFooter = () => {
     const { playSound, pauseSound, rewindSound, currentTrack, isPlaying } = useAudioContext();
+    const [isModalVisible, setModalVisible] = useState(false);
 
     const handlePlayPause = () => {
         if (isPlaying) {
             pauseSound();
         } else {
             if (currentTrack?.uri && currentTrack.filename) {
-                playSound(currentTrack.uri, currentTrack.filename);
+                playSound(currentTrack);
             }
         }
     };
@@ -22,16 +23,31 @@ const MusicPlayerFooter = () => {
         rewindSound();
     };
 
+    const toggleModal = () => {
+        setModalVisible(!isModalVisible);
+    };
+
     return (
-        <View style={styles.main}>
-            <TouchableOpacity onPress={handleRewind}>
-                <FontAwesome name="backward" size={24} color="white" />
+        <>
+            <TouchableOpacity style={styles.main} onPress={toggleModal}>
+                <TouchableOpacity onPress={handleRewind}>
+                    <FontAwesome name="backward" size={24} color="white" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handlePlayPause}>
+                    <FontAwesome name={isPlaying ? "pause" : "play"} size={24} color="white" />
+                </TouchableOpacity>
+                <Text style={styles.textList}>{currentTrack?.filename}</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={handlePlayPause}>
-                <FontAwesome name={isPlaying ? "pause" : "play"} size={24} color="white" />
-            </TouchableOpacity>
-            <Text style={styles.textList}>{currentTrack?.filename}</Text>
-        </View>
+
+            {/* Modal Section */}
+            <Modal
+                visible={isModalVisible}
+                animationType="slide"
+                onRequestClose={toggleModal}
+            >
+                <Track onClose={toggleModal} />
+            </Modal>
+        </>
     );
 };
 

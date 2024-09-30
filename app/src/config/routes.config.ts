@@ -1,9 +1,6 @@
 
 import HomePage from "src/features/Home";
 import Music from "src/features/Media/Music";
-import MusicFavorite from "src/features/Media/Music/MusicFavorite";
-import MusicList from "src/features/Media/Music/MusicList";
-import MusicSearch from "src/features/Media/Music/MusicSearch";
 import Signin from "src/features/Setting/Signin";
 import Games from "src/features/Games";
 import SnakeIII from "src/features/Games/SnakeIII";
@@ -12,6 +9,7 @@ import ContactList from "src/features/Contact/ContactList";
 import AddEditContact from "src/features/Contact/AddEditContact";
 import ContactDetails from "src/features/Contact/ContactDetails";
 import Onboarding from "src/features/Onboarding";
+import Track from "src/features/Media/Music/MusicPlayer/Track";
 
 // Ordered by folder
 const routesConfig = [
@@ -36,9 +34,7 @@ const routesConfig = [
 
   // Music
   { name: 'Music', component: Music },
-  { name: 'MusicFavorite', component: MusicFavorite },
-  { name: 'MusicList', component: MusicList },
-  { name: 'MusicSearch', component: MusicSearch },
+  { name: 'Track', component: Track },
 ];
 
 export default routesConfig;
