@@ -9,7 +9,6 @@ import ContactList from "src/features/Contact/ContactList";
 import AddEditContact from "src/features/Contact/AddEditContact";
 import ContactDetails from "src/features/Contact/ContactDetails";
 import Onboarding from "src/features/Onboarding";
-import Track from "src/features/Media/Music/MusicPlayer/Track";
 
 // Ordered by folder
 const routesConfig = [
@@ -34,7 +33,6 @@ const routesConfig = [
 
   // Music
   { name: 'Music', component: Music },
-  { name: 'Track', component: Track },
 ];
 
 export default routesConfig;

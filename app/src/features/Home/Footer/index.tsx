@@ -1,4 +1,3 @@
-// footer.tsx
 import { useNavigation } from "@react-navigation/native";
 import useFonts from "src/hooks/useFonts";
 import { Image, TouchableOpacity, View, ActivityIndicator } from "react-native";
