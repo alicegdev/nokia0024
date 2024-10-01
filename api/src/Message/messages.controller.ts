@@ -1,17 +1,18 @@
 import { Request, Response } from 'express';
 import prisma from '../db/index';
 
-// Envoyer un message
+// Send a message via REST API
 export const sendMessage = async (req: Request, res: Response) => {
-  const { senderId, receiverId, content } = req.body;
+  const { receiverId, content } = req.body;
+  const senderId = req.body.userId; // Retrieved from auth middleware
 
   try {
     const message = await prisma.message.create({
       data: {
         content,
-        senderId,
-        receiverId
-      }
+        senderId: parseInt(senderId),
+        receiverId: parseInt(receiverId),
+      },
     });
     res.status(200).json(message);
   } catch (error) {

@@ -15,6 +15,7 @@ model User {
   musiques         Musique[]
   sentMessages     Message[] @relation("SentMessages")
   receivedMessages Message[] @relation("ReceivedMessages")
+  Contact          Contact[]
 }
 
 model Contact {
@@ -23,7 +24,9 @@ model Contact {
   lastName    String
   phoneNumber String
   isFavorite  Boolean
-  email       String  @unique // Email du contact qui servira à lier à un User
+  email       String  @unique
+  userId      Int? // Peut être nul si le contact n'est pas un utilisateur de l'application
+  user        User?   @relation(fields: [userId], references: [id])
 }
 
 model Message {

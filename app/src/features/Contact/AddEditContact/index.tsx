@@ -36,7 +36,7 @@ const AddEditContact = () => {
   // Fonction pour récupérer les détails du contact
   const fetchContact = async () => {
     try {
-      const response = await axios.get(`http://51.158.69.60:5050/contacts/${contactId}`);
+      const response = await axios.get(`http://10.93.169.177:5050/contacts/${contactId}`);
       setForm({
         firstName: response.data.firstName,
         lastName: response.data.lastName,
@@ -54,10 +54,10 @@ const AddEditContact = () => {
     try {
       if (contactId) {
         // Si contactId existe, on modifie le contact
-        await axios.put(`http://51.158.69.60:5050/contacts/${contactId}`, form);
+        await axios.put(`http://10.93.169.177:5050/contacts/${contactId}`, form);
       } else {
         // Si contactId n'existe pas, on crée un nouveau contact
-        await axios.post('http://51.158.69.60:5050/contacts', form);
+        await axios.post('http://10.93.169.177:5050/contacts', form);
       }
       navigation.navigate('ContactList'); // Redirection vers la liste des contacts après l'opération
     } catch (error) {

@@ -6,6 +6,10 @@ import debugLib from 'debug';
 import { createServer } from 'http';
 import prisma from './db/index';
 import { Server } from 'socket.io';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
+
 
 import indexRouter from './routes/index';
 import userRouter from './User/users.route';
@@ -14,6 +18,7 @@ import messageRoutes from './Message/messages.route';
 
 const debug = debugLib('src:server');
 const app = express();
+
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -34,23 +39,39 @@ const io = new Server(httpServer, {
   }
 });
 
+const secretKey = process.env.TOKEN_SECRET_KEY
+
 // Stockage des utilisateurs connectés
 const connectedUsers = new Map<string, string>();  // socketId -> userId
 
-// Gérer les connexions Socket.IO
-io.on('connection', (socket) => {
-  console.log('User connected:', socket.id);
+io.use((socket, next) => {
+  const token = socket.handshake.auth.token; // Expect the token in auth property
+  if (!token) {
+    return next(new Error('Authentication error'));
+  }
 
-  // Stocker l'utilisateur connecté via son socketId
-  socket.on('register', (userId: string) => {
-    connectedUsers.set(socket.id, userId);
-    console.log(`User with ID ${userId} connected via socket ${socket.id}`);
+  jwt.verify(token, secretKey as string, (err: any, decoded: any) => {
+    if (err) {
+      return next(new Error('Authentication error'));
+    }
+    socket.data.userId = decoded.id; // Store userId in socket data
+    next();
   });
+});
 
-  // Gestion de l'envoi de message
-  socket.on('sendMessage', async ({ senderId, receiverId, content }) => {
+io.on('connection', (socket) => {
+  const userId = socket.data.userId;
+  console.log(`User connected: ${userId}`);
+
+  // Map userId to socket.id
+  connectedUsers.set(userId, socket.id);
+
+  // Handle incoming messages
+  socket.on('sendMessage', async ({ receiverId, content }) => {
     try {
-      // Créer le message dans la base de données
+      const senderId = socket.data.userId;
+
+      // Save message to the database
       const message = await prisma.message.create({
         data: {
           content,
@@ -59,11 +80,10 @@ io.on('connection', (socket) => {
         },
       });
 
-      // Rechercher le socket de l'utilisateur récepteur
-      const receiverSocketId = [...connectedUsers.entries()]
-        .find(([_, id]) => id === receiverId)?.[0];
+      // Find receiver's socket ID
+      const receiverSocketId = connectedUsers.get(receiverId);
 
-      // Envoyer le message au récepteur s'il est connecté
+      // Emit the message to the receiver if connected
       if (receiverSocketId) {
         io.to(receiverSocketId).emit('receiveMessage', message);
         console.log(`Message sent from ${senderId} to ${receiverId}`);
@@ -73,13 +93,10 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Déconnexion
+  // Handle disconnection
   socket.on('disconnect', () => {
-    const userId = connectedUsers.get(socket.id);
-    if (userId) {
-      console.log(`User with ID ${userId} disconnected.`);
-      connectedUsers.delete(socket.id);
-    }
+    connectedUsers.delete(userId);
+    console.log(`User disconnected: ${userId}`);
   });
 });
 

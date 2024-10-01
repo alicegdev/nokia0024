@@ -3,6 +3,7 @@ import { View, Text, TextInput, Button, Alert, StyleSheet } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { initializeSocket } from '../../../socket';
 
 function Signin() {
     const [email, setEmail] = useState("");
@@ -11,21 +12,20 @@ function Signin() {
 
     const handleLogin = async () => {
         try {
-            const response = await axios.post('http://51.158.69.60:5050/users/login', {
+            const response = await axios.post('http://10.93.169.177:5050/users/login', {
                 email,
                 password,
             })
 
             const data = response.data;
 
-                // Save the token in AsyncStorage
+            if (data.token) {
                 await AsyncStorage.setItem('token', data.token);
-                Alert.alert("Success", "You are now logged in!");
-                console.log("success");
-                console.log(data);
-
-                // Navigate to another screen after successful login
+                // Initialize the socket connection
+                await initializeSocket();
+                // Navigate to the home screen
                 navigation.navigate('HomePage');
+              }
             
         } catch (error) {
             console.error(error);

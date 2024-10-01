@@ -107,3 +107,22 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
         res.status(500).json({ error: 'Something went wrong' });
     }
 };
+
+export const getUserByEmail = async (req: Request, res: Response) => {
+    const { email } = req.params;
+  
+    try {
+      const user = await prisma.user.findUnique({
+        where: { email },
+        select: { id: true, username: true },
+      });
+  
+      if (user) {
+        res.status(200).json(user);
+      } else {
+        res.status(404).json({ error: 'Utilisateur introuvable' });
+      }
+    } catch (error) {
+      res.status(500).json({ error: 'Erreur lors de la récupération de l\'utilisateur' });
+    }
+  };

@@ -8,6 +8,7 @@ import ContactList from "src/features/Contact/ContactList";
 import AddEditContact from "src/features/Contact/AddEditContact";
 import ContactDetails from "src/features/Contact/ContactDetails";
 import Onboarding from "src/features/Onboarding";
+import ChatScreen from "src/features/Message/ChatScreen";
 
 // Ordered by folder
 const routesConfig = [
@@ -29,6 +30,9 @@ const routesConfig = [
   { name: 'ContactList', component: ContactList },
   { name: 'AddEditContact', component: AddEditContact },
   { name: 'ContactDetails', component: ContactDetails },
+
+  // Message
+  { name: 'ChatScreen', component: ChatScreen },
 ];
 
 export default routesConfig;

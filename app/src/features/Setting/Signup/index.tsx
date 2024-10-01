@@ -11,7 +11,7 @@ function Signup() {
 
     const handleSignup = async () => {
         try {
-            const response = await axios.post('http://51.158.69.60:5050/users/', {
+            const response = await axios.post('http://10.93.169.177:5050/users/', {
                 username,
                 email,
                 password,
