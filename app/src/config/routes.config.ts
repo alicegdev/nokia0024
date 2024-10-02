@@ -1,5 +1,6 @@
 
 import HomePage from "src/features/Home";
+import Music from "src/features/Media/Music";
 import Signin from "src/features/Setting/Signin";
 import Games from "src/features/Games";
 import SnakeIII from "src/features/Games/SnakeIII";
@@ -29,6 +30,9 @@ const routesConfig = [
   { name: 'ContactList', component: ContactList },
   { name: 'AddEditContact', component: AddEditContact },
   { name: 'ContactDetails', component: ContactDetails },
+
+  // Music
+  { name: 'Music', component: Music },
 ];
 
 export default routesConfig;
