@@ -55,5 +55,4 @@ services:
       - nokia-network
 
 networks:
-  nokia-network:
-    driver: bridge    
+  nokia-network:  
