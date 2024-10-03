@@ -16,6 +16,7 @@ model User {
   sentMessages     Message[] @relation("SentMessages")
   receivedMessages Message[] @relation("ReceivedMessages")
   Contact          Contact[]
+  Score            Score[]
 }
 
 model Contact {
