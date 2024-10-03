@@ -4,8 +4,10 @@ import { useNavigation, useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import * as Contacts from 'expo-contacts'; // Expo Contacts pour gérer les contacts du téléphone
 import { MaterialIcons } from '@expo/vector-icons'; // Pour utiliser des icônes
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Contact {
+  email: string;
   id: string;
   firstName: string;
   lastName: string;
@@ -61,7 +63,7 @@ const ContactList = () => {
   // Fonction pour récupérer les contacts de la base de données
   const fetchContacts = async () => {
     try {
-      const response = await axios.get('http://51.158.69.60:5050/contacts');
+      const response = await axios.get('http://10.93.169.177:5050/contacts');
       const dbContacts = response.data.map((contact: any) => ({
         ...contact,
         source: 'db', // Ajouter le flag source pour les contacts de la base de données
@@ -111,7 +113,7 @@ const ContactList = () => {
     if (contact.source === 'db') {
       // Supprimer le contact de la base de données
       try {
-        await axios.delete(`http://51.158.69.60:5050/contacts/${contact.id}`);
+        await axios.delete(`http://10.93.169.177:5050/contacts/${contact.id}`);
         fetchContacts(); // Refresh the list after deletion
       } catch (error) {
         console.error(error);
@@ -120,13 +122,40 @@ const ContactList = () => {
   };
 
   // Ouvrir les détails d'un contact
-  const openContactDetails = (contact: Contact) => {
+  const openContactDetails = async (contact: Contact) => {
     if (contact.source === 'db') {
-      // Naviguer vers l'écran de détails pour un contact de la base de données
-      navigation.navigate('ContactDetails', { contactId: contact.id });
+      try {
+        const token = await AsyncStorage.getItem('token');
+        const response = await axios.get(
+          `http://10.93.169.177:5050/users/by-email/${contact.email}`,
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
+  
+        const user = response.data;
+        if (user && user.id) {
+          // Naviguer vers l'écran de chat avec le userId du destinataire
+          navigation.navigate('ChatScreen', {
+            receiverId: user.id,
+            receiverName: `${contact.firstName} ${contact.lastName}`,
+          });
+        } else {
+          Alert.alert(
+            'Utilisateur introuvable',
+            'Ce contact n\'est pas inscrit sur l\'application.'
+          );
+        }
+      } catch (error) {
+        console.error('Error fetching user by email:', error);
+      }
     } else if (contact.source === 'phone') {
-      // Afficher les informations directement pour un contact du téléphone
-      Alert.alert('Contact Details', `Name: ${contact.firstName} ${contact.lastName}\nPhone: ${contact.phoneNumber}`);
+      Alert.alert(
+        'Contact du téléphone',
+        `Name: ${contact.firstName} ${contact.lastName}\nPhone: ${contact.phoneNumber}`
+      );
     }
   };
 

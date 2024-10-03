@@ -7,30 +7,37 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Message {
-  id        Int      @id @default(autoincrement())
-  content   String
-  sendDate  DateTime
-  contactId Int
-  Contact   Contact  @relation(fields: [contactId], references: [id])
+model User {
+  id               Int       @id @default(autoincrement())
+  email            String    @unique
+  password         String
+  username         String
+  musiques         Musique[]
+  sentMessages     Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
+  Contact          Contact[]
+  Score            Score[]
 }
 
 model Contact {
-  id          Int       @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   firstName   String
   lastName    String
   phoneNumber String
   isFavorite  Boolean
-  messages    Message[]
+  email       String  @unique
+  userId      Int? // Peut être nul si le contact n'est pas un utilisateur de l'application
+  user        User?   @relation(fields: [userId], references: [id])
 }
 
-model User {
-  id       Int       @id @default(autoincrement())
-  email    String    @unique
-  password String
-  username String
-  musiques Musique[]
-  Score    Score[]
+model Message {
+  id         Int      @id @default(autoincrement())
+  content    String
+  sendDate   DateTime @default(now())
+  senderId   Int
+  receiverId Int
+  sender     User     @relation("SentMessages", fields: [senderId], references: [id])
+  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
 }
 
 model Musique {

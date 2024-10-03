@@ -32,13 +32,14 @@ export const getContactById = async (req: Request, res: Response, next: NextFunc
 // Create a new contact
 export const createContact = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { firstName, lastName, phoneNumber, isFavorite } = req.body;
+        const { firstName, lastName, phoneNumber, email, isFavorite } = req.body;
 
         const contact = await prisma.contact.create({
             data: {
                 firstName,
                 lastName,
                 phoneNumber,
+                email,
                 isFavorite: isFavorite || false, // default to false if not provided
             },
         });
@@ -53,7 +54,7 @@ export const createContact = async (req: Request, res: Response, next: NextFunct
 export const updateContact = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
-        const { firstName, lastName, phoneNumber, isFavorite } = req.body;
+        const { firstName, lastName, phoneNumber, email, isFavorite } = req.body;
 
         const contact = await prisma.contact.update({
             where: { id: parseInt(id) },
@@ -61,6 +62,7 @@ export const updateContact = async (req: Request, res: Response, next: NextFunct
                 firstName,
                 lastName,
                 phoneNumber,
+                email,
                 isFavorite,
             },
         });

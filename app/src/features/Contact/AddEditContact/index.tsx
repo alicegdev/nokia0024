@@ -7,6 +7,7 @@ interface ContactForm {
   firstName: string;
   lastName: string;
   phoneNumber: string;
+  email: string;
   isFavorite: boolean;
 }
 
@@ -15,6 +16,7 @@ const AddEditContact = () => {
     firstName: '',
     lastName: '',
     phoneNumber: '',
+    email: '',
     isFavorite: false,
   });
 
@@ -39,6 +41,7 @@ const AddEditContact = () => {
         firstName: response.data.firstName,
         lastName: response.data.lastName,
         phoneNumber: response.data.phoneNumber,
+        email: response.data.email,
         isFavorite: response.data.isFavorite,
       });
     } catch (error) {
@@ -82,6 +85,14 @@ const AddEditContact = () => {
         value={form.phoneNumber}
         onChangeText={(text) => setForm({ ...form, phoneNumber: text })}
         keyboardType="phone-pad"
+      />
+      <Text>Email</Text>
+      <TextInput
+        style={styles.input}
+        value={form.email}
+        onChangeText={(text) => setForm({ ...form, email: text })}
+        keyboardType="email-address"
+        autoCapitalize="none"
       />
       <Button
         title={form.isFavorite ? 'Unmark as Favorite' : 'Mark as Favorite'}
