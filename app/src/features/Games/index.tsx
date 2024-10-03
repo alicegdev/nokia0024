@@ -2,11 +2,11 @@ import React from "react";
 import { useNavigation } from '@react-navigation/native';
 import { Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
 import { Screen } from "src/components";
-import styles from "../Home/styles";
-import { color } from "src/styles";
+import styles from "./styles";
+import { color, spacing } from "src/styles";
 import useFonts from "src/hooks/useFonts";
-import { HomeFooter } from "../Home/Footer";
 import { navGames } from "src/constants/games";
+
 
 const Games = () => {
     const navigation: any = useNavigation();
@@ -17,23 +17,19 @@ const Games = () => {
     }
 
     return (
-        <Screen style={{ backgroundColor: color.menu }}>
-            <View style={styles.main}>
+        <Screen style={{ flex: 1, backgroundColor: color.menu, paddingTop: spacing.xlg }}>
+            <Text style={styles.title}>Games</Text>
+            <View style={{ flex: 1, marginBottom: "15%" }}>
                 {navGames.map(navGame => (
-                    <View key={navGame.id} style={styles.container}>
+                    <View key={navGame.id}>
                         <TouchableOpacity
-                            style={styles.box}
+                            style={styles.list}
                             onPress={() => navigation.navigate(navGame.navigateTo)}
                         >
-                            <Text style={styles.textStyle}>{navGame.id}</Text>
+                            <Text style={styles.textStyle}>{navGame.label}</Text>
                         </TouchableOpacity>
-                        <Text style={styles.labelStyle}>{navGame.label}</Text>
                     </View>
                 ))}
-            </View>
-            
-            <View style={styles.footer}>
-              <HomeFooter></HomeFooter>
             </View>
         </Screen>
     );

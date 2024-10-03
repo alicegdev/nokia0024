@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     borderColor: Colors.primary,
     borderWidth: 12,
+    marginTop: 12,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     borderBottomWidth: 0,
