@@ -7,6 +7,7 @@ let socket: any;
 export const initializeSocket = async () => {
   const token = await AsyncStorage.getItem('token');
   socket = io('http://51.158.69.60:5050', {
+    path: '/socket.io',
     auth: {
       token,
     },

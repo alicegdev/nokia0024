@@ -25,7 +25,9 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-// app.use(express.static(path.join(__dirname, 'public'))); // Si nécessaire, déplacez ceci après Socket.IO
+
+// **Assurez-vous que le middleware static est placé APRÈS la configuration de Socket.IO**
+// app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', userRouter);
@@ -33,14 +35,12 @@ app.use('/contacts', contactRoutes);
 app.use('/messages', messageRoutes);
 app.use('/scores', scoreRoutes);
 
-// Créer le serveur HTTP indépendamment
-const httpServer = createServer();
+// Créer le serveur HTTP
+const httpServer = createServer(app);
 
-// Attacher Express au serveur HTTP
-httpServer.on('request', app);
-
-// Créer le serveur Socket.IO en l'attachant au serveur HTTP
+// Créer le serveur Socket.IO et l'attacher au serveur HTTP
 const io = new Server(httpServer, {
+  path: '/socket.io', // Assurez-vous que le chemin est correct
   cors: {
     origin: "*",
     methods: ["GET", "POST"]
@@ -49,12 +49,12 @@ const io = new Server(httpServer, {
 
 const secretKey = process.env.TOKEN_SECRET_KEY;
 
-// Stockage des utilisateurs connectés
-const connectedUsers = new Map<string, string>();  // userId -> socketId
+// Stockage des utilisateurs connectés : userId -> socketId
+const connectedUsers = new Map<string, string>();
 
-// Middleware d'authentification Socket.IO
+// Middleware d'authentification pour Socket.IO
 io.use((socket, next) => {
-  const token = socket.handshake.auth.token; // Expect the token in auth property
+  const token = socket.handshake.auth.token;
   if (!token) {
     return next(new Error('Authentication error'));
   }
@@ -63,7 +63,7 @@ io.use((socket, next) => {
     if (err) {
       return next(new Error('Authentication error'));
     }
-    socket.data.userId = decoded.id; // Store userId in socket data
+    socket.data.userId = decoded.id;
     next();
   });
 });
@@ -73,15 +73,13 @@ io.on('connection', (socket) => {
   const userId = socket.data.userId;
   console.log(`User connected: ${userId}`);
 
-  // Map userId to socket.id
   connectedUsers.set(userId, socket.id);
 
-  // Handle incoming messages
+  // Gérer l'envoi de messages
   socket.on('sendMessage', async ({ receiverId, content }) => {
     try {
       const senderId = socket.data.userId;
 
-      // Save message to the database
       const message = await prisma.message.create({
         data: {
           content,
@@ -90,10 +88,8 @@ io.on('connection', (socket) => {
         },
       });
 
-      // Find receiver's socket ID
       const receiverSocketId = connectedUsers.get(receiverId);
 
-      // Emit the message to the receiver if connected
       if (receiverSocketId) {
         io.to(receiverSocketId).emit('receiveMessage', message);
         console.log(`Message sent from ${senderId} to ${receiverId}`);
@@ -103,81 +99,32 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Handle disconnection
+  // Gérer la déconnexion
   socket.on('disconnect', () => {
     connectedUsers.delete(userId);
     console.log(`User disconnected: ${userId}`);
   });
 });
 
-/**
- * Get port from environment and store in Express.
- */
+// Démarrer le serveur HTTP
 const port = normalizePort(process.env.PORT || '5050');
-// app.set('port', port); // Plus nécessaire
+httpServer.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
 
-/**
- * Listen on provided port, on all network interfaces.
- */
-httpServer.listen(port);
-httpServer.on('error', onError);
-httpServer.on('listening', onListening);
-
-/**
- * Normalize a port into a number, string, or false.
- */
 function normalizePort(val: string) {
   const port = parseInt(val, 10);
-
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
-
-  if (port >= 0) {
-    // port number
-    return port;
-  }
-
+  if (isNaN(port)) return val;
+  if (port >= 0) return port;
   return false;
 }
 
-/**
- * Event listener for HTTP server "error" event.
- */
 function onError(error: NodeJS.ErrnoException) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
-
-  const bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
-
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
+  // Gestion des erreurs du serveur HTTP
 }
 
-/**
- * Event listener for HTTP server "listening" event.
- */
 function onListening() {
-  const addr = httpServer.address();  // Utilisation de httpServer
-  const bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + (addr as any).port;
+  const addr = httpServer.address();
+  const bind = addr ? (typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port) : '';
   debug('Listening on ' + bind);
 }
-
-export default app; // Vous pouvez supprimer cette ligne si vous n'avez pas besoin d'exporter app
