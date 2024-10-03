@@ -13,7 +13,7 @@ export default function SnakeComponent({ snake }: SnakeProps): JSX.Element {
     <Fragment>
       {snake.map((segment: any, index: number) => {
         const segmentStyle = {
-          left: segment.x * 10, // adjust for the size of each segment
+          left: segment.x * 10,
           top: segment.y * 10,
         };
         return <View key={index} style={[styles.snake, segmentStyle]} />;

@@ -1,8 +1,9 @@
 import * as React from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Modal from "react-native-modal";
 import HighScoresScreen from "./HighScoresScreen";
 import { useNavigation } from "@react-navigation/native";
+import { color } from "src/styles";
 
 export interface GameModalProps {
   game: string;
@@ -26,12 +27,16 @@ export default function GameModal({
       ) : (
         <View style={styles.container}>
           <Text style={styles.title}>{game}</Text>
-          <Text style={styles.gameDesign}>{gameDesign}</Text>
+          {/* <Text style={styles.gameDesign}>{gameDesign}</Text> */}
         </View>
       )}
-      <Button title={isGameOver ? "RESTART" : "START"} onPress={onEvent} />
+      <TouchableOpacity style={styles.button} onPress={onEvent}>
+        <Text style={styles.buttonText}>{isGameOver ? "RESTART" : "START"}</Text>
+      </TouchableOpacity>
       {isGameOver ? (
-        <Button title={"QUIT"} onPress={() => navigation.navigate("HomePage")} />
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("HomePage")}>
+          <Text style={styles.buttonText}>QUIT</Text>
+        </TouchableOpacity>
       ) : null}
     </Modal>
   );
@@ -43,7 +48,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   container: {
-    backgroundColor: "#000",
+    backgroundColor: color.menu,
     borderRadius: 10,
     padding: 20,
     alignItems: "center",
@@ -52,12 +57,27 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    color: "#0f0",
+    color: color.relief,
     marginBottom: 10,
+    fontFamily: 'Nokia',
   },
-  gameDesign: {
-    fontSize: 18,
-    color: "#fff",
-    marginBottom: 20,
+  // gameDesign: {
+  //   fontSize: 18,
+  //   color: "#fff",
+  //   marginBottom: 20,
+  // },
+  button: {
+    backgroundColor: color.relief,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginVertical: 10,
+  },
+  buttonText: {
+    fontSize: 16,
+    color: "#ffffff",
+    textAlign: "center",
+    fontFamily: 'Nokia',
+
   },
 });
