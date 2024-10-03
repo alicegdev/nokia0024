@@ -12,8 +12,8 @@ import Header from "./Header";
 import { Text } from "react-native";
 import "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import GameModal from "../GameModal";
 import axios from "axios";
+import GameModal from "../Scores/GameModal";
 
 const SNAKE_INITIAL_POSITION = [{ x: 5, y: 5 }];
 const FOOD_INITIAL_POSITION = { x: 5, y: 20 };
@@ -33,7 +33,7 @@ export default function Snake(): JSX.Element {
   const [snake, setSnake] = useState(SNAKE_INITIAL_POSITION);
   const [food, setFood] = useState(FOOD_INITIAL_POSITION);
   const [isGameOver, setIsGameOver] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
+  const [isPaused, setIsPaused] = useState(true);
   const [score, setScore] = useState(0);
   const [finalScore, setFinalScore] = useState(0);
 
@@ -109,7 +109,9 @@ export default function Snake(): JSX.Element {
     nativeEvent: { translationX: any; translationY: any };
   }) => {
     const { translationX, translationY } = event.nativeEvent;
-
+  
+    setIsPaused(false);
+  
     if (Math.abs(translationX) > Math.abs(translationY)) {
       if (translationX > 0) {
         setDirection(Directions.right);
@@ -131,7 +133,7 @@ export default function Snake(): JSX.Element {
     setIsGameOver(false);
     setScore(0);
     setDirection(Directions.right);
-    setIsPaused(false);
+    setIsPaused(true);
   };
 
   const pauseGame = () => {
@@ -142,8 +144,8 @@ export default function Snake(): JSX.Element {
     <>
       {isVisible ? (
         <GameModal
-          game={"Snake"}
-          gameDesign={"Snake"}
+          game={"Snake III"}
+          gameDesign={"Snake III"}
           isGameOver={isGameOver}
           onEvent={handleModal}
         />
