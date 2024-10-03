@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllUsers, getUserById, createUser, deleteUser, loginUser } from '../User/users.controller';
+import { getAllUsers, getUserById, createUser, deleteUser, loginUser, getUserByEmail } from '../User/users.controller';
 import { verifyToken } from '../middlewares/auth.middleware';
 
 const router = Router();
@@ -13,6 +13,7 @@ router.use(verifyToken);
 router.get('/', getAllUsers);
 router.get('/:id', getUserById);
 router.delete('/:id', deleteUser);
+router.get('/by-email/:email', getUserByEmail);
 
 
 export default router;

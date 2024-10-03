@@ -3,6 +3,7 @@ import { View, Text, TextInput, Button, Alert, StyleSheet } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { initializeSocket } from '../../../socket';
 
 function Signin() {
     const [email, setEmail] = useState("");
@@ -18,14 +19,13 @@ function Signin() {
 
             const data = response.data;
 
-                // Save the token in AsyncStorage
+            if (data.token) {
                 await AsyncStorage.setItem('token', data.token);
-                Alert.alert("Success", "You are now logged in!");
-                console.log("success");
-                console.log(data);
-
-                // Navigate to another screen after successful login
+                // Initialize the socket connection
+                await initializeSocket();
+                // Navigate to the home screen
                 navigation.navigate('HomePage');
+              }
             
         } catch (error) {
             console.error(error);
