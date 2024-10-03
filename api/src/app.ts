@@ -15,6 +15,7 @@ import indexRouter from './routes/index';
 import userRouter from './User/users.route';
 import contactRoutes from './Contact/contacts.route';
 import messageRoutes from './Message/messages.route';
+import scoreRoutes from './Score/scores.route'
 
 const debug = debugLib('src:server');
 const app = express();
@@ -30,6 +31,7 @@ app.use('/', indexRouter);
 app.use('/users', userRouter);
 app.use('/contacts', contactRoutes);
 app.use('/messages', messageRoutes);
+app.use('/scores', scoreRoutes);
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
@@ -99,6 +101,7 @@ io.on('connection', (socket) => {
     console.log(`User disconnected: ${userId}`);
   });
 });
+
 
 /**
  * Get port from environment and store in Express.

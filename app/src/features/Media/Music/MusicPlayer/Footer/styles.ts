@@ -10,24 +10,16 @@ const boxWidth = (screenWidth - totalHorizontalMargin - totalBoxSpacing) / 4;
 export default StyleSheet.create({
   main: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginHorizontal: spacing.md,
-    marginVertical: spacing.sm,
-    justifyContent: 'space-between',
-    backgroundColor: color.footer,
-    borderRadius: radius.xlg,
-  },
-  container: {
-    width: boxWidth,
-    margin: boxMargin,
-    alignItems: 'center',
-  },
-  box: {
-    width: boxWidth,
-    height: spacing.xlg,
+    justifyContent: 'space-around',
+    padding: spacing.md,
     backgroundColor: color.relief,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: radius.lg,
+    borderBottomWidth: 1,
+    borderColor: 'white'
   },
+    textList: {
+      color: color.white,
+      fontFamily: 'Nokia',
+      fontSize: 10,
+      lineHeight: 24
+    }
 });

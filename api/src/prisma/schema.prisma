@@ -59,5 +59,7 @@ model Score {
   id     Int  @id @default(autoincrement())
   score  Int
   gameId Int
+  userId Int
   Game   Game @relation(fields: [gameId], references: [id])
+  User   User @relation(fields: [userId], references: [id])
 }
