@@ -6,10 +6,11 @@ let socket: any;
 
 export const initializeSocket = async () => {
   const token = await AsyncStorage.getItem('token');
-  socket = io('http://10.93.169.177:5050', {
+  socket = io('http://51.158.69.60:5050', {
     auth: {
       token,
     },
+    transports: ['websocket'],
   });
 
   socket.on('connect', () => {
