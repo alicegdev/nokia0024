@@ -1,7 +1,7 @@
 version: '3.9'
 
 services:
-  nokia_api:
+  api:
     build: 
       context: ./
       dockerfile: ./docker/Dockerfile
@@ -11,7 +11,7 @@ services:
       - TOKEN_SECRET_KEY=dev
       - PORT=5050      
     networks:
-      - nokia-network
+      - api-network
     restart: always
     logging:
       driver: "json-file"
@@ -19,7 +19,7 @@ services:
         max-file: "5"
         max-size: "500m"
     
-  nokia_db:
+  db:
     image: postgres:16
     ports:
       - "5433:5433"
@@ -27,11 +27,11 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: password
     volumes:
-      - ./nokia_api/db/db-data:/var/lib/postgresql/data
-      - ./nokia_api/db/postgres.cnf:/etc/postgresql/postgresql.conf
+      - ./api/db/db-data:/var/lib/postgresql/data
+      - ./api/db/postgres.cnf:/etc/postgresql/postgresql.conf
     command: -p 5433
     networks:
-      - nokia-network
+      - api-network
   
   proxy:
     image: nginx
@@ -44,7 +44,7 @@ services:
       - ./nginx/certbot/www:/var/www/certbot/:ro
       - ./nginx/certbot/conf/:/etc/nginx/ssl/:ro
     networks:
-      - nokia-network
+      - api-network
 
   certbot:
     image: certbot/certbot:latest
@@ -52,7 +52,8 @@ services:
       - ./nginx/certbot/www/:/var/www/certbot/:rw
       - ./nginx/certbot/conf/:/etc/letsencrypt/:rw
     networks:
-      - nokia-network
+      - api-network
 
 networks:
-  nokia-network:  
+  api-network:
+    driver: bridge    

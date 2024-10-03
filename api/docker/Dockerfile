@@ -2,7 +2,7 @@
 FROM node:18-alpine AS builder
 
 # Définir le répertoire de travail
-WORKDIR /nokia_api
+WORKDIR /api
 
 # Copier les fichiers de dépendances
 COPY package*.json ./
@@ -17,13 +17,13 @@ COPY . .
 RUN npm run build
 
 # Étape 2 : Préparation de l'image finale
-FROM node:18-alpine as nokia_api
+FROM node:18-alpine as api
 
 # Définir le répertoire de travail
-WORKDIR /nokia_api
+WORKDIR /api
 
 # Copier les fichiers construits et les dépendances de l'étape précédente
-COPY --from=builder /nokia_api/build ./build
+COPY --from=builder /api/build ./build
 COPY package*.json ./
 COPY ./src/prisma ./src/prisma
 
