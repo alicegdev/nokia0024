@@ -4,7 +4,7 @@ include:
 stages:
 - backend_tests
 - tag_release
-- deploy
+# - deploy
 
 create_minor_release_tag:
   stage: tag_release
@@ -41,20 +41,20 @@ create_major_release_tag:
   only:
   - main
 
-deploy_production:
-  needs:
-  - create_minor_release_tag
-  - create_major_release_tag
-  stage: deploy
-  script:
-  - if ! which ssh-agent > /dev/null; then apt-get update -y && apt-get install openssh-client -y; fi
-  - eval $(ssh-agent -s)
-  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-  - mkdir -p ~/.ssh
-  - chmod 700 ~/.ssh
-  - ssh-keyscan -H $SERVER_IP >> ~/.ssh/known_hosts
-  - git pull origin main
-  - cd api
-  - docker compose up -d
-  only:
-  - main
+# deploy_production:
+#   needs:
+#   - create_minor_release_tag
+#   - create_major_release_tag
+#   stage: deploy
+#   script:
+#   - if ! which ssh-agent > /dev/null; then apt-get update -y && apt-get install openssh-client -y; fi
+#   - eval $(ssh-agent -s)
+#   - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+#   - mkdir -p ~/.ssh
+#   - chmod 700 ~/.ssh
+#   - ssh-keyscan -H $SERVER_IP >> ~/.ssh/known_hosts
+#   - git pull origin main
+#   - cd api
+#   - docker compose up -d
+#   only:
+#   - main
