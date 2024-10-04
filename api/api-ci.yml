@@ -16,16 +16,13 @@ stages:
 - backend_tests
 
 backend_tests-job:
-  stage: backend_tests # Nom de l'étape
+  stage: backend_tests
   script:
   - cd api
   - npm install
   - npm run test
   artifacts:
-    when: always # Génère des artefacts même en cas d'échec
+    when: always
 
-# TODO: Ajouter une étape de déploiement si nécessaire
-# deploy:
-#   stage: deploy
-#   script: echo "Define your deployment script!"
-#   environment: production
+
+
