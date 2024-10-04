@@ -19,6 +19,7 @@ backend_tests-job:
   stage: backend_tests
   script:
   - cd api
+  - nvm use 22
   - npm install
   - npm run test
   artifacts:

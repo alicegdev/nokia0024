@@ -1,8 +1,6 @@
 include:
 - local: 'api/api-ci.yml'
 
-image: node:22
-
 stages:
 - backend_tests
 - tag_release
