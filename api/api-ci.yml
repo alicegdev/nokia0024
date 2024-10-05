@@ -1,3 +1,5 @@
+image: node:latest
+
 variables:
   TOKEN_SECRET_KEY: test
   POSTGRES_USER: root
@@ -15,7 +17,6 @@ stages:
 
 backend_tests-job:
   stage: backend_tests
-  image: node:22
   script:
   - cd api
   - npm install
