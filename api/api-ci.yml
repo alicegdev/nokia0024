@@ -1,3 +1,5 @@
+image: node:22
+
 variables:
   TOKEN_SECRET_KEY: test
   POSTGRES_USER: root
@@ -12,10 +14,12 @@ cache:
 
 stages:
 - backend_tests
+- build_image
+- publish
+- deploy
 
-backend_tests-job:
+backend_tests:
   stage: backend_tests
-  image: node:22
   script:
   - cd api
   - npm install
@@ -23,6 +27,72 @@ backend_tests-job:
   artifacts:
     when: always
 
+build_image:
+  stage: build_image
+  tags:
+  - general
+  only:
+  - main
+  image: docker:27.1.1
+  services:
+  - name: docker:27.1.1-dind
+    alias: docker
+  variables:
+    IMAGE_TAG: $CI_REGISTRY_IMAGE/api-$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA
+  script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  - echo "Building docker image..."
+  - docker build --pull -t $IMAGE_TAG -f ./api/docker/Dockerfile .
+  - docker push $IMAGE_TAG
+  - echo "Done."
+  needs:
+  - backend_tests
 
+publish:
+  stage: publish
+  tags:
+  - general
+  only:
+  - main
+  - tags
+  image: docker:27.1.1
+  services:
+  - name: docker:27.1.1-dind
+    alias: docker
+  variables:
+    IMAGE_TAG: $CI_REGISTRY_IMAGE/api-$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA
+    LATEST_TAG: $CI_REGISTRY_IMAGE/api:latest
+  script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  - echo "Retagging docker image..."
+  - docker tag $IMAGE_TAG $LATEST_TAG
+  - echo "Push image with latest tag..."
+  - docker push $LATEST_TAG
+  - echo "Done."
+  needs:
+  - build_image
 
-
+deploy:
+  stage: deploy
+  tags:
+  - general
+  only:
+  - main
+  - tags
+  image: docker:27.1.1
+  services:
+  - name: docker:27.1.1-dind
+    alias: docker
+  script:
+  - echo "Login to Docker registry..."
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  - echo "Pull the latest image..."
+  - docker pull $CI_REGISTRY_IMAGE/api:latest
+  - echo "Stop and remove the old container if it exists..."
+  - docker stop api-api-1 || true
+  - docker rm api-api-1 || true
+  - echo "Start a new container with the latest image..."
+  - docker run -d --name api-api-1 -p 5050:5050 $CI_REGISTRY_IMAGE/api:latest
+  - echo "Deployment completed."
+  needs:
+  - publish
