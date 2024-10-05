@@ -2,6 +2,4 @@ include:
 - local: 'api/api-ci.yml'
 
 stages:
-- backend_tests
-- build
-
+- backend
