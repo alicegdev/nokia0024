@@ -13,9 +13,16 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.nokia-0024",
+      "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "CAMERA",
+        "WRITE_EXTERNAL_STORAGE",
+        "READ_EXTERNAL_STORAGE"
+      ]
     }
   }
 }

@@ -7,8 +7,8 @@ export const navHomes = [
     { id: 1, label: 'test signin', navigateTo: 'Signin' },
     { id: 2, label: 'Games', navigateTo: 'Games' },
     { id: 3, label: 'Settings', navigateTo: 'Settings' },
-    { id: 4, label: 'Placeholder', navigateTo: 'Placeholder' },
-    { id: 5, label: 'Placeholder', navigateTo: 'Placeholder' },
+    { id: 4, label: 'Camera', navigateTo: 'CameraScreen' },
+    { id: 5, label: 'Gallery', navigateTo: 'Gallery' },
 ];
 
 export const navFooters = [

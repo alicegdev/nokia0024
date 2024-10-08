@@ -17,7 +17,7 @@ const Games = () => {
     }
 
     return (
-        <Screen style={{ flex: 1, backgroundColor: color.menu, paddingTop: spacing.xlg }}>
+        <Screen style={{ flex: 1, backgroundColor: color.menu, paddingTop: spacing.lg }}>
             <Text style={styles.title}>Games</Text>
             <View style={{ flex: 1, marginBottom: "15%" }}>
                 {navGames.map(navGame => (

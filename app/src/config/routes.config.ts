@@ -10,6 +10,8 @@ import AddEditContact from "src/features/Contact/AddEditContact";
 import ContactDetails from "src/features/Contact/ContactDetails";
 import Onboarding from "src/features/Onboarding";
 import ChatScreen from "src/features/Message/ChatScreen";
+import CameraScreen from "src/features/Media/Camera";
+import Gallery from "src/features/Media/Gallery";
 
 // Ordered by folder
 const routesConfig = [
@@ -36,6 +38,10 @@ const routesConfig = [
   { name: 'ChatScreen', component: ChatScreen },
   // Music
   { name: 'Music', component: Music },
+
+  // Camera
+  { name: 'CameraScreen', component: CameraScreen },
+  {name: 'Gallery', component: Gallery }
 ];
 
 export default routesConfig;
