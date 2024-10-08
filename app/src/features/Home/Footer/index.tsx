@@ -4,7 +4,7 @@ import { Image, TouchableOpacity, View, ActivityIndicator } from "react-native";
 import { Screen } from "src/components";
 import styles from "./styles";
 import { navFooters } from "src/constants";
-import { internet } from "src/utils/internet";
+import { internet } from "src/utils/Internet";
 
 export const HomeFooter = () => {
     const navigation: any = useNavigation();

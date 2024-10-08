@@ -15,11 +15,11 @@ export default StyleSheet.create({
         borderRadius: radius.xlg,
         borderColor: "gray",
         borderWidth: 1,
-
     },
     closeText: {
         color: 'white',
         fontSize: 16,
+        fontFamily: 'Nokia',
     },
     trackTitle: {
         color: color.white,
