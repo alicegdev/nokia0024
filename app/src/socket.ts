@@ -11,7 +11,6 @@ export const initializeSocket = async () => {
     auth: {
       token,
     },
-    transports: ['websocket'],
   });
 
   socket.on('connect', () => {
