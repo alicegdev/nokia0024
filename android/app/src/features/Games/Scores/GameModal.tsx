@@ -1,5 +1,5 @@
 import * as React from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import Modal from "react-native-modal";
 import HighScoresScreen from "./HighScoresScreen";
 import { useNavigation } from "@react-navigation/native";
@@ -11,6 +11,7 @@ export interface GameModalProps {
   score: number;
   isGameOver: boolean;
   onEvent: () => void;
+  reloadGame: () => void;
 }
 
 export default function GameModal({
@@ -19,8 +20,15 @@ export default function GameModal({
   score,
   isGameOver,
   onEvent,
+  reloadGame,
 }: GameModalProps) {
   const navigation: any = useNavigation();
+  const handlePress = () => {
+    onEvent();
+    if (isGameOver) {
+      reloadGame();
+    }
+  };
 
   return (
     <Modal isVisible={true} style={styles.modal}>
@@ -32,11 +40,16 @@ export default function GameModal({
           {/* <Text style={styles.gameDesign}>{gameDesign}</Text> */}
         </View>
       )}
-      <TouchableOpacity style={styles.button} onPress={onEvent}>
-        <Text style={styles.buttonText}>{isGameOver ? "RESTART" : "START"}</Text>
+      <TouchableOpacity style={styles.button} onPress={handlePress}>
+        <Text style={styles.buttonText}>
+          {isGameOver ? "RESTART" : "START"}
+        </Text>
       </TouchableOpacity>
       {isGameOver ? (
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("HomePage")}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate("HomePage")}
+        >
           <Text style={styles.buttonText}>QUIT</Text>
         </TouchableOpacity>
       ) : null}
@@ -61,7 +74,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: color.relief,
     marginBottom: 10,
-    fontFamily: 'Nokia',
+    fontFamily: "Nokia",
   },
   // gameDesign: {
   //   fontSize: 18,
@@ -79,7 +92,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#ffffff",
     textAlign: "center",
-    fontFamily: 'Nokia',
-
+    fontFamily: "Nokia",
   },
 });

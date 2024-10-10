@@ -12,6 +12,7 @@ import Onboarding from "src/features/Onboarding";
 import ChatScreen from "src/features/Message/ChatScreen";
 import CameraScreen from "src/features/Media/Camera";
 import Gallery from "src/features/Media/Gallery";
+import SpaceBlast from "src/features/Games/SpaceBlast";
 
 // Ordered by folder
 const routesConfig = [
@@ -21,9 +22,8 @@ const routesConfig = [
 
   //Games
   { name: 'Games', component: Games },
-
-  // Snake
   { name: 'SnakeIII', component: SnakeIII },
+  { name: 'SpaceBlast', component: SpaceBlast },
 
   //Setting
   { name: 'Signin', component: Signin },
