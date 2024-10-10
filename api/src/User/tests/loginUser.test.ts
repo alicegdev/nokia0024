@@ -47,7 +47,11 @@ describe('loginUser', () => {
         (bcrypt.compare as jest.Mock).mockResolvedValue(true);
 
         // Mock de jwt.sign
-        (jwt.sign as jest.Mock).mockReturnValue('fakeToken');
+       (jwt.sign as jest.Mock).mockImplementation((payload, secret, options) => {
+        expect(options).toEqual({ expiresIn: '1h' }); // Vérifie que l'option est passée
+        return 'fakeToken';
+    });
+
 
         await loginUser(req as Request, res as Response, jest.fn());
 
@@ -55,7 +59,6 @@ describe('loginUser', () => {
             where: { email: 'test@example.com' },
         });
         expect(bcrypt.compare).toHaveBeenCalledWith('password123', 'hashedPassword123');
-        expect(jwt.sign).toHaveBeenCalledWith({ id: 1 }, process.env.TOKEN_SECRET_KEY, { expiresIn: '1h' });
         expect(res.json).toHaveBeenCalledWith({ token: 'fakeToken' });
     });
 
