@@ -1,0 +1,120 @@
+import React, { useEffect, useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { useRoute, useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+
+interface ContactForm {
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  email: string;
+  isFavorite: boolean;
+}
+
+const AddEditContact = () => {
+  const [form, setForm] = useState<ContactForm>({
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
+    email: '',
+    isFavorite: false,
+  });
+
+  const route = useRoute();
+  const navigation: any = useNavigation();
+
+  // Vérification si les paramètres existent
+  const contactId = route.params ? (route.params as { contactId?: number }).contactId : undefined;
+
+  useEffect(() => {
+    // Si contactId est défini, on veut modifier un contact existant, donc on le récupère
+    if (contactId) {
+      fetchContact();
+    }
+  }, [contactId]);
+
+  // Fonction pour récupérer les détails du contact
+  const fetchContact = async () => {
+    try {
+      const response = await axios.get(`https://n0kia-0024.com/contacts/${contactId}`);
+      setForm({
+        firstName: response.data.firstName,
+        lastName: response.data.lastName,
+        phoneNumber: response.data.phoneNumber,
+        email: response.data.email,
+        isFavorite: response.data.isFavorite,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Fonction pour gérer l'enregistrement ou la mise à jour du contact
+  const handleSave = async () => {
+    try {
+      if (contactId) {
+        // Si contactId existe, on modifie le contact
+        await axios.put(`https://n0kia-0024.com/contacts/${contactId}`, form);
+      } else {
+        // Si contactId n'existe pas, on crée un nouveau contact
+        await axios.post('https://n0kia-0024.com/contacts', form);
+      }
+      navigation.navigate('ContactList'); // Redirection vers la liste des contacts après l'opération
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text>First Name</Text>
+      <TextInput
+        style={styles.input}
+        value={form.firstName}
+        onChangeText={(text) => setForm({ ...form, firstName: text })}
+      />
+      <Text>Last Name</Text>
+      <TextInput
+        style={styles.input}
+        value={form.lastName}
+        onChangeText={(text) => setForm({ ...form, lastName: text })}
+      />
+      <Text>Phone Number</Text>
+      <TextInput
+        style={styles.input}
+        value={form.phoneNumber}
+        onChangeText={(text) => setForm({ ...form, phoneNumber: text })}
+        keyboardType="phone-pad"
+      />
+      <Text>Email</Text>
+      <TextInput
+        style={styles.input}
+        value={form.email}
+        onChangeText={(text) => setForm({ ...form, email: text })}
+        keyboardType="email-address"
+        autoCapitalize="none"
+      />
+      <Button
+        title={form.isFavorite ? 'Unmark as Favorite' : 'Mark as Favorite'}
+        onPress={() => setForm({ ...form, isFavorite: !form.isFavorite })}
+      />
+      <Button title="Save" onPress={handleSave} />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 20,
+    paddingHorizontal: 10,
+  },
+});
+
+export default AddEditContact;
