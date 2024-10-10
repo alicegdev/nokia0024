@@ -23,12 +23,16 @@ const HighScoresScreen = ({ game, gameName, score }: HighScoresProps) => {
       console.log(currentUserId);
       try {
         const response = await axios.post("https://n0kia-0024.com/scores/add", {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
           params: { score, game, userId },
         });
     console.log(response);
       } catch (error) {
         console.error("Error sending score" + error);
       }
+      fetchScores(token);
     } else {
       Alert.alert(
         "Warning",
@@ -37,9 +41,12 @@ const HighScoresScreen = ({ game, gameName, score }: HighScoresProps) => {
     }
   };
 
-  const fetchScores = async () => {
+  const fetchScores = async (token: string) => {
     try {
       const response = await axios.get("https://n0kia-0024.com/scores", {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+          },
         params: { game },
       });
       setScores(response.data);
@@ -51,7 +58,6 @@ const HighScoresScreen = ({ game, gameName, score }: HighScoresProps) => {
 
   useEffect(() => {
     sendScore();
-    fetchScores();
   }, []);
 
   const renderItem = ({ item }: { item: { name: string; score: number } }) => (
