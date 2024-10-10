@@ -6,15 +6,17 @@ import { useNavigation } from "@react-navigation/native";
 import { color } from "src/styles";
 
 export interface GameModalProps {
-  game: string;
-  gameDesign: string;
+  game: number;
+  gameName: string;
+  score: number;
   isGameOver: boolean;
   onEvent: () => void;
 }
 
 export default function GameModal({
   game,
-  gameDesign,
+  gameName,
+  score,
   isGameOver,
   onEvent,
 }: GameModalProps) {
@@ -23,10 +25,10 @@ export default function GameModal({
   return (
     <Modal isVisible={true} style={styles.modal}>
       {isGameOver ? (
-        <HighScoresScreen game={game} />
+        <HighScoresScreen game={game} gameName={gameName} score={score} />
       ) : (
         <View style={styles.container}>
-          <Text style={styles.title}>{game}</Text>
+          <Text style={styles.title}>{gameName}</Text>
           {/* <Text style={styles.gameDesign}>{gameDesign}</Text> */}
         </View>
       )}

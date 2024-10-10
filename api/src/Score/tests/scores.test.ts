@@ -76,8 +76,8 @@ describe('Score Controller', () => {
     describe('getScores', () => {
         it('should get scores for a game successfully', async () => {
             req = {
-                body: {
-                    gameId: 1,
+                params: {
+                    gameId: '1',
                 },
             };
 

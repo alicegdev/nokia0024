@@ -23,6 +23,7 @@ export const addScore = async (req: Request, res: Response, next: NextFunction) 
         });
         res.json(scoreObject);
     } catch (error) {
+        console.log("Error adding score, " + error)
         res.status(500).json({ error: 'Something went wrong' });
     }
 };
@@ -31,7 +32,7 @@ export const addScore = async (req: Request, res: Response, next: NextFunction) 
 export const getScores = async (req: Request, res: Response, next: NextFunction) => {
    // Get a user by id
     try {
-        const { gameId } = req.body;
+        const { gameId } = req.params;
         const scores = await prisma.score.findMany({
             where: {
                 gameId: parseInt(gameId)
@@ -49,6 +50,7 @@ export const getScores = async (req: Request, res: Response, next: NextFunction)
         });
         res.json(scores);
     } catch (error) {
+        console.log("Error getting scores" + error)
         res.status(500).json({ error: 'Something went wrong' });
     }
 };

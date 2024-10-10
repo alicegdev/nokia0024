@@ -1,25 +1,63 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import React, { useEffect, useState } from "react";
+import { View, Text, FlatList, StyleSheet, Alert } from "react-native";
 
 interface HighScoresProps {
-  game: string;
+  game: number;
+  gameName: string;
+  score: number;
 }
 
-const HighScoresScreen = ({ game }: HighScoresProps) => {
+const HighScoresScreen = ({ game, gameName, score }: HighScoresProps) => {
   const [scores, setScores] = useState([]);
+  const [userId, setUserId] = useState<number | null>(null);
 
-  const fetchScores = async () => {
+  const sendScore = async () => {
+    const token = await AsyncStorage.getItem("token");
+    if (token) {
+      const decoded: { id: number } = jwtDecode(token);
+      const currentUserId = decoded.id;
+      setUserId(currentUserId);
+      console.log(currentUserId);
+      try {
+        const response = await axios.post("https://n0kia-0024.com/scores/add", {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+          params: { score, game, userId },
+        });
+    console.log(response);
+      } catch (error) {
+        console.error("Error sending score" + error);
+      }
+      fetchScores(token);
+    } else {
+      Alert.alert(
+        "Warning",
+        "Not logged in, your current score won't be sent.",
+      );
+    }
+  };
+
+  const fetchScores = async (token: string) => {
     try {
-      const response = await axios.get('http://10.0.2.2:5050/scores');
+      const response = await axios.get("https://n0kia-0024.com/scores", {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        params: { game },
+      });
       setScores(response.data);
+      console.log(response);
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching scores" + error);
     }
   };
 
   useEffect(() => {
-    fetchScores();
+    sendScore();
   }, []);
 
   const renderItem = ({ item }: { item: { name: string; score: number } }) => (
@@ -31,9 +69,13 @@ const HighScoresScreen = ({ game }: HighScoresProps) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{game}</Text>
+      <Text style={styles.title}>{gameName}</Text>
       <Text style={styles.title}>High Scores</Text>
-      <FlatList data={scores} renderItem={renderItem} keyExtractor={item => item.name} />
+      <FlatList
+        data={scores}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.name}
+      />
     </View>
   );
 };
@@ -41,31 +83,31 @@ const HighScoresScreen = ({ game }: HighScoresProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f8f9fa',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f8f9fa",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
   },
   item: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     padding: 10,
-    width: '100%',
+    width: "100%",
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    borderBottomColor: "#ddd",
   },
   name: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   score: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#007bff',
+    fontWeight: "600",
+    color: "#007bff",
   },
 });
 
