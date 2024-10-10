@@ -9,6 +9,7 @@ services:
       - "5050:5050"
     environment:
       - TOKEN_SECRET_KEY=dev
+      - PRISMA_LOG_LEVEL=query
       - PORT=5050      
     networks:
       - api-network

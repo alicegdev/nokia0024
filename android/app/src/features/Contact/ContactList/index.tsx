@@ -161,7 +161,7 @@ const ContactList = () => {
 
         try {
           const response = await axios.get(
-            `http://10.0.2.2:5050/users/by-email/${contact.email}`,
+            `https://n0kia-0024.com/users/by-email/${contact.email}`,
             {
               headers: {
                 Authorization: token,
@@ -215,7 +215,7 @@ const deleteContact = (contact: Contact) => {
 const handleDelete = async (contact: Contact) => {
   const token = await AsyncStorage.getItem('token');
   try {
-    await axios.delete(`http://10.0.2.2:5050/contacts/${contact.id}`, {
+    await axios.delete(`https://n0kia-0024.com/contacts/${contact.id}`, {
       headers: {
         Authorization: token,
       },

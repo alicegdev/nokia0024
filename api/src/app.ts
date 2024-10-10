@@ -7,6 +7,7 @@ import logger from 'morgan';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import debugLib from 'debug';
+import { Prisma } from '@prisma/client';
 
 dotenv.config();
 
@@ -112,6 +113,14 @@ io.on('connection', (socket) => {
     console.log(`User disconnected: ${userId}`);
   });
 });
+
+type QueryEvent = {
+  timestamp: Date
+  query: string // Query sent to the database
+  params: string // Query parameters
+  duration: number // Time elapsed (in milliseconds) between client issuing query and database responding - not only time taken to run query
+  target: string
+}
 
 // Démarrer le serveur HTTP
 const port = normalizePort(process.env.PORT || '5050');
