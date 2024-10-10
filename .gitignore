@@ -7,3 +7,5 @@ android/app/.idea
 app/.idea
 .gradle
 .idea
+android/app/.expo
+android/app/build
