@@ -1,9 +1,0 @@
-# Utilise l'image Docker officielle de Certbot
-FROM certbot/certbot:latest
-
-# Copie les fichiers de configuration de Certbot dans le conteneur
-COPY ./nginx/certbot/www/ /var/www/certbot/
-COPY ./nginx/certbot/conf/ /etc/letsencrypt/
-
-# Définit la commande par défaut à exécuter lorsque le conteneur est démarré
-CMD ["certbot"]

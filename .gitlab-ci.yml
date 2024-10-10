@@ -3,3 +3,6 @@ include:
 
 stages:
 - backend_tests
+- build_image
+- publish
+- deploy

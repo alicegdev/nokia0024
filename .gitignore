@@ -1,3 +1,12 @@
 api/src/node_modules
 api/node_modules
 api/build
+android/app/node_modules
+app/node_modules
+android/app/.idea
+app/.idea
+.gradle
+.idea
+.idea
+.vscode
+android/app/.idea
