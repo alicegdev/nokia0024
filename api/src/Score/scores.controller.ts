@@ -31,7 +31,7 @@ export const addScore = async (req: Request, res: Response, next: NextFunction) 
 export const getScores = async (req: Request, res: Response, next: NextFunction) => {
    // Get a user by id
     try {
-        const { gameId } = req.body;
+        const { gameId } = req.params;
         const scores = await prisma.score.findMany({
             where: {
                 gameId: parseInt(gameId)
