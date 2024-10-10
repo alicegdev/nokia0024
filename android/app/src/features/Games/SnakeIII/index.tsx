@@ -139,6 +139,7 @@ export default function Snake(): JSX.Element {
           gameName={"Snake III"}
           score={finalScore}
           isGameOver={isGameOver}
+          reloadGame={reloadGame}
           onEvent={handleModal}
         />
       ) : (
