@@ -12,7 +12,6 @@ import Header from "./Header";
 import { Text } from "react-native";
 import "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import axios from "axios";
 import GameModal from "../Scores/GameModal";
 
 const SNAKE_INITIAL_POSITION = [{ x: 5, y: 5 }];
@@ -38,7 +37,6 @@ export default function Snake(): JSX.Element {
   const [finalScore, setFinalScore] = useState(0);
 
   const [isVisible, setIsVisible] = useState(true);
-  //TODO: When button is clicked -> user is redirected to a Score Screen
 
   const handleModal = () => {
     setIsVisible(false);
@@ -47,13 +45,6 @@ export default function Snake(): JSX.Element {
   const handleGameOver = () => {
     setIsVisible(true);
     setFinalScore(score);
-    return async () => {
-      try {
-        await axios.post(`https://n0kia-0024.com/score`);
-      } catch (error) {
-        console.error(error);
-      }
-    };
   };
 
   useEffect(() => {
@@ -144,8 +135,9 @@ export default function Snake(): JSX.Element {
     <>
       {isVisible ? (
         <GameModal
-          game={"Snake III"}
-          gameDesign={"Snake III"}
+          game={1}
+          gameName={"Snake III"}
+          score={finalScore}
           isGameOver={isGameOver}
           onEvent={handleModal}
         />

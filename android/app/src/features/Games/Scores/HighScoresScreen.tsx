@@ -5,11 +5,12 @@ import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, StyleSheet, Alert } from "react-native";
 
 interface HighScoresProps {
-  game: string;
+  game: number;
+  gameName: string;
   score: number;
 }
 
-const HighScoresScreen = async ({ game, score }: HighScoresProps) => {
+const HighScoresScreen = ({ game, gameName, score }: HighScoresProps) => {
   const [scores, setScores] = useState([]);
   const [userId, setUserId] = useState<number | null>(null);
 
@@ -59,7 +60,7 @@ const HighScoresScreen = async ({ game, score }: HighScoresProps) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{game}</Text>
+      <Text style={styles.title}>{gameName}</Text>
       <Text style={styles.title}>High Scores</Text>
       <FlatList
         data={scores}
