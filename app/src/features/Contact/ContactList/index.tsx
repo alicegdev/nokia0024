@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, SectionList, TouchableOpacity, StyleSheet, Alert, Button } from 'react-native';
+import { View, Text, SectionList, TouchableOpacity, StyleSheet, Alert, Modal } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native'; 
 import axios from 'axios';
 import * as Contacts from 'expo-contacts'; // Expo Contacts pour gérer les contacts du téléphone
 import { MaterialIcons } from '@expo/vector-icons'; // Pour utiliser des icônes
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { color, spacing } from "src/styles";
 
 interface Contact {
+  isRegisteredUser: boolean;
+  userId: number | null;
   email: string;
   id: string;
   firstName: string;
   lastName: string;
   phoneNumber: string;
   isFavorite: boolean;
-  source: 'db' | 'phone'; // Nouvelle propriété pour identifier la source du contact
+  source: 'db' | 'phone';
 }
 
 // Fonction utilitaire pour trier et regrouper les contacts
@@ -50,111 +53,200 @@ const groupContactsByLetter = (contacts: Contact[]) => {
 const ContactList = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [phoneContacts, setPhoneContacts] = useState<Contact[]>([]);
-  const navigation: any = useNavigation();
+  const navigation = useNavigation();
   const isFocused = useIsFocused(); // Hook pour savoir si l'écran est en focus
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
 
   useEffect(() => {
     if (isFocused) {
-      fetchContacts(); // Recharger les contacts de la base de données chaque fois que l'écran est en focus
-      checkAndFetchPhoneContacts(); // Vérifier les permissions et récupérer les contacts du téléphone
+      
+      fetchData();
     }
   }, [isFocused]);
 
-  // Fonction pour récupérer les contacts de la base de données
-  const fetchContacts = async () => {
+  const fetchData = async () => {
+      const [dbContacts, phoneContactsData] = await Promise.all([
+        fetchContacts(),
+        checkAndFetchPhoneContacts(),
+      ]);
+
+      const mailContacts = [...dbContacts, ...phoneContactsData];
+
+      const updatedContacts = await checkMails(mailContacts);
+
+      const updatedDbContacts = updatedContacts.filter(
+        (contact) => contact.source === 'db'
+      );
+      const updatedPhoneContacts = updatedContacts.filter(
+        (contact) => contact.source === 'phone'
+      );
+
+      setContacts(updatedDbContacts);
+      setPhoneContacts(updatedPhoneContacts);
+    };
+
+
+  const fetchContacts = async (): Promise<Contact[]> => {
+    const token = await AsyncStorage.getItem('token');
     try {
-      const response = await axios.get('http://10.93.169.177:5050/contacts');
+      // la route contacts est protégée et nécessite un token d'authentification
+      const response = await axios.get('http://10.0.2.2:5050/contacts', {
+        headers: {
+          Authorization: token,
+        },
+      });
       const dbContacts = response.data.map((contact: any) => ({
         ...contact,
-        source: 'db', // Ajouter le flag source pour les contacts de la base de données
+        source: 'db',
+        isRegisteredUser: false,
+        userId: null,
       }));
-      setContacts(dbContacts);
+
+      return dbContacts;
     } catch (error) {
       console.error(error);
+      return [];
     }
   };
 
-  // Fonction pour vérifier les permissions et récupérer les contacts du téléphone
-  const checkAndFetchPhoneContacts = async () => {
-    const { status } = await Contacts.requestPermissionsAsync(); // Demander directement les permissions avec expo-contacts
+  const checkAndFetchPhoneContacts = async (): Promise<Contact[]> => {
+    const { status } = await Contacts.requestPermissionsAsync();
 
     if (status === 'granted') {
-      fetchPhoneContacts();
+      return await fetchPhoneContacts();
     } else {
       Alert.alert('Permission denied', 'Cannot access contacts without permission.');
+      return [];
     }
   };
 
-  // Récupérer les contacts du téléphone
-  const fetchPhoneContacts = async () => {
+  const fetchPhoneContacts = async (): Promise<Contact[]> => {
     try {
       const { data } = await Contacts.getContactsAsync({
-        fields: [Contacts.Fields.PhoneNumbers],
+        fields: [Contacts.Fields.PhoneNumbers, Contacts.Fields.Emails],
       });
 
       if (data.length > 0) {
-        const formattedContacts: any = data.map((contact) => ({
+        const formattedContacts: Contact[] = data.map((contact) => ({
           id: contact.id,
-          firstName: contact.firstName,
+          firstName: contact.firstName || '',
           lastName: contact.lastName || '',
           phoneNumber: contact.phoneNumbers ? contact.phoneNumbers[0]?.number : '',
+          email: contact.emails ? contact.emails[0]?.email : '',
           isFavorite: false,
-          source: 'phone', // Ajouter le flag source pour les contacts du téléphone
+          source: 'phone',
+          isRegisteredUser: false,
+          userId: null,
         }));
-        setPhoneContacts(formattedContacts); // Stocker les contacts du téléphone
+        return formattedContacts;
+      } else {
+        return [];
       }
     } catch (error) {
       console.error(error);
+      return [];
     }
   };
 
-  // Supprimer un contact
-  const deleteContact = async (contact: Contact) => {
-    if (contact.source === 'db') {
-      // Supprimer le contact de la base de données
-      try {
-        await axios.delete(`http://10.93.169.177:5050/contacts/${contact.id}`);
-        fetchContacts(); // Refresh the list after deletion
-      } catch (error) {
-        console.error(error);
-      }
-    }
+  const checkMails = async (mailContacts: Contact[]): Promise<Contact[]> => {
+    const token = await AsyncStorage.getItem('token');
+
+    const updatedContacts = await Promise.all(
+      mailContacts.map(async (contact) => {
+        if (!contact.email) {
+          return contact;
+        }
+
+        try {
+          const response = await axios.get(
+            `http://10.0.2.2:5050/users/by-email/${contact.email}`,
+            {
+              headers: {
+                Authorization: token,
+              },
+            }
+          );
+          const user = response.data;
+          if (user && user.id) {
+            return {
+              ...contact,
+              isRegisteredUser: true,
+              userId: user.id,
+            };
+          } else {
+            return contact;
+          }
+        } catch (error) {
+          // Si l'utilisateur n'est pas trouvé, aucune action n'est nécessaire
+          return contact;
+        }
+      })
+    );
+
+    return updatedContacts;
   };
+
+// Delete a contact with confirmation
+const deleteContact = (contact: Contact) => {
+  if (contact.source === 'db') {
+    Alert.alert(
+      'Confirm Deletion',
+      'Are you sure you want to delete this contact?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Deletion cancelled'),
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          onPress: () => handleDelete(contact),
+          style: 'destructive',
+        },
+      ],
+      { cancelable: false }
+    );
+  }
+};
+
+// Separate async function to handle deletion
+const handleDelete = async (contact: Contact) => {
+  const token = await AsyncStorage.getItem('token');
+  try {
+    await axios.delete(`http://10.0.2.2:5050/contacts/${contact.id}`, {
+      headers: {
+        Authorization: token,
+      },
+    });
+    await fetchData(); // Refresh the list after deletion
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   // Ouvrir les détails d'un contact
-  const openContactDetails = async (contact: Contact) => {
-    if (contact.source === 'db') {
-      try {
-        const token = await AsyncStorage.getItem('token');
-        const response = await axios.get(
-          `http://10.93.169.177:5050/users/by-email/${contact.email}`,
-          {
-            headers: {
-              Authorization: token,
-            },
-          }
-        );
-  
-        const user = response.data;
-        if (user && user.id) {
-          // Naviguer vers l'écran de chat avec le userId du destinataire
-          navigation.navigate('ChatScreen', {
-            receiverId: user.id,
-            receiverName: `${contact.firstName} ${contact.lastName}`,
-          });
-        } else {
-          Alert.alert(
-            'Utilisateur introuvable',
-            'Ce contact n\'est pas inscrit sur l\'application.'
-          );
-        }
-      } catch (error) {
-        console.error('Error fetching user by email:', error);
-      }
-    } else if (contact.source === 'phone') {
+  const openContactDetails = (contact: Contact) => {
+      setSelectedContact(contact);
+      setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+    setSelectedContact(null);
+  };
+
+  const startChatWithContact = (contact: Contact) => {
+    closeModal();
+    if (contact.userId) {
+      navigation.navigate('ChatScreen', {
+        receiverId: contact.userId,
+        receiverName: `${contact.firstName} ${contact.lastName}`,
+      });
+    } else {
       Alert.alert(
-        'Contact du téléphone',
-        `Name: ${contact.firstName} ${contact.lastName}\nPhone: ${contact.phoneNumber}`
+        'Utilisateur introuvable',
+        'Ce contact n\'est pas inscrit sur l\'application.'
       );
     }
   };
@@ -166,27 +258,46 @@ const ContactList = () => {
   const sections = groupContactsByLetter(combinedContacts);
 
   const renderItem = ({ item }: { item: Contact }) => (
-    <TouchableOpacity
-      style={styles.item}
-      onPress={() => openContactDetails(item)}
-    >
+    <View style={styles.item}>
       <View style={styles.contactRow}>
-        <View style={styles.contactInfo}>
-          <Text>{item.firstName} {item.lastName}</Text>
-          {item.phoneNumber && <Text>{item.phoneNumber}</Text>}
+        <TouchableOpacity
+          style={styles.contactInfoContainer}
+          onPress={() => openContactDetails(item)}
+        >
+          <Text style={styles.contactName}>{item.firstName} {item.lastName}</Text>
+        </TouchableOpacity>
+        <View style={styles.actionsContainer}>
+          {item.source === 'db' && item.isRegisteredUser && (
+            <TouchableOpacity onPress={() => startChatWithContact(item)} style={styles.iconButton}>
+              <MaterialIcons name="message" size={24} color={color.relief}/>
+            </TouchableOpacity>
+          )}
+          {item.source === 'phone' && item.isRegisteredUser && (
+            <>
+            <TouchableOpacity onPress={() => startChatWithContact(item)} style={styles.iconButton}>
+              <MaterialIcons name="message" size={24} color={color.relief} />
+            </TouchableOpacity>
+            <MaterialIcons name="phone-android" size={24} color={color.relief} style={styles.iconButton} />
+            </>
+          )}
+          {item.source === 'phone' && !item.isRegisteredUser && (
+            <MaterialIcons name="phone-android" size={24} color={color.relief} style={styles.iconButton} />
+          )}
+          {item.source === 'db' && (
+            <TouchableOpacity onPress={() => deleteContact(item)} style={styles.iconButton}>
+              <MaterialIcons name="delete" size={24} color={color.relief} />
+            </TouchableOpacity>
+          )}
         </View>
-        {item.source === 'db' && (
-          <Button title="Delete" onPress={() => deleteContact(item)} /> // Afficher le bouton "Delete" seulement pour les contacts de la db
-        )}
-        {item.source === 'phone' && (
-          <MaterialIcons name="phone-android" size={24} color="gray" /> // Afficher une icône pour les contacts du téléphone
-        )}
       </View>
-    </TouchableOpacity>
+    </View>
   );
 
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Contacts</Text>
+      </View>
       <SectionList
         sections={sections}
         renderItem={renderItem}
@@ -195,7 +306,62 @@ const ContactList = () => {
           <Text style={styles.sectionHeader}>{title}</Text>
         )}
       />
-      <Button title="Add Contact" onPress={() => navigation.navigate('AddEditContact')} />
+            {/* Modal pour les détails du contact */}
+            <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={closeModal}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Contact</Text>
+            {selectedContact && (
+              <>
+                <Text style={styles.modalText}>Nom : {selectedContact.firstName} {selectedContact.lastName}</Text>
+                {selectedContact.phoneNumber && (
+                  <Text style={styles.modalText}>Téléphone : {selectedContact.phoneNumber}</Text>
+                )}
+                {selectedContact.email && (
+                  <Text style={styles.modalText}>Email : {selectedContact.email}</Text>
+                )}
+              </>
+            )}
+            {selectedContact && selectedContact.isRegisteredUser ? (
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => startChatWithContact(selectedContact)}
+              >
+                <Text style={styles.buttonText}>Message</Text>
+              </TouchableOpacity>
+            ) : null
+              }
+            {selectedContact && selectedContact.source === 'db' && (
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  closeModal();
+                  navigation.navigate('AddEditContact', { contactId: selectedContact.id });}
+                }
+              >
+
+                <Text style={styles.buttonText}>Modifier</Text>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={closeModal}
+            >
+              <Text style={styles.closeButtonText}>Fermer</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={() => navigation.navigate('AddEditContact')} style={styles.button}>
+          <Text style={styles.buttonText}>Add Contact</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -203,27 +369,107 @@ const ContactList = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    backgroundColor: color.menu,
+  },
+  header: {
+    paddingTop: 60,
+    paddingBottom: 10,
+    paddingHorizontal: 20,
+    backgroundColor: color.menu,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontFamily: 'Nokia',
+    color: color.relief,
   },
   item: {
-    padding: 15,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: color.relief,
   },
   contactRow: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  contactInfoContainer: {
+    flex: 1,
+  },
+  contactName: {
+    fontSize: 16,
+    fontFamily: 'Nokia',
+    color: color.relief,
+  },
+  actionsContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
   },
-  contactInfo: {
-    flexDirection: 'column',
+  iconButton: {
+    marginLeft: 15,
   },
   sectionHeader: {
     fontSize: 18,
     fontWeight: 'bold',
-    backgroundColor: '#f4f4f4',
+    backgroundColor: color.relief,
     paddingVertical: 5,
     paddingHorizontal: 10,
+    color: color.menu,
+  },
+  buttonContainer: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  button: {
+    backgroundColor: color.relief,
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 25,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontFamily: 'Nokia',
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: color.relief,
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 20,
+    marginBottom: 10,
+    fontFamily: 'Nokia',
+    color: color.menu,
+  },
+  modalText: {
+    fontSize: 16,
+    marginBottom: 5,
+    fontFamily: 'Nokia',
+    color: color.menu,
+  },
+  closeButton: {
+    marginTop: 15,
+    backgroundColor: color.menu,
+    paddingVertical: 10,
+    paddingHorizontal: 25,
+    borderRadius: 25,
+  },
+  closeButtonText: {
+    color: color.relief,
+    fontSize: 16,
+    fontFamily: 'Nokia',
   },
 });
 

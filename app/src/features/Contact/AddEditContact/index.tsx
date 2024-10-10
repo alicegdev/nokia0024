@@ -1,7 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import { useRoute, useNavigation } from '@react-navigation/native';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
+import { useRoute, useNavigation } from "@react-navigation/native";
+import axios from "axios";
+import { color } from "src/styles"; // Assurez-vous que le chemin est correct
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface ContactForm {
   firstName: string;
@@ -13,30 +21,31 @@ interface ContactForm {
 
 const AddEditContact = () => {
   const [form, setForm] = useState<ContactForm>({
-    firstName: '',
-    lastName: '',
-    phoneNumber: '',
-    email: '',
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+    email: "",
     isFavorite: false,
   });
 
   const route = useRoute();
   const navigation: any = useNavigation();
 
-  // Vérification si les paramètres existent
-  const contactId = route.params ? (route.params as { contactId?: number }).contactId : undefined;
+  const contactId = route.params
+    ? (route.params as { contactId?: number }).contactId
+    : undefined;
 
   useEffect(() => {
-    // Si contactId est défini, on veut modifier un contact existant, donc on le récupère
     if (contactId) {
       fetchContact();
     }
   }, [contactId]);
 
-  // Fonction pour récupérer les détails du contact
   const fetchContact = async () => {
     try {
-      const response = await axios.get(`http://51.158.69.60:5050/contacts/${contactId}`);
+      const response = await axios.get(
+        `http://10.0.2.2:5050/contacts/${contactId}`
+      );
       setForm({
         firstName: response.data.firstName,
         lastName: response.data.lastName,
@@ -49,17 +58,27 @@ const AddEditContact = () => {
     }
   };
 
-  // Fonction pour gérer l'enregistrement ou la mise à jour du contact
   const handleSave = async () => {
+    const token = await AsyncStorage.getItem("token");
     try {
       if (contactId) {
-        // Si contactId existe, on modifie le contact
-        await axios.put(`http://51.158.69.60:5050/contacts/${contactId}`, form);
+        // route protégée et nécessite un token
+        await axios.put(`http://10.0.2.2:5050/contacts/${contactId}`, form, {
+          headers: {
+            Authorization: token,
+          },
+        }
+
+        );
       } else {
-        // Si contactId n'existe pas, on crée un nouveau contact
-        await axios.post('http://51.158.69.60:5050/contacts', form);
+        console.log(token);
+        await axios.post("http://10.0.2.2:5050/contacts", form, {
+          headers: {
+            Authorization: token,
+          },
+        });
       }
-      navigation.navigate('ContactList'); // Redirection vers la liste des contacts après l'opération
+      navigation.navigate("ContactList");
     } catch (error) {
       console.error(error);
     }
@@ -67,38 +86,75 @@ const AddEditContact = () => {
 
   return (
     <View style={styles.container}>
-      <Text>First Name</Text>
-      <TextInput
-        style={styles.input}
-        value={form.firstName}
-        onChangeText={(text) => setForm({ ...form, firstName: text })}
-      />
-      <Text>Last Name</Text>
-      <TextInput
-        style={styles.input}
-        value={form.lastName}
-        onChangeText={(text) => setForm({ ...form, lastName: text })}
-      />
-      <Text>Phone Number</Text>
-      <TextInput
-        style={styles.input}
-        value={form.phoneNumber}
-        onChangeText={(text) => setForm({ ...form, phoneNumber: text })}
-        keyboardType="phone-pad"
-      />
-      <Text>Email</Text>
-      <TextInput
-        style={styles.input}
-        value={form.email}
-        onChangeText={(text) => setForm({ ...form, email: text })}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      <Button
-        title={form.isFavorite ? 'Unmark as Favorite' : 'Mark as Favorite'}
-        onPress={() => setForm({ ...form, isFavorite: !form.isFavorite })}
-      />
-      <Button title="Save" onPress={handleSave} />
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>
+          {contactId ? "Edit Contact" : "Add Contact"}
+        </Text>
+      </View>
+      <View style={styles.formContainer}>
+        <View style={styles.inputContainer}>
+          <View style={styles.labelContainer}>
+            <Text style={styles.label}>First Name</Text>
+          </View>
+          <View style={styles.inputTopBorder} />
+          <View style={styles.inputBottomBorder} />
+          <TextInput
+            style={styles.input}
+            value={form.firstName}
+            onChangeText={(text) => setForm({ ...form, firstName: text })}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <View style={styles.labelContainer}>
+            <Text style={styles.label}>Last Name</Text>
+          </View>
+          <View style={styles.inputTopBorder} />
+          <View style={styles.inputBottomBorder} />
+          <TextInput
+            style={styles.input}
+            value={form.lastName}
+            onChangeText={(text) => setForm({ ...form, lastName: text })}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <View style={styles.labelContainer}>
+            <Text style={styles.label}>Phone Number</Text>
+          </View>
+          <View style={styles.inputTopBorder} />
+          <View style={styles.inputBottomBorder} />
+          <TextInput
+            style={styles.input}
+            value={form.phoneNumber}
+            onChangeText={(text) => setForm({ ...form, phoneNumber: text })}
+            keyboardType="phone-pad"
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <View style={styles.labelContainer}>
+            <Text style={styles.label}>Email</Text>
+          </View>
+          <View style={styles.inputTopBorder} />
+          <View style={styles.inputBottomBorder} />
+          <TextInput
+            style={styles.input}
+            value={form.email}
+            onChangeText={(text) => setForm({ ...form, email: text })}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+        </View>
+        {/* <TouchableOpacity
+          style={[styles.favoriteButton, form.isFavorite ? styles.favoriteActive : null]}
+          onPress={() => setForm({ ...form, isFavorite: !form.isFavorite })}
+        >
+          <Text style={styles.favoriteButtonText}>
+            {form.isFavorite ? 'Unmark as Favorite' : 'Mark as Favorite'}
+          </Text>
+        </TouchableOpacity> */}
+        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+          <Text style={styles.saveButtonText}>Save</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -106,14 +162,104 @@ const AddEditContact = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    backgroundColor: color.menu,
+  },
+  header: {
+    paddingTop: 60,
+    paddingBottom: 10,
+    paddingHorizontal: 20,
+    backgroundColor: color.menu,
+    alignItems: "flex-start",
+    justifyContent: "center",
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontFamily: "Nokia",
+    color: color.relief,
+  },
+  formContainer: {
+    flex: 1,
+    paddingHorizontal: 20, // Ajustez pour réduire la largeur des champs
+    paddingTop: 20,
+  },
+  inputContainer: {
+    marginBottom: 20,
+    position: "relative",
+  },
+  labelContainer: {
+    position: "absolute",
+    top: -10,
+    left: 15,
+    backgroundColor: color.menu,
+    paddingHorizontal: 5,
+    zIndex: 1,
+  },
+  label: {
+    fontFamily: "Nokia",
+    color: color.relief,
+    fontSize: 16,
   },
   input: {
-    height: 40,
-    borderColor: 'gray',
+    height: 50,
+    borderColor: color.relief,
     borderWidth: 1,
-    marginBottom: 20,
+    borderRadius: 5,
     paddingHorizontal: 10,
+    fontFamily: "Nokia",
+    color: color.relief,
+  },
+  inputTopBorder: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 25, // Ajustez selon vos besoins
+    borderColor: color.relief,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderTopWidth: 1,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
+  },
+  inputBottomBorder: {
+    position: "absolute",
+    top: 25, // Doit correspondre à la hauteur de inputTopBorder
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderColor: color.relief,
+    borderWidth: 1,
+    borderBottomLeftRadius: 5,
+    borderBottomRightRadius: 5,
+    borderTopWidth: 0,
+  },
+  favoriteButton: {
+    backgroundColor: color.relief,
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 25,
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  favoriteActive: {
+    backgroundColor: "green", // Changez la couleur si vous le souhaitez
+  },
+  favoriteButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontFamily: "Nokia",
+  },
+  saveButton: {
+    backgroundColor: color.relief,
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 25,
+    alignItems: "center",
+  },
+  saveButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontFamily: "Nokia",
   },
 });
 

@@ -15,8 +15,8 @@ model User {
   musiques         Musique[]
   sentMessages     Message[] @relation("SentMessages")
   receivedMessages Message[] @relation("ReceivedMessages")
-  Contact          Contact[]
   Score            Score[]
+  ownedContacts Contact[] @relation("UserOwnedContacts")
 }
 
 model Contact {
@@ -26,8 +26,9 @@ model Contact {
   phoneNumber String
   isFavorite  Boolean
   email       String  @unique
-  userId      Int? // Peut être nul si le contact n'est pas un utilisateur de l'application
-  user        User?   @relation(fields: [userId], references: [id])
+  userId      Int?
+  ownerId     Int?
+  owner       User?     @relation("UserOwnedContacts", fields: [ownerId], references: [id])
 }
 
 model Message {

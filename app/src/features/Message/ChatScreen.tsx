@@ -1,10 +1,11 @@
 // ChatScreen.tsx
-import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, FlatList, StyleSheet } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import { getSocket } from '../../socket';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import { color, spacing } from 'src/styles'; // Import des styles
 
 interface Message {
   id: number;
@@ -14,58 +15,87 @@ interface Message {
   sendDate: string;
 }
 
+interface DecodedToken {
+  id: number;
+  // Ajoutez d'autres propriétés si nécessaires
+}
+
 const ChatScreen = ({ route }: any) => {
-  const { receiverId, receiverName } = route.params;
+  const { receiverId: receiverIdParam, receiverName } = route.params;
+  const receiverId = Number(receiverIdParam);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [userId, setUserId] = useState<number | null>(null);
 
+  const flatListRef = useRef<FlatList>(null);
+
   useEffect(() => {
     const initializeChat = async () => {
-      // Retrieve user ID from token
+      // Récupérer l'ID de l'utilisateur à partir du token
       const token = await AsyncStorage.getItem('token');
       if (token) {
-        const decoded: { id: number } = jwtDecode(token);
+        const decoded: DecodedToken = jwtDecode(token);
         console.log('Decoded token:', decoded);
         const currentUserId = decoded.id;
         setUserId(currentUserId);
 
-        // Attendre que userId soit défini avant de récupérer les messages
+        // Récupérer les messages
         await fetchMessages(currentUserId);
       }
+    };
 
-      // Listen for incoming messages
+    initializeChat();
+  }, []);
+
+  useEffect(() => {
+    if (userId !== null) {
       const socket = getSocket();
-      socket.on('receiveMessage', (message: Message) => {
+
+      const handleReceiveMessage = (message: Message) => {
+        console.log('Received message:', message);
         if (
           (message.senderId === receiverId && message.receiverId === userId) ||
           (message.senderId === userId && message.receiverId === receiverId)
         ) {
           setMessages((prevMessages) => [...prevMessages, message]);
         }
-      });
-    };
+      };
 
-    initializeChat();
+      socket.on('receiveMessage', handleReceiveMessage);
 
-    return () => {
-      const socket = getSocket();
-      socket.off('receiveMessage');
-    };
-  }, []);
+      return () => {
+        socket.off('receiveMessage', handleReceiveMessage);
+      };
+    }
+  }, [userId]);
+
+  // Faire défiler la liste vers le bas lorsque les messages sont mis à jour
+  useEffect(() => {
+    if (messages.length > 0) {
+      flatListRef.current?.scrollToEnd({ animated: true });
+    }
+  }, [messages]);
 
   const fetchMessages = async (currentUserId: number) => {
+    console.log('Fetching messages between', currentUserId, 'and', receiverId);
     try {
       const token = await AsyncStorage.getItem('token');
       const response = await axios.get(
-        `http://10.93.169.177:5050/messages/${currentUserId}/${receiverId}`,
+        `http://10.0.2.2:5050/messages/${currentUserId}/${receiverId}`,
         {
           headers: {
             Authorization: token,
           },
         }
       );
-      setMessages(response.data);
+      console.log('Fetched messages:', response.data);
+
+      // Trier les messages du plus ancien au plus récent
+      const sortedMessages = response.data.sort((a: Message, b: Message) =>
+        new Date(a.sendDate).getTime() - new Date(b.sendDate).getTime()
+      );
+
+      setMessages(sortedMessages);
     } catch (error) {
       console.error('Error fetching messages:', error);
     }
@@ -73,24 +103,45 @@ const ChatScreen = ({ route }: any) => {
 
   const sendMessage = () => {
     if (inputMessage.trim() === '') return;
+    
+    const newMessage: Message = {
+      id: Date.now(), // Utiliser un ID temporaire basé sur le timestamp
+      content: inputMessage,
+      senderId: userId!,
+      receiverId: receiverId,
+      sendDate: new Date().toISOString(),
+    };
+  
+    // Ajouter le message à l'état messages
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
+  
     const socket = getSocket();
-    socket.emit('sendMessage', { receiverId: receiverId.toString(), content: inputMessage });
+    socket.emit('sendMessage', { receiverId, content: inputMessage });
+  
     setInputMessage('');
   };
-  const renderItem = ({ item }: { item: Message }) => (
-    <View style={item.senderId === userId ? styles.myMessage : styles.theirMessage}>
-      <Text>{item.content}</Text>
-      <Text style={styles.timestamp}>{new Date(item.sendDate).toLocaleTimeString()}</Text>
-    </View>
-  );
+
+  const renderItem = ({ item }: { item: Message }) => {
+    const isMyMessage = item.senderId === userId;
+    return (
+      <View style={isMyMessage ? styles.myMessage : styles.theirMessage}>
+        <Text style={isMyMessage ? styles.messageText : styles.messageTextOther}>{item.content}</Text>
+        <Text style={styles.timestamp}>{new Date(item.sendDate).toLocaleTimeString()}</Text>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>{receiverName}</Text>
+      </View>
       <FlatList
+        ref={flatListRef}
         data={messages}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
-        inverted // To show the latest messages at the bottom
+        contentContainerStyle={{ paddingBottom: 10 }}
       />
       <View style={styles.inputContainer}>
         <TextInput
@@ -98,49 +149,99 @@ const ChatScreen = ({ route }: any) => {
           value={inputMessage}
           onChangeText={setInputMessage}
           placeholder="Type your message..."
+          placeholderTextColor={color.relief}
+          multiline
         />
-        <Button title="Send" onPress={sendMessage} />
+        <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
+          <Text style={styles.sendButtonText}>Send</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-// Add your styles here
+// Styles mis à jour
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: color.menu,
+  },
+  header: {
+    paddingTop: 60,
+    paddingBottom: 10,
+    paddingHorizontal: 20,
+    backgroundColor: color.menu,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontFamily: 'Nokia',
+    color: color.relief,
   },
   myMessage: {
     alignSelf: 'flex-end',
-    backgroundColor: '#dcf8c6',
+    backgroundColor: color.relief,
     margin: 5,
     padding: 10,
     borderRadius: 5,
+    maxWidth: '80%',
   },
   theirMessage: {
     alignSelf: 'flex-start',
-    backgroundColor: '#fff',
+    backgroundColor: color.menu,
+    borderColor: color.relief,
+    borderWidth: 1,
     margin: 5,
     padding: 10,
     borderRadius: 5,
+    maxWidth: '80%',
+  },
+  messageText: {
+    fontFamily: 'Nokia',
+    fontSize: 16,
+    color: color.menu,
+  },
+  messageTextOther: {
+    fontFamily: 'Nokia',
+    fontSize: 16,
+    color: color.relief,
   },
   timestamp: {
     fontSize: 10,
+    fontFamily: 'Nokia',
     color: 'gray',
     alignSelf: 'flex-end',
   },
   inputContainer: {
     flexDirection: 'row',
     padding: 5,
-    borderTopColor: '#ccc',
+    borderTopColor: color.relief,
     borderTopWidth: 1,
+    backgroundColor: color.menu,
   },
   input: {
     flex: 1,
-    borderRadius: 20,
-    borderColor: '#ccc',
+    borderRadius: 25,
+    borderColor: color.relief,
     borderWidth: 1,
     paddingHorizontal: 15,
+    fontFamily: 'Nokia',
+    color: color.relief,
+  },
+  sendButton: {
+    backgroundColor: color.relief,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 5,
+  },
+  sendButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontFamily: 'Nokia',
   },
 });
 

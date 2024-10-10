@@ -1,11 +1,15 @@
+// App.js
+
 import React, { useState, useEffect } from "react";
+import { View } from 'react-native'; // Import de View pour englober les composants
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import routesConfig from "./src/config/routes.config";
 import LoadingAnimation from "./src/components/LoadingAnimation";
-import Onboarding from "./src/features/Onboarding";
 import { AudioProvider } from "./src/contexts/AudioContext";
+import { AuthProvider } from "./src/contexts/AuthContext"; // Import du AuthProvider
+import AuthOverlay from "./src/components/AuthOverlay"; // Import du AuthOverlay
 
 const Stack = createNativeStackNavigator();
 
@@ -49,27 +53,32 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <AudioProvider>
-        {isFirstLaunch ? (
-          <Stack.Navigator
-            initialRouteName="Onboarding"
-            screenOptions={{ headerShown: false }}
-          >
-            {routesConfig.map(({ name, component }) => (
-              <Stack.Screen key={name} name={name} component={component} />
-            ))}
-          </Stack.Navigator>
-        ) : (
-          <Stack.Navigator
-            initialRouteName="HomePage"
-            screenOptions={{ headerShown: false }}
-          >
-            {routesConfig.map(({ name, component }) => (
-              <Stack.Screen key={name} name={name} component={component} />
-            ))}
-          </Stack.Navigator>
-        )}
-      </AudioProvider>
+      <AuthProvider>
+        <AudioProvider>
+          <View style={{ flex: 1 }}>
+            {isFirstLaunch ? (
+              <Stack.Navigator
+                initialRouteName="Onboarding"
+                screenOptions={{ headerShown: false }}
+              >
+                {routesConfig.map(({ name, component }) => (
+                  <Stack.Screen key={name} name={name} component={component} />
+                ))}
+              </Stack.Navigator>
+            ) : (
+              <Stack.Navigator
+                initialRouteName="HomePage"
+                screenOptions={{ headerShown: false }}
+              >
+                {routesConfig.map(({ name, component }) => (
+                  <Stack.Screen key={name} name={name} component={component} />
+                ))}
+              </Stack.Navigator>
+            )}
+            <AuthOverlay />
+          </View>
+        </AudioProvider>
+      </AuthProvider>
     </NavigationContainer>
   );
 }

@@ -49,7 +49,7 @@ export default function Snake(): JSX.Element {
     setFinalScore(score);
     return async () => {
       try {
-        await axios.post(`http://51.158.69.60:5050/score`);
+        await axios.post(`http://10.0.2.2:5050/score`);
       } catch (error) {
         console.error(error);
       }

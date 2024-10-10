@@ -1,6 +1,8 @@
+// Onboarding.tsx
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { color } from 'src/styles';
 
 const Onboarding = () => {
   const navigation: any = useNavigation();
@@ -8,16 +10,18 @@ const Onboarding = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Bienvenue sur Nokia 0024</Text>
-      {/* <Text style={styles.subtitle}></Text> */}
-      <Button
-        title="S'inscrire"
-        onPress={() => navigation.navigate('Signup')} // Naviguer vers l'écran d'inscription
-      />
-      {/* bouton pour accéder à la homepage */}
-        <Button
-            title="Continuer sans compte"
-            onPress={() => navigation.navigate('HomePage')} // Naviguer vers l'écran d'accueil
-        />
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('Signup')}
+      >
+        <Text style={styles.buttonText}>S'inscrire</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('HomePage')}
+      >
+        <Text style={styles.buttonText}>Continuer sans compte</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -25,19 +29,27 @@ const Onboarding = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: color.menu,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  subtitle: {
-    fontSize: 16,
-    textAlign: 'center',
+    color: color.relief,
     marginBottom: 40,
+  },
+  button: {
+    backgroundColor: color.relief,
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 25,
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  buttonText: {
+    color: color.menu,
+    fontSize: 16,
   },
 });
 

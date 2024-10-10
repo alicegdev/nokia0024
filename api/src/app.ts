@@ -64,6 +64,7 @@ io.use((socket, next) => {
       return next(new Error('Authentication error'));
     }
     socket.data.userId = decoded.id;
+    connectedUsers.set(socket.data.userId.toString(), socket.id);
     next();
   });
 });
@@ -73,22 +74,28 @@ io.on('connection', (socket) => {
   const userId = socket.data.userId;
   console.log(`User connected: ${userId}`);
 
-  connectedUsers.set(userId, socket.id);
+  connectedUsers.set(userId.toString(), socket.id);
+  console.log('Connected users:', connectedUsers);
 
   // Gérer l'envoi de messages
   socket.on('sendMessage', async ({ receiverId, content }) => {
+    console.log(`Sending message to ${receiverId}: ${content}`);
     try {
       const senderId = socket.data.userId;
+      console.log(`Sender ID: ${senderId}`);
 
       const message = await prisma.message.create({
         data: {
           content,
           senderId: parseInt(senderId),
           receiverId: parseInt(receiverId),
+          sendDate: new Date(),
         },
       });
+      console.log('Message created:', message);
 
-      const receiverSocketId = connectedUsers.get(receiverId);
+      const receiverSocketId = connectedUsers.get(receiverId.toString());
+      console.log(`Receiver socket ID: ${receiverSocketId}`); // undefined
 
       if (receiverSocketId) {
         io.to(receiverSocketId).emit('receiveMessage', message);

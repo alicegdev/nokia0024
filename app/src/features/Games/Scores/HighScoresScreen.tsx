@@ -11,7 +11,7 @@ const HighScoresScreen = ({ game }: HighScoresProps) => {
 
   const fetchScores = async () => {
     try {
-      const response = await axios.get('http://51.158.69.60:5050/scores');
+      const response = await axios.get('http://10.0.2.2:5050/scores');
       setScores(response.data);
     } catch (error) {
       console.error(error);
