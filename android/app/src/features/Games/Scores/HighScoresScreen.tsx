@@ -20,12 +20,14 @@ const HighScoresScreen = ({ game, gameName, score }: HighScoresProps) => {
       const decoded: { id: number } = jwtDecode(token);
       const currentUserId = decoded.id;
       setUserId(currentUserId);
+      console.log(currentUserId);
       try {
-        await axios.post("https://n0kia-0024.com/scores/add", {
+        const response = await axios.post("https://n0kia-0024.com/scores/add", {
           params: { score, game, userId },
         });
+    console.log(response);
       } catch (error) {
-        console.error(error);
+        console.error("Error sending score" + error);
       }
     } else {
       Alert.alert(
@@ -41,8 +43,9 @@ const HighScoresScreen = ({ game, gameName, score }: HighScoresProps) => {
         params: { game },
       });
       setScores(response.data);
+      console.log(response);
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching scores" + error);
     }
   };
 
