@@ -1,103 +1,138 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef, useCallback } from 'react';
 import { Animated, StyleSheet, Text, PanResponder, Dimensions, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { color } from 'src/styles';
-import { AuthContext } from '../contexts/AuthContext';
+import { AuthContext } from '../contexts/AuthContext'; // Adapté à ton nouveau contexte
+
+const clamp = (value: number, min: number, max: number) => {
+  return Math.min(Math.max(value, min), max);
+};
 
 const AuthOverlay = () => {
-  const { isLoggedIn, isTokenExpired, isAuthChecked } = useContext(AuthContext);
-  const animationValue = useRef(new Animated.Value(0)).current;
+  const { state, logout } = useContext(AuthContext); // Utilisation de state et logout à partir du contexte
+  const { isLoggedIn, isTokenExpired, isAuthChecked } = state; // Récupération des valeurs d'état à partir de state
+  const animationValue = useRef(new Animated.Value(isTokenExpired ? 1 : 0)).current;
   const navigation: any = useNavigation();
   const screenWidth = Dimensions.get('window').width;
   const screenHeight = Dimensions.get('window').height;
 
-  const iconWidth = 60; // Largeur minimale de l'icône (outputRange[0] de animatedWidth)
-  const iconHeight = 50; // Hauteur de l'icône (height dans styles.iconContainer)
+  const iconWidth = 60;
+  const iconHeight = 50;
 
   const position = useRef(new Animated.ValueXY({ x: 20, y: screenHeight - 180 })).current;
+  const currentPosition = useRef({ x: 20, y: screenHeight - 180 });
+
+  // Ajouter un listener pour suivre la position actuelle
+  useEffect(() => {
+    const listenerId = position.addListener(({ x, y }) => {
+      currentPosition.current = { x, y };
+    });
+
+    return () => {
+      position.removeListener(listenerId);
+    };
+  }, [position]);
 
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: (evt, gestureState) => {
-        // Commencer le PanResponder si le déplacement est supérieur à un seuil
+      onMoveShouldSetPanResponder: (_, gestureState) => {
         return Math.abs(gestureState.dx) > 2 || Math.abs(gestureState.dy) > 2;
       },
       onPanResponderGrant: () => {
         position.extractOffset();
       },
-      onPanResponderMove: (evt, gestureState) => {
+      onPanResponderMove: (_, gestureState) => {
         let newX = gestureState.dx;
         let newY = gestureState.dy;
 
-        // Calculer les nouvelles positions potentielles
-        const potentialX = position.x._offset + newX;
-        const potentialY = position.y._offset + newY;
+        let potentialX = currentPosition.current.x + gestureState.dx;
+        let potentialY = currentPosition.current.y + gestureState.dy;
 
-        // Limiter la position X
         const minX = 0;
         const maxX = screenWidth - iconWidth;
-        if (potentialX < minX) {
-          newX = minX - position.x._offset;
-        } else if (potentialX > maxX) {
-          newX = maxX - position.x._offset;
-        }
+        potentialX = clamp(potentialX, minX, maxX);
+        newX = potentialX - currentPosition.current.x;
 
-        // Limiter la position Y
         const minY = 0;
         const maxY = screenHeight - iconHeight;
-        if (potentialY < minY) {
-          newY = minY - position.y._offset;
-        } else if (potentialY > maxY) {
-          newY = maxY - position.y._offset;
-        }
+        potentialY = clamp(potentialY, minY, maxY);
+        newY = potentialY - currentPosition.current.y;
 
-        // Mettre à jour la position
         position.x.setValue(newX);
         position.y.setValue(newY);
       },
-      onPanResponderRelease: (evt, gestureState) => {
+      onPanResponderRelease: (_, gestureState) => {
         position.flattenOffset();
 
         if (Math.abs(gestureState.dx) < 2 && Math.abs(gestureState.dy) < 2) {
-          // Considérer comme un tap si le déplacement est minime
           handleIconPress();
         }
-        // Optionnel : Vous pouvez également vérifier que la position finale est dans les limites
+
+        const { x, y } = currentPosition.current;
+        const minX = 0;
+        const maxX = screenWidth - iconWidth;
+        const minY = 0;
+        const maxY = screenHeight - iconHeight;
+
+        const clampedX = clamp(x, minX, maxX);
+        const clampedY = clamp(y, minY, maxY);
+
+        Animated.spring(position, {
+          toValue: { x: clampedX - position.x._offset, y: clampedY - position.y._offset },
+          useNativeDriver: false,
+        }).start();
       },
       onPanResponderTerminationRequest: () => false,
     })
   ).current;
 
-  useEffect(() => {
-    if (isAuthChecked && isTokenExpired) {
-      // Démarrer l'animation lorsque le token est expiré
-      startAnimation();
-    }
-  }, [isAuthChecked, isTokenExpired]);
+useEffect(() => {
+  console.log('AuthOverlay - isAuthChecked:', isAuthChecked);
+  console.log('AuthOverlay - isLoggedIn:', isLoggedIn);
+  console.log('AuthOverlay - isTokenExpired:', isTokenExpired);
+
+  if (isAuthChecked && isTokenExpired) {
+    startAnimation();
+  } else {
+    resetAnimation();
+  }
+}, [isAuthChecked, isTokenExpired, isLoggedIn]);
 
   const startAnimation = () => {
+    console.log('AuthOverlay - starting animation');
     Animated.timing(animationValue, {
       toValue: 1,
-      duration: 300, // Durée de l'animation en millisecondes
+      duration: 300,
       useNativeDriver: false,
     }).start();
   };
 
-  const handleIconPress = () => {
-    if (isLoggedIn) {
-      if (isTokenExpired) {
-        // Rediriger vers la page de connexion
-        navigation.navigate('Signin');
-      } else {
-        // Optionnel : ouvrir un menu utilisateur
-      }
-    } else {
-      // Rediriger vers la page de connexion
-      navigation.navigate('Signin');
-    }
+  const resetAnimation = () => {
+    console.log('AuthOverlay - resetting animation');
+    Animated.timing(animationValue, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
   };
+
+  const handleIconPress = useCallback(async () => {
+    console.log('AuthOverlay - handleIconPress');
+    console.log('isTokenExpired:', isTokenExpired);
+    console.log('isLoggedIn:', isLoggedIn);
+    if (isTokenExpired) {
+      console.log('AuthOverlay - Token is expired or user not logged in, navigating to Signin');
+      await logout();
+      navigation.navigate('Signin');
+    } else if (isLoggedIn) {
+      console.log('AuthOverlay - User is logged in and token is valid');
+      // Vous pouvez ouvrir un menu utilisateur ici si vous le souhaitez
+    } else {
+      console.log('AuthOverlay - User is not logged in');
+    }
+  }, [isLoggedIn, isTokenExpired, logout, navigation]);
 
   // Définir les dimensions pour l'animation
   const animatedWidth = animationValue.interpolate({
@@ -105,24 +140,43 @@ const AuthOverlay = () => {
     outputRange: [60, 300],
   });
 
-  if (!isAuthChecked || !isLoggedIn) {
-    return null; // Ne rien afficher tant que l'authentification n'est pas vérifiée ou si l'utilisateur n'est pas connecté
+  const animatedPaddingHorizontal = animationValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [10, 15],
+  });
+
+  if (!isAuthChecked || (!isLoggedIn && !isTokenExpired)) {
+    console.log('AuthOverlay - not showing overlay');
+    return null;
   }
+
+  console.log('AuthOverlay - rendering');
 
   return (
     <Animated.View
       {...panResponder.panHandlers}
       style={[styles.overlay, position.getLayout()]}
     >
-      <Animated.View style={[styles.iconContainer, { width: animatedWidth }]}>
-        <MaterialIcons name="person" size={30} color={color.relief} />
-        {isTokenExpired && (
-          <>
+      <Animated.View
+        style={[
+          styles.iconContainer,
+          {
+            width: animatedWidth,
+            paddingHorizontal: animatedPaddingHorizontal,
+            justifyContent: isTokenExpired ? 'flex-start' : 'center',
+          },
+        ]}
+      >
+        <View style={styles.iconWrapper}>
+          <MaterialIcons name="person" size={30} color={color.relief} />
+          {isTokenExpired && (
             <View style={styles.badge}>
               <Text style={styles.badgeText}>!</Text>
             </View>
-            <Text style={styles.expiredMessage}>You have been logged out.</Text>
-          </>
+          )}
+        </View>
+        {isTokenExpired && (
+          <Text style={styles.expiredMessage}>You have been logged out.</Text>
         )}
       </Animated.View>
     </Animated.View>
@@ -141,15 +195,20 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 5,
     borderWidth: 2,
     borderColor: color.relief,
   },
+  iconWrapper: {
+    position: 'relative',
+    width: 30,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   badge: {
     position: 'absolute',
-    top: 2,
-    right: 2,
+    top: -4,
+    right: -4,
     backgroundColor: 'red',
     borderRadius: 8,
     width: 16,
@@ -167,6 +226,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontFamily: 'Nokia',
     fontSize: 16,
+    flexShrink: 1,
   },
 });
 

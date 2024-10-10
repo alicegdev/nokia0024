@@ -92,7 +92,7 @@ const ContactList = () => {
   const fetchContacts = async (): Promise<Contact[]> => {
     const token = await AsyncStorage.getItem('token');
     try {
-      const response = await axios.get('https://n0kia-0024.com/contacts', {
+      const response = await axios.get('http://10.0.2.2:5050/contacts', {
         headers: {
           Authorization: token,
         },

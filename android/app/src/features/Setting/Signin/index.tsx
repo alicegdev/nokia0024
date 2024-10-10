@@ -1,5 +1,6 @@
-// Signin.tsx
-import React, { useEffect, useState } from "react"; 
+// src/features/Signin.tsx
+
+import React, { useEffect, useState, useContext } from "react"; 
 import {
   View,
   Text,
@@ -13,30 +14,40 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { initializeSocket } from '../../../socket';
 import { color } from 'src/styles'; // Assurez-vous que le chemin est correct
+import { AuthContext } from '../../../contexts/AuthContext'; // Import du contexte
 
 function Signin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigation: any = useNavigation();
+  const { login } = useContext(AuthContext); // Utilisation du contexte
 
-    const handleLogin = async () => {
-        try {
-            const response = await axios.post('https://n0kia-0024.com/users/login', {
-                email,
-                password,
-            })
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('http://10.0.2.2:5050/users/login', {
+        email,
+        password,
+      });
 
       const data = response.data;
 
+      console.log('Signin - handleLogin - response data:', data);
+
       if (data.token) {
         await AsyncStorage.setItem('token', data.token);
+        console.log('Signin - handleLogin - token saved');
         // Initialiser la connexion socket
         await initializeSocket();
+        console.log('Signin - handleLogin - socket initialized');
+        // Mettre à jour le contexte d'authentification
+        await login(data.token); // Appeler checkAuth pour mettre à jour le contexte
+        console.log('Signin - handleLogin - checkAuth called');
         // Naviguer vers l'écran d'accueil
         navigation.navigate('HomePage');
+        console.log('Signin - handleLogin - navigated to HomePage');
       }
     } catch (error) {
-      console.error(error);
+      console.error('Signin - handleLogin - error:', error);
       Alert.alert("Error", "An error occurred during login.");
     }
   };
@@ -89,6 +100,7 @@ function Signin() {
 }
 
 const styles = StyleSheet.create({
+  // Vos styles existants
   container: {
     flex: 1,
     backgroundColor: color.menu,
