@@ -37,7 +37,9 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 
         // Create a token
         const token = jwt.sign({ id: user.id }, secretKey, {
-            expiresIn: '1h', // Token expiration time
+            // for a test : make it expire in 5 minutes
+            expiresIn: '5m'
+            // expiresIn: '1h'
         });
 
         res.json({ token });

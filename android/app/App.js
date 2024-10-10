@@ -52,8 +52,9 @@ export default function App() {
   }
 
   return (
+    <AuthProvider>
     <NavigationContainer>
-      <AuthProvider>
+
         <AudioProvider>
           <View style={{ flex: 1 }}>
             {isFirstLaunch ? (
@@ -78,7 +79,8 @@ export default function App() {
             <AuthOverlay />
           </View>
         </AudioProvider>
-      </AuthProvider>
+
     </NavigationContainer>
+    </AuthProvider>
   );
 }
