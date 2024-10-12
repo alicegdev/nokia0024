@@ -6,6 +6,7 @@ import * as Contacts from 'expo-contacts'; // Expo Contacts pour gérer les cont
 import { MaterialIcons } from '@expo/vector-icons'; // Pour utiliser des icônes
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { color, spacing } from "src/styles";
+import * as Linking from 'expo-linking';
 
 interface Contact {
   isRegisteredUser: boolean;
@@ -252,6 +253,23 @@ const handleDelete = async (contact: Contact) => {
     }
   };
 
+  const callContact = (contact: Contact) => {
+    const phoneNumber = `tel:${contact.phoneNumber}`;
+    Linking.canOpenURL(phoneNumber)
+    .then((supported) => {
+      if (supported) {
+        console.log("Launching dialer...");
+        Linking.openURL(phoneNumber);
+      } else {
+        console.log("Dialer not supported on this device.");
+      }
+    })
+    .catch((err) => {
+      console.error("Error testing URL scheme", err);
+    });
+
+  };
+
   // Uniquement contacts du téléphone
   const combinedContacts = [...contacts, ...phoneContacts];
 
@@ -268,6 +286,11 @@ const handleDelete = async (contact: Contact) => {
           <Text style={styles.contactName}>{item.firstName} {item.lastName}</Text>
         </TouchableOpacity>
         <View style={styles.actionsContainer}>
+        {item.source === 'db' && item.isRegisteredUser && (
+            <TouchableOpacity onPress={() => callContact(item)} style={styles.iconButton}>
+              <MaterialIcons name="phone" size={24} color={color.relief}/>
+            </TouchableOpacity>
+          )}
           {item.source === 'db' && item.isRegisteredUser && (
             <TouchableOpacity onPress={() => startChatWithContact(item)} style={styles.iconButton}>
               <MaterialIcons name="message" size={24} color={color.relief}/>

@@ -2,13 +2,17 @@ import InternetImage from "src/assets/icones/internet.png"
 import PhoneImage from "src/assets/icones/phone.png"
 import MessageImage from "src/assets/icones/message.png"
 import MusicImage from "src/assets/icones/music.png"
+import GameImage from "src/assets/icones/game.png"
+import CameraImage from "src/assets/icones/camera.png"
+import GalleryImage from "src/assets/icones/gallery.png"
+import SettingsImage from "src/assets/icones/settings.png"
 
 export const navHomes = [
-    { id: 1, label: 'test signin', navigateTo: 'Signin' },
-    { id: 2, label: 'Games', navigateTo: 'Games' },
-    { id: 3, label: 'Settings', navigateTo: 'Settings' },
-    { id: 4, label: 'Camera', navigateTo: 'CameraScreen' },
-    { id: 5, label: 'Gallery', navigateTo: 'Gallery' },
+    { id: PhoneImage, label: 'test signin', navigateTo: 'Signin' },
+    { id: GameImage, label: 'Games', navigateTo: 'Games' },
+    { id: CameraImage, label: 'Camera', navigateTo: 'CameraScreen' },
+    { id: GalleryImage, label: 'Gallery', navigateTo: 'Gallery' },
+    { id: SettingsImage, label: 'Settings', navigateTo: 'Settings' },
 ];
 
 export const navFooters = [

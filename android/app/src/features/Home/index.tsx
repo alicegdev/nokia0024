@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigation } from '@react-navigation/native';
-import { Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
+import { Text, TouchableOpacity, View, ActivityIndicator, Image } from "react-native";
 import { Screen } from "src/components";
 import styles from "./styles";
 import { color } from "src/styles";
@@ -25,7 +25,7 @@ const HomePage = () => {
                             style={styles.box}
                             onPress={() => navigation.navigate(navHome.navigateTo)}
                         >
-                            <Text style={styles.textStyle}>{navHome.id}</Text>
+                            <Image source={navHome.id}/>
                         </TouchableOpacity>
                         <Text style={styles.labelStyle}>{navHome.label}</Text>
                     </View>
