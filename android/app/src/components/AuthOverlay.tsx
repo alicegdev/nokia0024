@@ -12,6 +12,7 @@ const clamp = (value: number, min: number, max: number) => {
 const AuthOverlay = () => {
   const { state, logout } = useContext(AuthContext); // Utilisation de state et logout à partir du contexte
   const { isLoggedIn, isTokenExpired, isAuthChecked } = state; // Récupération des valeurs d'état à partir de state
+  console.log("State " + state);
   const animationValue = useRef(new Animated.Value(isTokenExpired ? 1 : 0)).current;
   const navigation: any = useNavigation();
   const screenWidth = Dimensions.get('window').width;
@@ -131,6 +132,7 @@ useEffect(() => {
       // Vous pouvez ouvrir un menu utilisateur ici si vous le souhaitez
     } else {
       console.log('AuthOverlay - User is not logged in');
+      navigation.navigate('Signin');
     }
   }, [isLoggedIn, isTokenExpired, logout, navigation]);
 
