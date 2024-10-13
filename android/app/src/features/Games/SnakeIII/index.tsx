@@ -27,6 +27,12 @@ const Directions = {
   up: "up",
 };
 
+function getRandomFruitEmoji() {
+  const fruitEmojis = ["🍎", "🍊", "🍋", "🍇", "🍉", "🍓", "🍑", "🍍"];
+  const randomIndex = Math.floor(Math.random() * fruitEmojis.length);
+  return fruitEmojis[randomIndex];
+}
+
 export default function Snake(): JSX.Element {
   const [direction, setDirection] = useState(Directions.right);
   const [snake, setSnake] = useState(SNAKE_INITIAL_POSITION);
@@ -35,6 +41,7 @@ export default function Snake(): JSX.Element {
   const [isPaused, setIsPaused] = useState(true);
   const [score, setScore] = useState(0);
   const [finalScore, setFinalScore] = useState(0);
+  const [foodEmoji, setFoodEmoji] = useState(getRandomFruitEmoji());
 
   const [isVisible, setIsVisible] = useState(true);
 
@@ -89,6 +96,7 @@ export default function Snake(): JSX.Element {
 
     if (checkEatsFood(newHead, food, 2)) {
       setFood(randomFoodPosition(GAME_BOUNDS.xMax, GAME_BOUNDS.yMax));
+      setFoodEmoji(getRandomFruitEmoji());
       setSnake([newHead, ...snake]);
       setScore(score + SCORE_INCREMENT);
     } else {
@@ -163,7 +171,7 @@ export default function Snake(): JSX.Element {
               </Header>
               <View style={styles.boundaries}>
                 <SnakeComponent snake={snake} />
-                <Food x={food.x} y={food.y} />
+                <Food x={food.x} y={food.y} emoji={foodEmoji} />
               </View>
             </SafeAreaView>
           </PanGestureHandler>
