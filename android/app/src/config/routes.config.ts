@@ -13,6 +13,7 @@ import ChatScreen from "src/features/Message/ChatScreen";
 import CameraScreen from "src/features/Media/Camera";
 import Gallery from "src/features/Media/Gallery";
 import SpaceBlast from "src/features/Games/SpaceBlast";
+import Breakout from "src/features/Games/Breakout";
 
 // Ordered by folder
 const routesConfig = [
@@ -24,6 +25,7 @@ const routesConfig = [
   { name: 'Games', component: Games },
   { name: 'SnakeIII', component: SnakeIII },
   { name: 'SpaceBlast', component: SpaceBlast },
+  { name: 'Breakout', component: Breakout },
 
   //Setting
   { name: 'Signin', component: Signin },
@@ -41,7 +43,7 @@ const routesConfig = [
 
   // Camera
   { name: 'CameraScreen', component: CameraScreen },
-  {name: 'Gallery', component: Gallery }
+  { name: 'Gallery', component: Gallery }
 ];
 
 export default routesConfig;
