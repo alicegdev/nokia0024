@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, useEffect, useRef } from 'react';
+import React, { createContext, useReducer, useEffect, useRef, ReactNode } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -40,12 +40,25 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
   }
 }
 
-export const AuthContext = createContext({
+export type AuthContextType = {
+  state: AuthState;
+  dispatch: (action: AuthAction) => void;
+  login: ((token: string) => Promise<void>);
+  logout: (() => Promise<void>);
+}
+
+export const AuthContext = createContext<AuthContextType>({
   state: initialState,
-  dispatch: (action: AuthAction) => {},
+  dispatch: (action) => { },
+  login: async () => Promise.resolve(),  // Dummy async function
+  logout: async () => Promise.resolve()  // Dummy async function
 });
 
-export const AuthProvider: React.FC = ({ children }) => {
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
   const expirationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 

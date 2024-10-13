@@ -1,7 +1,7 @@
 // App.js
 
 import React, { useState, useEffect } from "react";
-import { View } from 'react-native'; // Import de View pour englober les composants
+import { View } from "react-native"; // Import de View pour englober les composants
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -21,7 +21,7 @@ export default function App() {
     const checkFirstLaunch = async () => {
       try {
         const hasLaunched = await AsyncStorage.getItem("hasLaunched");
-        if (hasLaunched === null) {
+        if (hasLaunched == null) {
           // Si l'application n'a jamais été lancée
           await AsyncStorage.setItem("hasLaunched", "true");
           setIsFirstLaunch(true);
@@ -51,36 +51,25 @@ export default function App() {
     return <LoadingAnimation />;
   }
 
+  const initialRoute = isFirstLaunch ? "Onboarding" : "HomePage";
+
   return (
     <AuthProvider>
-    <NavigationContainer>
-
+      <NavigationContainer>
         <AudioProvider>
           <View style={{ flex: 1 }}>
-            {isFirstLaunch ? (
-              <Stack.Navigator
-                initialRouteName="Onboarding"
-                screenOptions={{ headerShown: false }}
-              >
-                {routesConfig.map(({ name, component }) => (
-                  <Stack.Screen key={name} name={name} component={component} />
-                ))}
-              </Stack.Navigator>
-            ) : (
-              <Stack.Navigator
-                initialRouteName="HomePage"
-                screenOptions={{ headerShown: false }}
-              >
-                {routesConfig.map(({ name, component }) => (
-                  <Stack.Screen key={name} name={name} component={component} />
-                ))}
-              </Stack.Navigator>
-            )}
+            <Stack.Navigator
+              initialRouteName={initialRoute}
+              screenOptions={{ headerShown: false }}
+            >
+              {routesConfig.map(({ name, component }) => (
+                <Stack.Screen key={name} name={name} component={component} />
+              ))}
+            </Stack.Navigator>
             <AuthOverlay />
           </View>
         </AudioProvider>
-
-    </NavigationContainer>
+      </NavigationContainer>
     </AuthProvider>
   );
 }
