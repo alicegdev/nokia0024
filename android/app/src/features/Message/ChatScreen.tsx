@@ -1,11 +1,12 @@
 // ChatScreen.tsx
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import { getSocket } from '../../socket';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { color, spacing } from 'src/styles'; // Import des styles
+import { AuthContext } from 'src/contexts/AuthContext';
 
 interface Message {
   id: number;
@@ -25,22 +26,17 @@ const ChatScreen = ({ route }: any) => {
   const receiverId = Number(receiverIdParam);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');
-  const [userId, setUserId] = useState<number | null>(null);
+  const { state } = useContext(AuthContext); // Utilisation de state et logout à partir du contexte
+  const token = state.token;
+  const userId = state.userId;
 
   const flatListRef = useRef<FlatList>(null);
 
   useEffect(() => {
     const initializeChat = async () => {
       // Récupérer l'ID de l'utilisateur à partir du token
-      const token = await AsyncStorage.getItem('token');
       if (token) {
-        const decoded: DecodedToken = jwtDecode(token);
-        console.log('Decoded token:', decoded);
-        const currentUserId = decoded.id;
-        setUserId(currentUserId);
-
-        // Récupérer les messages
-        await fetchMessages(currentUserId);
+        await fetchMessages(userId);
       }
     };
 
@@ -76,12 +72,12 @@ const ChatScreen = ({ route }: any) => {
     }
   }, [messages]);
 
-  const fetchMessages = async (currentUserId: number) => {
-    console.log('Fetching messages between', currentUserId, 'and', receiverId);
+  const fetchMessages = async (userId: number | null) => {
+    console.log('Fetching messages between', userId, 'and', receiverId);
     try {
       const token = await AsyncStorage.getItem('token');
       const response = await axios.get(
-        `https://n0kia-0024.com/messages/${currentUserId}/${receiverId}`,
+        `https://n0kia-0024.com/messages/${userId}/${receiverId}`,
         {
           headers: {
             Authorization: token,
