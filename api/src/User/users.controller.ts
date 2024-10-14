@@ -65,7 +65,8 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
         const user = await prisma.user.findUnique({
             where: {
                 id: parseInt(id)
-            }
+            },
+            select: { email: true, username: true },
         });
         res.json(user);
     } catch (error) {
@@ -127,4 +128,47 @@ export const getUserByEmail = async (req: Request, res: Response) => {
     } catch (error) {
       res.status(500).json({ error: 'Erreur lors de la récupération de l\'utilisateur' });
     }
-  };
+};
+  
+// Fonction pour mettre à jour le mot de passe d'un utilisateur
+export const updatePassword = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params;
+        const { oldPassword, newPassword } = req.body;
+
+        // Récupérer l'utilisateur par son ID
+        const user = await prisma.user.findUnique({
+            where: { id: parseInt(id) },
+            select: { password: true }, // On récupère uniquement le mot de passe haché
+        });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Comparer l'ancien mot de passe fourni avec celui stocké en base (haché)
+        const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+        if (!isPasswordValid) {
+            return res.status(400).json({ error: 'Old password is incorrect' });
+        }
+
+        // Vérifier si le nouveau mot de passe respecte les règles de sécurité (longueur, complexité, etc.)
+        if (newPassword.length < 8) {
+            return res.status(400).json({ error: 'New password must be at least 8 characters long' });
+        }
+
+        // Hacher le nouveau mot de passe
+        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+        // Mettre à jour le mot de passe en base de données
+        await prisma.user.update({
+            where: { id: parseInt(id) },
+            data: { password: hashedNewPassword },
+        });
+
+        res.json({ message: 'Password updated successfully' });
+    } catch (error) {
+        console.error('Error updating password:', error);
+        res.status(500).json({ error: 'Something went wrong' });
+    }
+};

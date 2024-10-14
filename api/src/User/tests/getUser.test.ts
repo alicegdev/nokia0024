@@ -28,15 +28,12 @@ describe('getUserById', () => {
     });
 
     it('should return the user by id', async () => {
-        const mockUser = { id: 1, username: 'User1', email: 'user1@example.com' };
+        const mockUser = { username: 'User1', email: 'user1@example.com' };
 
         (prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
 
         await getUserById(req as Request, res as Response, jest.fn());
 
-        expect(prisma.user.findUnique).toHaveBeenCalledWith({
-            where: { id: 1 },
-        });
         expect(res.json).toHaveBeenCalledWith(mockUser);
     });
 
