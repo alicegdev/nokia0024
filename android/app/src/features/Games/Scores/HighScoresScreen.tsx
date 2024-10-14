@@ -1,7 +1,8 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
+import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, StyleSheet, Alert } from "react-native";
-import { AuthContext } from "src/contexts/AuthContext";
 
 interface HighScoresProps {
   game: number;
@@ -11,12 +12,15 @@ interface HighScoresProps {
 
 const HighScoresScreen = ({ game, gameName, score }: HighScoresProps) => {
   const [scores, setScores] = useState([]);
-  const { state } = useContext(AuthContext);
-  const token = state.token;
-  const userId = state.userId;
+  const [userId, setUserId] = useState<number | null>(null);
 
   const sendScore = async () => {
+    const token = await AsyncStorage.getItem("token");
     if (token) {
+      const decoded: { id: number } = jwtDecode(token);
+      const currentUserId = decoded.id;
+      setUserId(currentUserId);
+      console.log(currentUserId);
       try {
         const response = await axios.post("https://n0kia-0024.com/scores/add", {
           headers: {
@@ -53,9 +57,7 @@ const HighScoresScreen = ({ game, gameName, score }: HighScoresProps) => {
   };
 
   useEffect(() => {
-    if (userId != null) {
-      sendScore();
-    }
+    sendScore();
   }, []);
 
   const renderItem = ({ item }: { item: { name: string; score: number } }) => (
