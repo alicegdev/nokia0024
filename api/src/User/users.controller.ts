@@ -100,12 +100,15 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
 export const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
-        await prisma.user.delete({
-            where: {
-                id: parseInt(id)
-            }
-        });
-        res.json({ message: 'User deleted successfully' });
+       await prisma.$transaction([
+            prisma.musique.deleteMany({ where: { userId: parseInt(id) } }),
+            prisma.message.deleteMany({ where: { senderId: parseInt(id) } }),
+            prisma.message.deleteMany({ where: { receiverId: parseInt(id) } }),
+            prisma.score.deleteMany({ where: { userId: parseInt(id) } }),
+            prisma.contact.deleteMany({ where: { userId: parseInt(id) } }),
+            prisma.user.delete({ where: { id: parseInt(id) } }),
+        ]);
+        res.json({ message: 'User and all related data deleted successfully' });
     } catch (error) {
         res.status(500).json({ error: 'Something went wrong' });
     }
