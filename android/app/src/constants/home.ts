@@ -8,7 +8,6 @@ import GalleryImage from "src/assets/icones/gallery.png"
 import SettingsImage from "src/assets/icones/settings.png"
 
 export const navHomes = [
-    { id: PhoneImage, label: 'test signin', navigateTo: 'Signin' },
     { id: GameImage, label: 'Games', navigateTo: 'Games' },
     { id: CameraImage, label: 'Camera', navigateTo: 'CameraScreen' },
     { id: GalleryImage, label: 'Gallery', navigateTo: 'Gallery' },
