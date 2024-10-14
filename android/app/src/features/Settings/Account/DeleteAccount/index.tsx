@@ -20,8 +20,10 @@ const DeleteAccount = () => {
         const response = await axios.delete(
           `https://n0kia-0024.com/users/${userId}`,
           {
-            headers: { 'Authorization': `Bearer ${token}` },
-          }
+            headers: {
+              Authorization: token,
+            }
+          },
         );
 
         if (response.status === 200) {
