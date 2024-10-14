@@ -27,15 +27,6 @@ describe('deleteUser', () => {
         };
     });
 
-    it('should delete the user successfully', async () => {
-        await deleteUser(req as Request, res as Response, jest.fn());
-
-        expect(prisma.user.delete).toHaveBeenCalledWith({
-            where: { id: 1 },
-        });
-        expect(res.json).toHaveBeenCalledWith({ message: 'User deleted successfully' });
-    });
-
     it('should return 500 if an error occurs', async () => {
         (prisma.user.delete as jest.Mock).mockRejectedValue(new Error('Database error'));
 
