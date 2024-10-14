@@ -24,6 +24,8 @@ const ChangePassword = () => {
         {
           oldPassword,
           newPassword,
+        },
+        {
           headers: {
             Authorization: token,
           },
@@ -42,31 +44,33 @@ const ChangePassword = () => {
       </View>
       <View style={styles.formContainer}>
         <View style={styles.inputContainer}>
-        <Text style={styles.label}>Old Password</Text>
-        <TextInput
-          style={styles.input}
-          secureTextEntry
-          value={oldPassword}
-          onChangeText={(text) => setOldPassword(text)}
-          placeholder="Enter your old password"
+          <Text style={styles.label}>Old Password</Text>
+          <TextInput
+            style={styles.input}
+            secureTextEntry
+            value={oldPassword}
+            onChangeText={(text) => setOldPassword(text)}
+            placeholder="Enter your old password"
           />
-          </View>
+        </View>
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>New Password</Text>
-        <TextInput
-          style={styles.input}
-          secureTextEntry
-          value={newPassword}
-          onChangeText={(text) => setNewPassword(text)}
-          placeholder="Enter your new password"
-        />
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>New Password</Text>
+          <TextInput
+            style={styles.input}
+            secureTextEntry
+            value={newPassword}
+            onChangeText={(text) => setNewPassword(text)}
+            placeholder="Enter your new password"
+          />
         </View>
         <TouchableOpacity style={styles.saveButton} onPress={handleSubmit}>
-        <Text style={styles.saveButtonText}>Change Password</Text>
+          <Text style={styles.saveButtonText}>Change Password</Text>
         </TouchableOpacity>
-              {message ? <Text style={styles.switchButtonText}>{message}</Text> : null}
-        </View>
+        {message ? (
+          <Text style={styles.switchButtonText}>{message}</Text>
+        ) : null}
+      </View>
     </View>
   );
 };
