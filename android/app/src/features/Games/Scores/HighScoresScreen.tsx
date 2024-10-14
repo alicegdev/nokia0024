@@ -24,8 +24,8 @@ const HighScoresScreen = ({ game, gameName, score }: HighScoresProps) => {
       try {
         const response = await axios.post("https://n0kia-0024.com/scores/add", {
           headers: {
-            'Authorization': `Bearer ${token}`,
-          },
+              Authorization: token,
+            },
           params: { score, game, userId },
         });
     console.log(response);
@@ -44,9 +44,9 @@ const HighScoresScreen = ({ game, gameName, score }: HighScoresProps) => {
   const fetchScores = async (token: string) => {
     try {
       const response = await axios.get("https://n0kia-0024.com/scores", {
-        headers: {
-            'Authorization': `Bearer ${token}`,
-          },
+       headers: {
+              Authorization: token,
+            },
         params: { game },
       });
       setScores(response.data);

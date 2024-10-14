@@ -14,6 +14,14 @@ import CameraScreen from "src/features/Media/Camera";
 import Gallery from "src/features/Media/Gallery";
 import SpaceBlast from "src/features/Games/SpaceBlast";
 import Breakout from "src/features/Games/Breakout";
+import Settings from "src/features/Settings";
+import Account from "src/features/Settings/Account";
+import Brightness from "src/features/Settings/Brightness";
+import Sound from "src/features/Settings/Sound";
+import Background from "src/features/Settings/Background";
+import DeleteAccount from "src/features/Settings/Account/DeleteAccount";
+import ChangePassword from "src/features/Settings/Account/ChangePassword";
+
 
 // Ordered by folder
 const routesConfig = [
@@ -43,7 +51,16 @@ const routesConfig = [
 
   // Camera
   { name: 'CameraScreen', component: CameraScreen },
-  { name: 'Gallery', component: Gallery }
+  { name: 'Gallery', component: Gallery },
+  
+  //Settings
+  { name: 'Settings', component: Settings },
+  { name: 'Account', component: Account },
+  { name: 'DeleteAccount', component: DeleteAccount },
+  { name: 'ChangePassword', component: ChangePassword},
+  { name: 'Brightness', component: Brightness },
+  { name: 'Sound', component: Sound },
+
 ];
 
 export default routesConfig;
