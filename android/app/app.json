@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "nokia_0024",
-    "slug": "nokia_0024",
+    "name": "Nokia 0024",
+    "slug": "Nokia 0024",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
@@ -19,7 +19,7 @@
       }
     },
     "android": {
-      "package": "com.nokia0024",
+      "package": "com.nokia-0024",
       "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#ffffff"
@@ -29,11 +29,6 @@
         "WRITE_EXTERNAL_STORAGE",
         "READ_EXTERNAL_STORAGE"
       ]
-    },
-    "extra": {
-      "eas": {
-        "projectId": "34b3efe7-d583-4740-acc2-1c117ca35a9d"
-      }
     }
   }
 }
