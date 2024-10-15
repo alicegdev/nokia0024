@@ -1,9 +1,8 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, FlatList, StyleSheet, Alert } from "react-native";
+import { View, Text, FlatList, Alert } from "react-native";
 import { AuthContext } from "src/contexts/AuthContext";
+import styles from "./styles";
 
 interface HighScoresProps {
   game: number;
@@ -13,20 +12,23 @@ interface HighScoresProps {
 
 const HighScoresScreen = ({ game, gameName, score }: HighScoresProps) => {
   const [scores, setScores] = useState([]);
- const { state } = useContext(AuthContext);
+  const { state } = useContext(AuthContext);
   const token = state.token;
   const userId = state.userId;
 
   const sendScore = async () => {
     if (token) {
       try {
-        const response = await axios.post("https://n0kia-0024.com/scores/add", {
-          headers: {
+        const response = await axios.post(
+          "https://n0kia-0024.com/scores/add",
+          { score, gameId: game, userId },
+          {
+            headers: {
               Authorization: token,
             },
-          params: { score, game, userId },
-        });
-    console.log(response);
+          },
+        );
+        console.log(response);
       } catch (error) {
         console.error("Error sending score" + error);
       }
@@ -40,12 +42,12 @@ const HighScoresScreen = ({ game, gameName, score }: HighScoresProps) => {
   };
 
   const fetchScores = async (token: string) => {
+    console.log("Game id: " + game);
     try {
-      const response = await axios.get("https://n0kia-0024.com/scores", {
-       headers: {
-              Authorization: token,
-            },
-        params: { game },
+      const response = await axios.get(`https://n0kia-0024.com/scores/${game}`, {
+        headers: {
+          Authorization: token,
+        }
       });
       setScores(response.data);
       console.log(response);
@@ -77,36 +79,5 @@ const HighScoresScreen = ({ game, gameName, score }: HighScoresProps) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#f8f9fa",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  item: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    padding: 10,
-    width: "100%",
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: "600",
-  },
-  score: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#007bff",
-  },
-});
 
 export default HighScoresScreen;

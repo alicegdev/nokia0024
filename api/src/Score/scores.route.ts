@@ -5,7 +5,7 @@ import { verifyToken } from '../middlewares/auth.middleware';
 const router = Router();
 
 router.post('/add', verifyToken, addScore);
-router.get('/', getScores);
+router.get('/:gameId', getScores);
 
 
 
