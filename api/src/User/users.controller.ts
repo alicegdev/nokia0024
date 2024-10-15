@@ -12,12 +12,10 @@ if (!secretKey) {
     throw new Error('TOKEN_SECRET_KEY is not defined');
 }
 
-// Login user
 export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email, password } = req.body;
 
-        // Find the user by email
         const user = await prisma.user.findUnique({
             where: {
                 email: email
@@ -28,16 +26,13 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
             return res.status(404).json({ error: 'User not found' });
         }
 
-        // Compare the password with the stored hashed password
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (!isPasswordValid) {
             return res.status(401).json({ error: 'Invalid password' });
         }
 
-        // Create a token
         const token = jwt.sign({ id: user.id }, secretKey, {
-            // for a test : make it expire in 5 minutes
             expiresIn: '5m'
             // expiresIn: '1h'
         });
@@ -48,7 +43,6 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
     }
 };
 
-// Get all users
 export const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const users = await prisma.user.findMany();
@@ -58,7 +52,6 @@ export const getAllUsers = async (req: Request, res: Response, next: NextFunctio
     }
 };
 
-// Get a user by id
 export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
@@ -74,7 +67,6 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
     }
 };
 
-// Create a new user
 export const createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { username, email, password } = req.body;
@@ -133,37 +125,31 @@ export const getUserByEmail = async (req: Request, res: Response) => {
     }
 };
   
-// Fonction pour mettre à jour le mot de passe d'un utilisateur
 export const updatePassword = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
         const { oldPassword, newPassword } = req.body;
 
-        // Récupérer l'utilisateur par son ID
         const user = await prisma.user.findUnique({
             where: { id: parseInt(id) },
-            select: { password: true }, // On récupère uniquement le mot de passe haché
+            select: { password: true },
         });
 
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        // Comparer l'ancien mot de passe fourni avec celui stocké en base (haché)
         const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
         if (!isPasswordValid) {
             return res.status(400).json({ error: 'Old password is incorrect' });
         }
 
-        // Vérifier si le nouveau mot de passe respecte les règles de sécurité (longueur, complexité, etc.)
         if (newPassword.length < 8) {
             return res.status(400).json({ error: 'New password must be at least 8 characters long' });
         }
 
-        // Hacher le nouveau mot de passe
         const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
-        // Mettre à jour le mot de passe en base de données
         await prisma.user.update({
             where: { id: parseInt(id) },
             data: { password: hashedNewPassword },

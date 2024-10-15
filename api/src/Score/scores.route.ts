@@ -6,7 +6,5 @@ const router = Router();
 
 router.post('/add', verifyToken, addScore);
 router.get('/:gameId', getScores);
-router.get('/games', getGames);
-
 
 export default router;
