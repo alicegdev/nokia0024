@@ -54,3 +54,13 @@ export const getScores = async (req: Request, res: Response, next: NextFunction)
         res.status(500).json({ error: 'Something went wrong' });
     }
 };
+
+// Get all users
+export const getGames = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const games = await prisma.game.findMany();
+        res.json(games);
+    } catch (error) {
+        res.status(500).json({ error: 'Something went wrong' });
+    }
+};
