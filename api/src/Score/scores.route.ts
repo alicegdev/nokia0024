@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import { getScores, addScore } from '../Score/scores.controller';
+import { getScores, addScore, getGames } from '../Score/scores.controller';
 import { verifyToken } from '../middlewares/auth.middleware';
 
 const router = Router();
 
 router.post('/add', verifyToken, addScore);
 router.get('/:gameId', getScores);
-
+router.get('/games', getGames);
 
 
 export default router;
