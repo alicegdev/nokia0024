@@ -3,25 +3,25 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  const game1 = await prisma.game.create({
-    data: {
-      name: 'Snake',
-    },
+  const game1 = await prisma.game.upsert({
+    where: { name: 'Snake' },
+    update: {},
+    create: { name: 'Snake' },
   });
 
-  const game2 = await prisma.game.create({
-    data: {
-      name: 'Space Blast ',
-    },
+  const game2 = await prisma.game.upsert({
+    where: { name: 'Space Blast' },
+    update: {},
+    create: { name: 'Space Blast' },
   });
 
-  const game3 = await prisma.game.create({
-    data: {
-      name: 'Breakout',
-    },
+  const game3 = await prisma.game.upsert({
+    where: { name: 'Breakout' },
+    update: {},
+    create: { name: 'Breakout' },
   });
 
-  console.log('Trois jeux créés :', game1, game2, game3);
+  console.log('Trois jeux créés ou existants vérifiés :', game1, game2, game3);
 }
 
 main()
