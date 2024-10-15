@@ -42,9 +42,9 @@ const HighScoresScreen = ({ game, gameName, score }: HighScoresProps) => {
   };
 
   const fetchScores = async (token: string) => {
-    const gameId = game;
+    console.log("Game id: " + game);
     try {
-      const response = await axios.get(`https://n0kia-0024.com/scores/${gameId}`, {
+      const response = await axios.get(`https://n0kia-0024.com/scores/${game}`, {
         headers: {
           Authorization: token,
         }

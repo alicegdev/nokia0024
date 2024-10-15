@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node build/app.js",
-    "seed": "node build/prisma/seed.js",
+    "seed": "ts-node src/prisma/seed.ts",
     "prisma:migrate": "npx prisma migrate dev --name init --schema src/prisma/schema.prisma",
     "prisma:generate": "npx prisma generate --schema src/prisma/schema.prisma",
     "server": "node src/app.ts",
