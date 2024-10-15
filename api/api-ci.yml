@@ -61,7 +61,7 @@ publish:
     alias: docker
   variables:
     IMAGE_TAG: $CI_REGISTRY_IMAGE/api-$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA
-    LATEST_TAG: $CI_REGISTRY_IMAGE/api:latest
+    LATEST_TAG: $CI_REGISTRY_IMAGE/api-main:latest
   script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   - echo "Retagging docker image..."
@@ -87,12 +87,12 @@ deploy:
   - echo "Login to Docker registry..."
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   - echo "Pull the latest image..."
-  - docker pull $CI_REGISTRY_IMAGE/api:latest
+  - docker pull $CI_REGISTRY_IMAGE/api-main:latest
   - echo "Stop and remove the old container if it exists..."
   - docker stop api-api-1 || true
   - docker rm api-api-1 || true
   - echo "Start a new container with the latest image..."
-  - docker run -d --name api-api-1 -p 5050:5050 $CI_REGISTRY_IMAGE/api:latest
+  - docker run -d --name api-api-1 -p 5050:5050 $CI_REGISTRY_IMAGE/api-main:latest
   - echo "Deployment completed."
   needs:
   - publish
