@@ -14,8 +14,8 @@ cache:
 
 stages:
 - backend_tests
-- build_image
-- publish
+# - build_image
+# - publish
 # - deploy
 
 backend_tests:
