@@ -9,7 +9,6 @@ services:
       - "5050:5050"
     environment:
       - TOKEN_SECRET_KEY=dev
-      - PRISMA_LOG_LEVEL=query
       - PORT=5050      
     networks:
       - api-network
@@ -23,14 +22,14 @@ services:
   db:
     image: postgres:16
     ports:
-      - "5432:5432"
+      - "5433:5433"
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: password
     volumes:
       - ./api/db/db-data:/var/lib/postgresql/data
       - ./api/db/postgres.cnf:/etc/postgresql/postgresql.conf
-    command: -p 5432
+    command: -p 5433
     networks:
       - api-network
   
@@ -57,4 +56,4 @@ services:
 
 networks:
   api-network:
-    driver: bridge    
+    driver: bridge   
