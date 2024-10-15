@@ -61,7 +61,7 @@ export const getConversations = async (req: Request, res: Response) => {
   console.log(`Controller : fetching conversations for user ${userId}`);
 
   try {
-    const messages = await prisma.message.findMany({
+    const messages: any = await prisma.message.findMany({
       where: {
         OR: [
           { senderId: parseInt(userId) },
@@ -79,9 +79,9 @@ export const getConversations = async (req: Request, res: Response) => {
       },
     });
 
-    const conversationMap: { [key: number]: any } = {};
+    const conversationMap: { [key: string]: any } = {};
 
-    messages.forEach(message => {
+    messages.forEach((message: { senderId: number; receiverId: any; }) => {
       const otherUserId = message.senderId === parseInt(userId) ? message.receiverId : message.senderId;
       if (!conversationMap[otherUserId]) {
         conversationMap[otherUserId] = message;
@@ -94,7 +94,7 @@ export const getConversations = async (req: Request, res: Response) => {
 
     console.log('Conversation partner IDs:', conversationPartnerIds);
 
-    const users = await prisma.user.findMany({
+    const users: any = await prisma.user.findMany({
       where: {
         id: { in: conversationPartnerIds },
       },
@@ -108,7 +108,7 @@ export const getConversations = async (req: Request, res: Response) => {
 
     console.log(parseInt(userId));
 
-    const contacts = await prisma.contact.findMany({
+    const contacts: any = await prisma.contact.findMany({
       where: {
         userId: { in: conversationPartnerIds },
         ownerId: parseInt(userId),
@@ -122,29 +122,21 @@ export const getConversations = async (req: Request, res: Response) => {
 
     console.log('Contacts:', contacts);
 
-    const testContacts = await prisma.contact.findMany({
-      where: {
-        ownerId: parseInt(userId),
-      },
-    });
-
-    console.log('Test contacts:', testContacts);
-
-    const contactMap: { [key: number]: any } = {};
-
-    contacts.forEach(contact => {
+    const contactMap: { [key: string]: any } = {};
+    
+    contacts.forEach((contact: { userId: string | number | null; firstName: any; lastName: any; }) => {
       if (contact.userId !== null) {
-        contactMap[contact.userId] = `${contact.firstName} ${contact.lastName}`;
+        contactMap[String(contact.userId)] = `${contact.firstName} ${contact.lastName}`;
+      }
+    });
+    
+    users.forEach((user: { id: string | number; username: any; }) => {
+      if (contactMap[String(user.id)]) {
+        user.username = contactMap[String(user.id)];
       }
     });
 
-    users.forEach(user => {
-      if (contactMap[user.id]) {
-        user.username = contactMap[user.id];
-      }
-    });
-
-    const conversations = users.map(user => ({
+    const conversations = users.map((user: { id: string | number; }) => ({
       user,
       lastMessage: conversationMap[user.id],
     }));

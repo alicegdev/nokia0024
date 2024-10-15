@@ -58,7 +58,7 @@ const ConversationsList = () => {
       const userId = decoded.id;
       console.log(userId);
 
-      const response = await axios.get(`https://n0kia-0024.com/messages/conversations/${userId}`, {
+      const response = await axios.get(`http://10.0.2.2:5050/messages/conversations/${userId}`, {
         headers: {
           Authorization: token,
         },
