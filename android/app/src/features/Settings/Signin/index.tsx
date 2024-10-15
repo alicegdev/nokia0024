@@ -1,5 +1,3 @@
-// src/features/Signin.tsx
-
 import React, { useEffect, useState, useContext } from "react"; 
 import {
   View,
@@ -8,19 +6,21 @@ import {
   Alert,
   StyleSheet,
   TouchableOpacity,
+  Modal,
 } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { initializeSocket } from '../../../socket';
-import { color } from 'src/styles'; // Assurez-vous que le chemin est correct
-import { AuthContext, AuthContextType } from '../../../contexts/AuthContext'; // Import du contexte
+import { color } from 'src/styles';
+import { AuthContext, AuthContextType } from '../../../contexts/AuthContext';
 
 function Signin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigation: any = useNavigation();
-  const context = useContext<AuthContextType>(AuthContext); // Utilisation du contexte
+  const [modalVisible, setModalVisible] = useState(false);
+  const context = useContext<AuthContextType>(AuthContext);
 
   const handleLogin = async () => {
     try {
@@ -36,19 +36,16 @@ function Signin() {
       if (data.token) {
         await AsyncStorage.setItem('token', data.token);
         console.log('Signin - handleLogin - token saved');
-        // Initialiser la connexion socket
         await initializeSocket();
         console.log('Signin - handleLogin - socket initialized');
-        // Mettre à jour le contexte d'authentification
-        await context.login(data.token); // Appeler checkAuth pour mettre à jour le contexte
+        await context.login(data.token);
         console.log('Signin - handleLogin - checkAuth called');
-        // Naviguer vers l'écran d'accueil
         navigation.navigate('HomePage');
         console.log('Signin - handleLogin - navigated to HomePage');
       }
     } catch (error) {
       console.error('Signin - handleLogin - error:', error);
-      Alert.alert("Error", "An error occurred during login.");
+      setModalVisible(true);
     }
   };
 
@@ -95,6 +92,27 @@ function Signin() {
           <Text style={styles.switchButtonText}>Don't have an account? Sign Up</Text>
         </TouchableOpacity>
       </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.label}>Email or password doesn't exist</Text>
+            <TouchableOpacity
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setModalVisible(!modalVisible)}
+            >
+              <Text style={styles.saveButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -195,6 +213,42 @@ const styles = StyleSheet.create({
     color: color.relief,
     fontSize: 16,
     fontFamily: "Nokia",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: color.menu,
+    borderRadius: 20,
+    padding: 50,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontFamily: "Nokia",
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    margin: 10,
+    elevation: 2,
+    
+  },
+  buttonClose: {
+    backgroundColor: color.relief,
   },
 });
 
