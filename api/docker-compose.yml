@@ -23,7 +23,7 @@ services:
   db:
     image: postgres:16
     ports:
-      - "5432:5423"
+      - "5432:5432"
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: password
