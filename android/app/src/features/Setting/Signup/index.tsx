@@ -20,7 +20,7 @@ function Signup() {
 
     const handleSignup = async () => {
         try {
-            const response = await axios.post('https://n0kia-0024.com/users/', {
+            const response = await axios.post('http://10.0.2.2:5050/users/', {
                 username,
                 email,
                 password,

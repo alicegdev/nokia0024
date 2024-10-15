@@ -21,6 +21,7 @@ import Sound from "src/features/Settings/Sound";
 import Background from "src/features/Settings/Background";
 import DeleteAccount from "src/features/Settings/Account/DeleteAccount";
 import ChangePassword from "src/features/Settings/Account/ChangePassword";
+import ConversationsList from "src/features/Message/ConversationsList";
 
 
 // Ordered by folder
@@ -46,6 +47,7 @@ const routesConfig = [
 
   // Message
   { name: 'ChatScreen', component: ChatScreen },
+  { name: 'ConversationsList', component: ConversationsList },
   // Music
   { name: 'Music', component: Music },
 

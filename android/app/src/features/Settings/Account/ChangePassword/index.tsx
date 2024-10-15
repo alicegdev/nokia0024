@@ -20,7 +20,7 @@ const ChangePassword = () => {
     console.log(token);
     try {
       const response = await axios.patch(
-        `https://n0kia-0024.com/users/${userId}`,
+        `http://10.0.2.2:5050/users/${userId}`,
         {
           oldPassword,
           newPassword,
