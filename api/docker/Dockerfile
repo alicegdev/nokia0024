@@ -4,7 +4,7 @@ FROM node:22 AS builder
 # Définir le répertoire de travail
 WORKDIR /api
 
-COPY . .
+COPY ./api .
 RUN npm install
 RUN npm run build
 
@@ -15,9 +15,9 @@ FROM node:22 as api
 WORKDIR /api
 
 # Copier les fichiers construits et les dépendances de l'étape précédente
-COPY --from=builder ./api/build ./build
-COPY ./package*.json ./
-COPY ./src/prisma ./src/prisma
+COPY --from=builder /api/build ./build
+COPY /api/package*.json ./
+COPY ./api/src/prisma ./src/prisma
 
 # Installer les dépendances nécessaires pour l'exécution
 RUN npm install
