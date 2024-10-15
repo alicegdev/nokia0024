@@ -10,3 +10,4 @@ app/.idea
 .idea
 .vscode
 android/app/.idea
+api/nginx
