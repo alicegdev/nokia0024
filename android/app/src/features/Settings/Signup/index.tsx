@@ -7,15 +7,17 @@ import {
   Alert,
   StyleSheet,
   TouchableOpacity,
+  Modal,
 } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import axios from "axios";
-import { color } from 'src/styles'; // Assurez-vous que le chemin est correct
+import { color } from 'src/styles';
 
 function Signup() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
   const navigation: any = useNavigation();
 
     const handleSignup = async () => {
@@ -28,10 +30,8 @@ function Signup() {
 
       const data = await response.data;
 
-      Alert.alert("Success", "Your account has been created!");
+      setModalVisible(true);
 
-      // Naviguer vers l'écran de connexion après une inscription réussie
-      navigation.navigate('Signin');
     } catch (error) {
       console.error(error);
       Alert.alert("Error", "An error occurred during signup.");
@@ -94,6 +94,27 @@ function Signup() {
           <Text style={styles.switchButtonText}>Already have an account? Sign In</Text>
         </TouchableOpacity>
       </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.label}>Account Created</Text>
+            <TouchableOpacity
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => navigation.navigate('Signin')}
+            >
+              <Text style={styles.saveButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -193,6 +214,42 @@ const styles = StyleSheet.create({
     color: color.relief,
     fontSize: 16,
     fontFamily: "Nokia",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: color.menu,
+    borderRadius: 20,
+    padding: 50,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontFamily: "Nokia",
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    margin: 10,
+    elevation: 2,
+    
+  },
+  buttonClose: {
+    backgroundColor: color.relief,
   },
 });
 

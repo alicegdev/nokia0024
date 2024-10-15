@@ -30,11 +30,11 @@ const Account = () => {
   const navigation:any = useNavigation();  // Hook for navigation
 
   const menuLinks = [
+    { key: "ChangePassword", label: "Change password" },
     {
       key: "DeleteAccount",
       label: "Delete account",
     },
-    { key: "ChangePassword", label: "Change password" },
   ];
   const getUserById = async () => {
     if (token && userId) {
