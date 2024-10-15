@@ -44,7 +44,7 @@ const io = new Server(httpServer, {
   path: '/socket.io', // Assurez-vous que le chemin est correct
   cors: {
     origin: "*",
-    methods: ["GET", "POST"]
+    methods: ["GET", "POST", "DELETE", "PATCH"]
   }
 });
 
