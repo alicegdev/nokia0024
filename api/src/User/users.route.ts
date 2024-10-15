@@ -6,11 +6,11 @@ const router = Router();
 
 router.post('/', createUser);
 router.post('/login', loginUser);
-router.get('/:id', getUserById);
-router.patch('/:id', updatePassword);
 
-router.delete('/:id', deleteUser);
-router.use(verifyToken);
+router.get('/:id', verifyToken, getUserById);
+router.patch('/:id', verifyToken, updatePassword);
+
+router.delete('/:id', verifyToken, deleteUser);
 
 // Routes
 router.get('/', getAllUsers);
