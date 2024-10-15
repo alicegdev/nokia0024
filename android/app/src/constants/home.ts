@@ -17,6 +17,6 @@ export const navHomes = [
 export const navFooters = [
     { id: PhoneImage, navigateTo: 'ContactList' },
     { id: InternetImage, navigateTo: 'Internet' },
-    { id: MessageImage, navigateTo: 'ChatScreen' },
+    { id: MessageImage, navigateTo: 'ConversationsList' },
     { id: MusicImage, navigateTo: 'Music' },
 ]

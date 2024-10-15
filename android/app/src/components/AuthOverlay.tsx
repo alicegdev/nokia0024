@@ -147,7 +147,7 @@ useEffect(() => {
     outputRange: [10, 15],
   });
 
-  if (!isAuthChecked || (!isLoggedIn && !isTokenExpired)) {
+  if (!isAuthChecked || !isTokenExpired) {
     console.log('AuthOverlay - not showing overlay');
     return null;
   }
