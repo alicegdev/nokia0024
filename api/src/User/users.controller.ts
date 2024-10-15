@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import prisma from '../db/index';
+import { validationResult } from 'express-validator';
 
 dotenv.config();
 
@@ -14,6 +15,14 @@ if (!secretKey) {
 
 // Login user
 export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
+
+      // Handle validation errors
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    // Return all error messages
+    return res.status(400).json({ error: errors.array()[0].msg });
+  }
+
     try {
         const { email, password } = req.body;
 
@@ -76,6 +85,14 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
 
 // Create a new user
 export const createUser = async (req: Request, res: Response, next: NextFunction) => {
+
+  // Handle validation errors
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    // Return all error messages
+    return res.status(400).json({ error: errors.array()[0].msg });
+  }
+
     try {
         const { username, email, password } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10); // Hash the password with a salt round of 10
@@ -135,6 +152,14 @@ export const getUserByEmail = async (req: Request, res: Response) => {
   
 // Fonction pour mettre à jour le mot de passe d'un utilisateur
 export const updatePassword = async (req: Request, res: Response, next: NextFunction) => {
+
+  // Handle validation errors
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    // Return all error messages
+    return res.status(400).json({ error: errors.array()[0].msg });
+  }
+
     try {
         const { id } = req.params;
         const { oldPassword, newPassword } = req.body;

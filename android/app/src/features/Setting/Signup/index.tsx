@@ -16,28 +16,40 @@ function Signup() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState('');
   const navigation: any = useNavigation();
 
-    const handleSignup = async () => {
-        try {
-            const response = await axios.post('https://n0kia-0024.com/users/', {
-                username,
-                email,
-                password,
-            });
+  const handleSignup = async () => {
+    // Client-side validation
+    if (!username || !email || !password) {
+      setError('All fields are required.');
+      return;
+    }
 
-      const data = await response.data;
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters long.');
+      return;
+    }
 
-      Alert.alert("Success", "Your account has been created!");
+    try {
+      const response = await axios.post('https://n0kia-0024.com/users/', {
+        username,
+        email,
+        password,
+      });
 
-      // Naviguer vers l'écran de connexion après une inscription réussie
+      // Navigate to Signin
       navigation.navigate('Signin');
     } catch (error) {
-      console.error(error);
-      Alert.alert("Error", "An error occurred during signup.");
+      console.error('Signup - handleSignup - error:', error);
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.error || 'An error occurred during signup.';
+        setError(errorMessage);
+      } else {
+        setError('An error occurred during signup.');
+      }
     }
   };
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -84,6 +96,7 @@ function Signup() {
             secureTextEntry
           />
         </View>
+        {error ? <Text style={styles.switchButtonText}>{error}</Text> : null}
         <TouchableOpacity style={styles.saveButton} onPress={handleSignup}>
           <Text style={styles.saveButtonText}>Signup</Text>
         </TouchableOpacity>

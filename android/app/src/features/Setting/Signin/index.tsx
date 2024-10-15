@@ -1,5 +1,4 @@
 // src/features/Signin.tsx
-
 import React, { useEffect, useState, useContext } from "react"; 
 import {
   View,
@@ -19,8 +18,9 @@ import { AuthContext, AuthContextType } from '../../../contexts/AuthContext'; //
 function Signin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState('');
   const navigation: any = useNavigation();
-  const context = useContext<AuthContextType>(AuthContext); // Utilisation du contexte
+  const context = useContext<AuthContextType>(AuthContext);
 
   const handleLogin = async () => {
     try {
@@ -31,24 +31,20 @@ function Signin() {
 
       const data = response.data;
 
-      console.log('Signin - handleLogin - response data:', data);
-
       if (data.token) {
         await AsyncStorage.setItem('token', data.token);
-        console.log('Signin - handleLogin - token saved');
-        // Initialiser la connexion socket
         await initializeSocket();
-        console.log('Signin - handleLogin - socket initialized');
-        // Mettre à jour le contexte d'authentification
-        await context.login(data.token); // Appeler checkAuth pour mettre à jour le contexte
-        console.log('Signin - handleLogin - checkAuth called');
-        // Naviguer vers l'écran d'accueil
+        await context.login(data.token);
         navigation.navigate('HomePage');
-        console.log('Signin - handleLogin - navigated to HomePage');
       }
     } catch (error) {
       console.error('Signin - handleLogin - error:', error);
-      Alert.alert("Error", "An error occurred during login.");
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.error || 'An error occurred during login.';
+        setError(errorMessage);
+      } else {
+        setError('An error occurred during login.');
+      }
     }
   };
 
@@ -85,6 +81,7 @@ function Signin() {
             secureTextEntry
           />
         </View>
+        {error ? <Text style={styles.switchButtonText}>{error}</Text> : null}
         <TouchableOpacity style={styles.saveButton} onPress={handleLogin}>
           <Text style={styles.saveButtonText}>Login</Text>
         </TouchableOpacity>
