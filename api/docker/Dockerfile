@@ -16,9 +16,8 @@ WORKDIR /api
 
 # Copier les fichiers construits et les dépendances de l'étape précédente
 COPY --from=builder ./api/build ./build
-COPY --from=builder ./api/src/prisma ./src/prisma
-
 COPY ./package*.json ./
+COPY ./src/prisma ./src/prisma
 
 # Installer les dépendances nécessaires pour l'exécution
 RUN npm install
