@@ -77,7 +77,7 @@ const ChatScreen = ({ route }: any) => {
     try {
       const token = await AsyncStorage.getItem('token');
       const response = await axios.get(
-        `http://10.0.2.2:5050/messages/${userId}/${receiverId}`,
+        `https://n0kia-0024.com/messages/${userId}/${receiverId}`,
         {
           headers: {
             Authorization: token,

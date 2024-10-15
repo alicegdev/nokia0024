@@ -40,7 +40,7 @@ const Account = () => {
     if (token && userId) {
       try {
         const response = await axios.get<AccountProps>(
-          `http://10.0.2.2:5050/users/${userId}`,
+          `https://n0kia-0024.com/users/${userId}`,
           {
             headers: {
               Authorization: token,

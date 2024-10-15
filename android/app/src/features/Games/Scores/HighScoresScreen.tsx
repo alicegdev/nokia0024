@@ -20,7 +20,7 @@ const HighScoresScreen = ({ game, gameName, score }: HighScoresProps) => {
   const sendScore = async () => {
     if (token) {
       try {
-        const response = await axios.post("http://10.0.2.2:5050/scores/add", {
+        const response = await axios.post("https://n0kia-0024.com/scores/add", {
           headers: {
               Authorization: token,
             },
@@ -41,7 +41,7 @@ const HighScoresScreen = ({ game, gameName, score }: HighScoresProps) => {
 
   const fetchScores = async (token: string) => {
     try {
-      const response = await axios.get("http://10.0.2.2:5050/scores", {
+      const response = await axios.get("https://n0kia-0024.com/scores", {
        headers: {
               Authorization: token,
             },

@@ -43,7 +43,7 @@ const AddEditContact = () => {
 
   const fetchContact = async () => {
     try {
-      const response = await axios.get(`http://10.0.2.2:5050/contacts/${contactId}`);
+      const response = await axios.get(`https://n0kia-0024.com/contacts/${contactId}`);
       setForm({
         firstName: response.data.firstName,
         lastName: response.data.lastName,
@@ -61,7 +61,7 @@ const AddEditContact = () => {
     try {
       if (contactId) {
         // route protégée et nécessite un token
-        await axios.put(`http://10.0.2.2:5050/contacts/${contactId}`, form, {
+        await axios.put(`https://n0kia-0024.com/contacts/${contactId}`, form, {
           headers: {
             Authorization: token,
           },
@@ -70,7 +70,7 @@ const AddEditContact = () => {
         );
       } else {
         console.log(token);
-        await axios.post("http://10.0.2.2:5050/contacts", form, {
+        await axios.post("https://n0kia-0024.com/contacts", form, {
           headers: {
             Authorization: token,
           },
