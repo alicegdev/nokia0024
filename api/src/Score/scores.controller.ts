@@ -19,14 +19,14 @@ export const addScore = async (req: Request, res: Response, next: NextFunction) 
             return res.status(400).json({ error: 'score, gameId, and userId are required' });
         }
 
-        const scoreObject = await prisma.score.create({
+        await prisma.score.create({
             data: {
                 score,
                 gameId,
                 userId
             }
         });
-        res.status(201).json(scoreObject);
+        res.status(200).json({message: "Score sent."});
     } catch (error) {
         console.log("Error adding score, " + error)
         res.status(500).json({ error: 'Something went wrong' });

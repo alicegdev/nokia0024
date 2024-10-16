@@ -52,7 +52,7 @@ describe('Score Controller', () => {
                     userId: 1,
                 },
             });
-            expect(res.json).toHaveBeenCalledWith(mockScore);
+            expect(res.json).toHaveBeenCalledWith({ "message": "Score sent." });
         });
 
         it('should return 500 if an error occurs', async () => {
