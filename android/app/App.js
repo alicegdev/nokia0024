@@ -1,15 +1,14 @@
-// App.js
-
 import React, { useState, useEffect } from "react";
-import { View } from "react-native"; // Import de View pour englober les composants
+import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import routesConfig from "./src/config/routes.config";
 import LoadingAnimation from "./src/components/LoadingAnimation";
 import { AudioProvider } from "./src/contexts/AudioContext";
-import { AuthProvider } from "./src/contexts/AuthContext"; // Import du AuthProvider
-import AuthOverlay from "./src/components/AuthOverlay"; // Import du AuthOverlay
+import { AuthProvider } from "./src/contexts/AuthContext"; 
+import AuthOverlay from "./src/components/AuthOverlay";
+import { MessagesProvider } from 'src/contexts/MessagesContext';
 
 const Stack = createNativeStackNavigator();
 
@@ -56,6 +55,7 @@ export default function App() {
   return (
     <AuthProvider>
       <NavigationContainer>
+        <MessagesProvider>
         <AudioProvider>
           <View style={{ flex: 1 }}>
             <Stack.Navigator
@@ -69,6 +69,7 @@ export default function App() {
             <AuthOverlay />
           </View>
         </AudioProvider>
+        </MessagesProvider>
       </NavigationContainer>
     </AuthProvider>
   );

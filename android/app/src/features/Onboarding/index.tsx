@@ -9,18 +9,18 @@ const Onboarding = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Bienvenue sur Nokia 0024</Text>
+      <Text style={styles.title}>Welcome to Nokia 0024</Text>
       <TouchableOpacity
         style={styles.button}
         onPress={() => navigation.navigate('Signup')}
       >
-        <Text style={styles.buttonText}>S'inscrire</Text>
+        <Text style={styles.buttonText}>Sign up</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.button}
         onPress={() => navigation.navigate('HomePage')}
       >
-        <Text style={styles.buttonText}>Continuer sans compte</Text>
+        <Text style={styles.buttonText}>Continue without an account</Text>
       </TouchableOpacity>
     </View>
   );

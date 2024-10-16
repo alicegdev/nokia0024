@@ -5,10 +5,13 @@ import { Screen } from "src/components";
 import styles from "./styles";
 import { navFooters } from "src/constants";
 import { internet } from "src/utils/Internet";
+import { MessagesContext } from 'src/contexts/MessagesContext';
+import React, { useContext } from 'react';
 
 export const HomeFooter = () => {
     const navigation: any = useNavigation();
     const fontsLoaded = useFonts();
+    const { unreadMessages, clearUnreadMessages } = useContext(MessagesContext);
 
     if (!fontsLoaded) {
         return <ActivityIndicator size="large" color="#0000ff" />;
@@ -32,6 +35,11 @@ export const HomeFooter = () => {
                             onPress={() => handlePress(navFooter.navigateTo)}
                         >
                             <Image source={navFooter.id}/>
+                            {navFooter.navigateTo === 'ConversationsList' && Object.keys(unreadMessages).length > 0 && (
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}></Text>
+                </View>
+              )}
                         </TouchableOpacity>
                     </View>
                 ))}

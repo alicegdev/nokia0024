@@ -7,6 +7,7 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { color, spacing } from 'src/styles'; // Import des styles
 import { AuthContext } from 'src/contexts/AuthContext';
+import { MessagesContext } from 'src/contexts/MessagesContext';
 
 interface Message {
   id: number;
@@ -26,7 +27,8 @@ const ChatScreen = ({ route }: any) => {
   const receiverId = Number(receiverIdParam);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');
-  const { state } = useContext(AuthContext); // Utilisation de state et logout à partir du contexte
+  const { state } = useContext(AuthContext);
+  const { markConversationAsRead } = useContext(MessagesContext);
   const token = state.token;
   const userId = state.userId;
 
@@ -42,6 +44,11 @@ const ChatScreen = ({ route }: any) => {
 
     initializeChat();
   }, []);
+
+  useEffect(() => {
+    markConversationAsRead(receiverId.toString());
+  }, [receiverId]);
+
 
   useEffect(() => {
     if (userId !== null) {

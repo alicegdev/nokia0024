@@ -15,10 +15,8 @@ if (!secretKey) {
 
 export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
 
-      // Handle validation errors
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    // Return all error messages
     return res.status(400).json({ error: errors.array()[0].msg });
   }
 
@@ -42,8 +40,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
         }
 
         const token = jwt.sign({ id: user.id }, secretKey, {
-            expiresIn: '5m'
-            // expiresIn: '1h'
+            expiresIn: '30d'
         });
 
         res.json({ token });
@@ -78,16 +75,14 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
 
 export const createUser = async (req: Request, res: Response, next: NextFunction) => {
 
-  // Handle validation errors
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    // Return all error messages
     return res.status(400).json({ error: errors.array()[0].msg });
   }
 
     try {
         const { username, email, password } = req.body;
-        const hashedPassword = await bcrypt.hash(password, 10); // Hash the password with a salt round of 10
+        const hashedPassword = await bcrypt.hash(password, 10);
         const musiques: never[] = [];
         const user = await prisma.user.create({
             data: {
@@ -144,10 +139,8 @@ export const getUserByEmail = async (req: Request, res: Response) => {
   
 export const updatePassword = async (req: Request, res: Response, next: NextFunction) => {
 
-  // Handle validation errors
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    // Return all error messages
     return res.status(400).json({ error: errors.array()[0].msg });
   }
 

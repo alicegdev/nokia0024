@@ -45,7 +45,7 @@ const SpaceBlast = () => {
     setIsVisible(true);
     setFinalScore(score);
     try {
-      await axios.post(`http://51.158.69.60:5050/score`);
+      await axios.post(`https://n0kia-0024.com/score`);
     } catch (error) {
       console.error(error);
     }
