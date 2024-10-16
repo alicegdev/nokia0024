@@ -55,7 +55,7 @@ describe('loginUser', () => {
             where: { email: 'test@example.com' },
         });
         expect(bcrypt.compare).toHaveBeenCalledWith('password123', 'hashedPassword123');
-        expect(jwt.sign).toHaveBeenCalledWith({ id: 1 }, process.env.TOKEN_SECRET_KEY, { expiresIn: '5m' });
+        expect(jwt.sign).toHaveBeenCalledWith({ id: 1 }, process.env.TOKEN_SECRET_KEY, { expiresIn: '30d' });
         expect(res.json).toHaveBeenCalledWith({ token: 'fakeToken' });
     });
 
