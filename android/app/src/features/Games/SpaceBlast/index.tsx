@@ -20,7 +20,7 @@ const SpaceBlast = () => {
     y: 700,
   };
   const NEW_ENEMY_SPAWN_INTERVAL = 200;
-  const ENEMY_RESPAWN_Y = 50;
+  const ENEMY_RESPAWN_Y = 0;
 
   const [isVisible, setIsVisible] = useState(true);
   const [isPaused, setIsPaused] = useState(true);
@@ -151,7 +151,7 @@ const SpaceBlast = () => {
 
       enemyMoveInterval.current = setInterval(
         moveEnemies,
-        score > 500 ? 50 : 100
+        50
       );
 
       return () => {
