@@ -91,37 +91,34 @@ const Breakout: React.FC = () => {
       if (!isPaused && !isGameOver) {
         let newPosX = ballPosition.x + ballVelocity.vx;
         let newPosY = ballPosition.y + ballVelocity.vy;
-
-        if (
-          newPosX <= 0 ||
-          newPosX >= screenWidth - rightBorderReduction - ballSize
-        ) {
+  
+        if (newPosX <= 0 || newPosX >= screenWidth - rightBorderReduction - ballSize) {
           setBallVelocity((prev) => ({ ...prev, vx: -prev.vx }));
-          newPosX = Math.max(
-            0,
-            Math.min(screenWidth - rightBorderReduction - ballSize, newPosX)
-          );
+          newPosX = Math.max(0, Math.min(screenWidth - rightBorderReduction - ballSize, newPosX));
         }
-
-        if (newPosY <= 0 || newPosY >= screenHeight - ballSize) {
+  
+        if (newPosY <= 0) {
           setBallVelocity((prev) => ({ ...prev, vy: -prev.vy }));
-          newPosY = Math.max(0, Math.min(screenHeight - ballSize, newPosY));
+          newPosY = Math.max(0, newPosY);
+        } else if (newPosY + ballSize >= screenHeight - 40) {
+          if (
+            newPosY + ballSize >= screenHeight - 40 &&
+            newPosX + ballSize >= paddlePosition &&
+            newPosX <= paddlePosition + paddleWidth
+          ) {
+            const paddleCenter = paddlePosition + paddleWidth / 2;
+            const ballCenter = newPosX + ballSize / 2;
+            if (ballCenter < paddleCenter) {
+              setBallVelocity((prev) => ({ vx: -Math.abs(prev.vx), vy: -Math.abs(prev.vy) }));
+            } else {
+              setBallVelocity((prev) => ({ vx: Math.abs(prev.vx), vy: -Math.abs(prev.vy) }));
+            }
+            newPosY = screenHeight - 40 - ballSize;
+          }
         }
-
-        const paddleTop = screenHeight - 40;
-        if (
-          newPosY + ballSize >= paddleTop &&
-          newPosX + ballSize >= paddlePosition &&
-          newPosX <= paddlePosition + paddleWidth
-        ) {
-          setBallVelocity((prev) => ({ ...prev, vy: -Math.abs(prev.vy) }));
-          newPosY = paddleTop - ballSize;
-        }
-        if (newPosY >= screenHeight - 20) {
-          setIsGameOver(true);
-        }
-
+  
         setBallPosition({ x: newPosX, y: newPosY });
+  
         let updatedBricks = bricks.map((brick) => {
           if (
             brick.isVisible &&
@@ -131,19 +128,19 @@ const Breakout: React.FC = () => {
             newPosX <= brick.posX + brick.width
           ) {
             setScore((prevScore) => prevScore + 10);
-            setBallVelocity((prev) => ({ ...prev, vy: -prev.vy })); // Reverse ball's direction
-            return { ...brick, isVisible: false }; // Hide the brick
+            setBallVelocity((prev) => ({ ...prev, vy: -prev.vy }));
+            return { ...brick, isVisible: false };
           }
           return brick;
         });
-
+  
         setBricks(updatedBricks);
-        setBallPosition({ x: newPosX, y: newPosY });
       }
     }, 10);
-
+  
     return () => clearInterval(interval);
   }, [ballPosition, ballVelocity, isPaused, paddlePosition, bricks]);
+  
 
   useEffect(() => {
     const allBricksDestroyed = bricks.every((brick) => !brick.isVisible);
