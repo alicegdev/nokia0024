@@ -50,12 +50,18 @@ const Gallery: React.FC = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Gallery</Text>
-            <FlatList
-                data={photos}
-                keyExtractor={(item: Asset) => item.id}
-                renderItem={renderPhoto}
-                numColumns={3}
-            />
+            {photos.length === 0 ? (
+                <View style={styles.emptyContainer}>
+                    <Text style={styles.emptyText}>You don't have any photo</Text>
+                </View>
+            ) : (
+                <FlatList
+                    data={photos}
+                    keyExtractor={(item: Asset) => item.id}
+                    renderItem={renderPhoto}
+                    numColumns={3}
+                />
+            )}
             <Modal
                 animationType="slide"
                 transparent={true}
