@@ -20,7 +20,7 @@ const ChangePassword = () => {
     console.log(token);
     try {
       const response = await axios.patch(
-        `https://n0kia-0024.com/users/${userId}`,
+        `${process.env.EXPO_PUBLIC_URL}/users/${userId}`,
         {
           oldPassword,
           newPassword,

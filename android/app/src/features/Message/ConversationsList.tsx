@@ -1,5 +1,3 @@
-// src/components/ConversationsList.tsx
-
 import React, { useEffect, useState, useContext } from 'react';
 import { MessagesContext } from '../../contexts/MessagesContext';
 import { 
@@ -68,7 +66,7 @@ const ConversationsList = () => {
       const userId = decoded.id;
       console.log(userId);
 
-      const response = await axios.get(`https://n0kia-0024.com/messages/conversations/${userId}`, {
+      const response = await axios.get(`${process.env.EXPO_PUBLIC_URL}/messages/conversations/${userId}`, {
         headers: {
           Authorization: token,
         },

@@ -20,7 +20,7 @@ const HighScoresScreen = ({ game, gameName, score }: HighScoresProps) => {
     if (token) {
       try {
         const response = await axios.post(
-          "https://n0kia-0024.com/scores/add",
+          "${process.env.EXPO_PUBLIC_URL}/scores/add",
           { score, gameId: game, userId },
           {
             headers: {
@@ -44,7 +44,11 @@ const HighScoresScreen = ({ game, gameName, score }: HighScoresProps) => {
   const fetchScores = async (token: string) => {
     console.log("Game id: " + game);
     try {
-      const response = await axios.get(`https://n0kia-0024.com/scores/${game}`);
+      const response = await axios.get(`${process.env.EXPO_PUBLIC_URL}/scores/${game}`, {
+        headers: {
+          Authorization: token,
+        }
+      });
       setScores(response.data);
       console.log(response);
     } catch (error) {

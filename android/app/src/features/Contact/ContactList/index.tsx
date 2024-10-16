@@ -93,7 +93,7 @@ const ContactList = () => {
   const fetchContacts = async (): Promise<Contact[]> => {
     const token = await AsyncStorage.getItem('token');
     try {
-      const response = await axios.get('https://n0kia-0024.com/contacts', {
+      const response = await axios.get(`${process.env.EXPO_PUBLIC_URL}/contacts`, {
         headers: {
           Authorization: token,
         },
@@ -162,7 +162,7 @@ const ContactList = () => {
 
         try {
           const response = await axios.get(
-            `https://n0kia-0024.com/users/by-email/${contact.email}`,
+            `${process.env.EXPO_PUBLIC_URL}/users/by-email/${contact.email}`,
             {
               headers: {
                 Authorization: token,
@@ -216,7 +216,7 @@ const deleteContact = (contact: Contact) => {
 const handleDelete = async (contact: Contact) => {
   const token = await AsyncStorage.getItem('token');
   try {
-    await axios.delete(`https://n0kia-0024.com/contacts/${contact.id}`, {
+    await axios.delete(`${process.env.EXPO_PUBLIC_URL}/contacts/${contact.id}`, {
       headers: {
         Authorization: token,
       },
