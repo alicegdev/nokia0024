@@ -342,9 +342,9 @@ const handleDelete = async (contact: Contact) => {
             <Text style={styles.modalTitle}>Contact</Text>
             {selectedContact && (
               <>
-                <Text style={styles.modalText}>Nom : {selectedContact.firstName} {selectedContact.lastName}</Text>
+                <Text style={styles.modalText}>Name : {selectedContact.firstName} {selectedContact.lastName}</Text>
                 {selectedContact.phoneNumber && (
-                  <Text style={styles.modalText}>Téléphone : {selectedContact.phoneNumber}</Text>
+                  <Text style={styles.modalText}>Phone number : {selectedContact.phoneNumber}</Text>
                 )}
                 {selectedContact.email && (
                   <Text style={styles.modalText}>Email : {selectedContact.email}</Text>
@@ -356,7 +356,7 @@ const handleDelete = async (contact: Contact) => {
                 style={styles.button}
                 onPress={() => startChatWithContact(selectedContact)}
               >
-                <Text style={styles.buttonText}>Message</Text>
+                <Text style={styles.buttonText}>Text</Text>
               </TouchableOpacity>
             ) : null
               }
@@ -369,14 +369,14 @@ const handleDelete = async (contact: Contact) => {
                 }
               >
 
-                <Text style={styles.buttonText}>Modifier</Text>
+                <Text style={styles.buttonText}>Edit</Text>
               </TouchableOpacity>
             )}
             <TouchableOpacity
               style={styles.closeButton}
               onPress={closeModal}
             >
-              <Text style={styles.closeButtonText}>Fermer</Text>
+              <Text style={styles.closeButtonText}>Close</Text>
             </TouchableOpacity>
           </View>
         </View>

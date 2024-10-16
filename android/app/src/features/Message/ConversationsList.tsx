@@ -1,6 +1,7 @@
 // src/components/ConversationsList.tsx
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
+import { MessagesContext } from '../../contexts/MessagesContext';
 import { 
   View, 
   Text, 
@@ -37,12 +38,21 @@ const ConversationsList = () => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
+  const { unreadMessages, markConversationAsRead } = useContext(MessagesContext);
 
   useEffect(() => {
     if (isFocused) {
       fetchConversations();
     }
   }, [isFocused]);
+
+  const handleConversationPress = (userId: number, username: string) => {
+    markConversationAsRead(userId.toString());
+    navigation.navigate('ChatScreen', {
+      receiverId: userId,
+      receiverName: username,
+    });
+  };
 
   const fetchConversations = async () => {
     setLoading(true);
@@ -83,14 +93,12 @@ const ConversationsList = () => {
   const renderConversationItem = ({ item }: { item: Conversation }) => {
     const { user, lastMessage } = item;
     const formattedDate = new Date(lastMessage.sendDate).toLocaleDateString();
+    const hasUnreadMessages = unreadMessages.hasOwnProperty(user.id.toString());
 
     return (
       <TouchableOpacity 
         style={styles.conversationItem}
-        onPress={() => navigation.navigate('ChatScreen', {
-          receiverId: user.id,
-          receiverName: user.username,
-        })}
+        onPress={() => handleConversationPress(user.id, user.username)}
       >
         <View style={styles.conversationInfo}>
           <Text style={styles.username}>{user.username}</Text>
@@ -98,6 +106,7 @@ const ConversationsList = () => {
         </View>
         <View style={styles.dateContainer}>
           <Text style={styles.date}>{formattedDate}</Text>
+          {hasUnreadMessages && <View style={styles.unreadDot} />}
         </View>
       </TouchableOpacity>
     );
@@ -201,6 +210,13 @@ const styles = StyleSheet.create({
     fontFamily: 'Nokia',
     color: color.relief,
     opacity: 0.7,
+  },
+  unreadDot: {
+    width: 10,
+    height: 10,
+    backgroundColor: 'red',
+    borderRadius: 5,
+    marginTop: 5,
   },
 });
 

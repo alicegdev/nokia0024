@@ -30,4 +30,19 @@ export default StyleSheet.create({
     alignItems: 'center',
     borderRadius: radius.lg,
   },
+  badge: {
+    position: 'absolute',
+    right: -6,
+    top: -3,
+    backgroundColor: 'red',
+    borderRadius: 6,
+    width: 12,
+    height: 12,
+  },
+  badgeText: {
+    color: 'white',
+    fontSize: 8,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
 });
