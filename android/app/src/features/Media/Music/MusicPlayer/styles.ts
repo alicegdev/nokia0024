@@ -29,5 +29,16 @@ export default StyleSheet.create({
     color: color.white,
     fontFamily: 'Nokia',
     fontSize: 10
-  }
+  },
+  emptyContainer: {
+    flex:1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: 16,
+    fontFamily: 'Nokia',
+    color: color.relief,
+    opacity: 0.7,
+  },
 });
