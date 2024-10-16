@@ -10,51 +10,48 @@ import { AuthContext } from "src/contexts/AuthContext";
 type SettingsRoutes = {
   Account: undefined;
   Brightness: undefined;
-    Sound: undefined;
-    Background: undefined;
-    Signin: undefined;
-    Logout: undefined; 
-}
+  Sound: undefined;
+  Background: undefined;
+  Signin: undefined;
+  Logout: undefined; 
+};
 
 const allSettings = [
-  { key: "Account", name: "Account", isPrivate: true},
+  { key: "Account", name: "Account", isPrivate: true },
   { key: "Brightness", name: "Brightness", isPrivate: false },
-  { key: "Sound", name: "Sound", isPrivate: false },
-  { key: "Background", name: "Background", isPrivate: true},
-  { key: "Signin", name: "Signin", isPrivate: false},
+  { key: "Signin", name: "Signin", isPrivate: false },
   { key: "Logout", name: "Logout", isPrivate: true },
 ];
 
-
 const Settings = () => {
-    const navigation = useNavigation<StackNavigationProp<SettingsRoutes>>();
-    const { state, logout } = useContext(AuthContext);
-    const isLoggedIn = state.isLoggedIn;
-    const filteredSettings = isLoggedIn ? allSettings : allSettings.filter((setting) => !setting.isPrivate);
-    const handleNavigation = async (key: keyof SettingsRoutes) => {
-        if (key !== "Logout") {
-              navigation.navigate(key);
-        } else {
-            await logout();
-      }
+  const navigation = useNavigation<StackNavigationProp<SettingsRoutes>>();
+  const { state, logout } = useContext(AuthContext);
+  const isLoggedIn = state.isLoggedIn;
+
+  const filteredSettings = isLoggedIn
+    ? allSettings.filter(setting => setting.isPrivate || setting.key !== "Signin")
+    : allSettings.filter(setting => !setting.isPrivate || setting.key === "Signin");
+
+  const handleNavigation = async (key: keyof SettingsRoutes) => {
+    if (key !== "Logout") {
+      navigation.navigate(key);
+    } else {
+      await logout();
+    }
   };
 
   return (
-    <SafeAreaView
-      style={{ flex: 1, backgroundColor: color.menu, paddingTop: spacing.lg }}
-    >
+    <SafeAreaView style={{ flex: 1, backgroundColor: color.menu, paddingTop: spacing.lg }}>
       <Text style={styles.settings}>Settings</Text>
-      <View style={{ flex: 1, marginBottom: "15%" }}>
+      <View style={{ flex: 1, marginBottom: "15%", padding: 4 }}>
         <ScrollView>
           {filteredSettings.map((setting) => (
             <TouchableOpacity
               key={setting.key}
-              onPress={() =>
-                handleNavigation(setting.key as keyof SettingsRoutes)
-              }
+              onPress={() => handleNavigation(setting.key as keyof SettingsRoutes)}
             >
               <View style={styles.list}>
-            <Text style={styles.textList}>{setting.name}</Text>
+                <Text style={styles.textList}>{setting.name}</Text>
               </View>
             </TouchableOpacity>
           ))}

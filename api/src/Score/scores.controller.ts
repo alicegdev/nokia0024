@@ -14,6 +14,11 @@ if (!secretKey) {
 export const addScore = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { score, gameId, userId } = req.body;
+
+         if (!score || !gameId || !userId) {
+            return res.status(400).json({ error: 'score, gameId, and userId are required' });
+        }
+
         const scoreObject = await prisma.score.create({
             data: {
                 score,
@@ -21,7 +26,7 @@ export const addScore = async (req: Request, res: Response, next: NextFunction) 
                 userId
             }
         });
-        res.json(scoreObject);
+        res.status(201).json(scoreObject);
     } catch (error) {
         console.log("Error adding score, " + error)
         res.status(500).json({ error: 'Something went wrong' });
@@ -51,6 +56,16 @@ export const getScores = async (req: Request, res: Response, next: NextFunction)
         res.json(scores);
     } catch (error) {
         console.log("Error getting scores" + error)
+        res.status(500).json({ error: 'Something went wrong' });
+    }
+};
+
+// Get all users
+export const getGames = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const games = await prisma.game.findMany();
+        res.json(games);
+    } catch (error) {
         res.status(500).json({ error: 'Something went wrong' });
     }
 };

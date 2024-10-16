@@ -1,13 +1,11 @@
 import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import debugLib from 'debug';
-import { Prisma } from '@prisma/client';
 
 dotenv.config();
 

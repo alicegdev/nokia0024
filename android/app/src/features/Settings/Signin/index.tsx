@@ -1,10 +1,8 @@
-// src/features/Signin.tsx
 import React, { useEffect, useState, useContext } from "react"; 
 import {
   View,
   Text,
   TextInput,
-  Alert,
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
@@ -12,8 +10,8 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { initializeSocket } from '../../../socket';
-import { color } from 'src/styles'; // Assurez-vous que le chemin est correct
-import { AuthContext, AuthContextType } from '../../../contexts/AuthContext'; // Import du contexte
+import { color } from 'src/styles';
+import { AuthContext, AuthContextType } from '../../../contexts/AuthContext';
 
 function Signin() {
   const [email, setEmail] = useState("");
@@ -192,6 +190,42 @@ const styles = StyleSheet.create({
     color: color.relief,
     fontSize: 16,
     fontFamily: "Nokia",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: color.menu,
+    borderRadius: 20,
+    padding: 50,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontFamily: "Nokia",
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    margin: 10,
+    elevation: 2,
+    
+  },
+  buttonClose: {
+    backgroundColor: color.relief,
   },
 });
 

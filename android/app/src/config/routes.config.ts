@@ -1,10 +1,10 @@
 
 import HomePage from "src/features/Home";
 import Music from "src/features/Media/Music";
-import Signin from "src/features/Setting/Signin";
+import Signin from "src/features/Settings/Signin";
 import Games from "src/features/Games";
 import SnakeIII from "src/features/Games/SnakeIII";
-import Signup from "src/features/Setting/Signup";
+import Signup from "src/features/Settings/Signup";
 import ContactList from "src/features/Contact/ContactList";
 import AddEditContact from "src/features/Contact/AddEditContact";
 import ContactDetails from "src/features/Contact/ContactDetails";
@@ -17,8 +17,6 @@ import Breakout from "src/features/Games/Breakout";
 import Settings from "src/features/Settings";
 import Account from "src/features/Settings/Account";
 import Brightness from "src/features/Settings/Brightness";
-import Sound from "src/features/Settings/Sound";
-import Background from "src/features/Settings/Background";
 import DeleteAccount from "src/features/Settings/Account/DeleteAccount";
 import ChangePassword from "src/features/Settings/Account/ChangePassword";
 import ConversationsList from "src/features/Message/ConversationsList";
@@ -35,10 +33,6 @@ const routesConfig = [
   { name: 'SnakeIII', component: SnakeIII },
   { name: 'SpaceBlast', component: SpaceBlast },
   { name: 'Breakout', component: Breakout },
-
-  //Setting
-  { name: 'Signin', component: Signin },
-  { name: 'Signup', component: Signup },
 
   // Contact
   { name: 'ContactList', component: ContactList },
@@ -57,12 +51,12 @@ const routesConfig = [
   
   //Settings
   { name: 'Settings', component: Settings },
+  { name: 'Signin', component: Signin },
+  { name: 'Signup', component: Signup },
   { name: 'Account', component: Account },
   { name: 'DeleteAccount', component: DeleteAccount },
   { name: 'ChangePassword', component: ChangePassword},
   { name: 'Brightness', component: Brightness },
-  { name: 'Sound', component: Sound },
-
 ];
 
 export default routesConfig;
