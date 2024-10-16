@@ -1,4 +1,3 @@
-// Signup.tsx
 import React, { useState } from "react";
 import {
   View,
@@ -31,7 +30,7 @@ function Signup() {
     }
 
     try {
-      const response = await axios.post('https://n0kia-0024.com/users/', {
+      const response = await axios.post(`${process.env.EXPO_PUBLIC_URL}/users/`, {
         username,
         email,
         password,

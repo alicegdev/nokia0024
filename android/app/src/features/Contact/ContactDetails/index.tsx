@@ -25,7 +25,7 @@ const ContactDetails = () => {
 
   const fetchContact = async () => {
     try {
-      const response: any = await axios.get(`https://n0kia-0024.com/contacts/${contactId}`);
+      const response: any = await axios.get(`${process.env.EXPO_PUBLIC_URL}/contacts/${contactId}`);
       setContact(response.data);
     } catch (error) {
       console.error(error);

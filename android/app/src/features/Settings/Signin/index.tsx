@@ -22,7 +22,7 @@ function Signin() {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('https://n0kia-0024.com/users/login', {
+      const response = await axios.post(`${process.env.EXPO_PUBLIC_URL}/users/login`, {
         email,
         password,
       });

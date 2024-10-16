@@ -1,4 +1,3 @@
-// ChatScreen.tsx
 import React, { useEffect, useState, useRef, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import { getSocket } from '../../socket';
@@ -84,7 +83,7 @@ const ChatScreen = ({ route }: any) => {
     try {
       const token = await AsyncStorage.getItem('token');
       const response = await axios.get(
-        `https://n0kia-0024.com/messages/${userId}/${receiverId}`,
+        `${process.env.EXPO_PUBLIC_URL}/messages/${userId}/${receiverId}`,
         {
           headers: {
             Authorization: token,
