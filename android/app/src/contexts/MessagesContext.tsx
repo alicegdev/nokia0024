@@ -1,9 +1,9 @@
 // src/contexts/MessagesContext.tsx
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import { io } from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from './AuthContext';
-import { getSocket } from '../socket';
+import { getSocket, initializeSocket } from '../socket';
 
 interface MessagesContextType {
   unreadMessages: { [conversationId: string]: number };
@@ -25,10 +25,15 @@ export const MessagesContext = createContext<MessagesContextType>({
   markConversationAsRead: () => {},
 });
 
-export const MessagesProvider: React.FC = ({ children }) => {
+interface MessageProviderProps {
+  children: ReactNode;
+}
+
+export const MessagesProvider: React.FC<MessageProviderProps> = ({ children }) => {
   const [unreadMessages, setUnreadMessages] = useState<{ [conversationId: string]: number }>({});
   const { state } = useContext(AuthContext);
   const userId = state.userId;
+  initializeSocket();
 
   useEffect(() => {
     console.log('MessagesProvider mounted');
