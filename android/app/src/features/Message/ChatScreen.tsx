@@ -4,7 +4,7 @@ import { getSocket } from '../../socket';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
-import { color, spacing } from 'src/styles'; // Import des styles
+import { color, spacing } from 'src/styles';
 import { AuthContext } from 'src/contexts/AuthContext';
 import { MessagesContext } from 'src/contexts/MessagesContext';
 
@@ -18,7 +18,6 @@ interface Message {
 
 interface DecodedToken {
   id: number;
-  // Ajoutez d'autres propriétés si nécessaires
 }
 
 const ChatScreen = ({ route }: any) => {
@@ -35,7 +34,6 @@ const ChatScreen = ({ route }: any) => {
 
   useEffect(() => {
     const initializeChat = async () => {
-      // Récupérer l'ID de l'utilisateur à partir du token
       if (token) {
         await fetchMessages(userId);
       }
@@ -71,7 +69,6 @@ const ChatScreen = ({ route }: any) => {
     }
   }, [userId]);
 
-  // Faire défiler la liste vers le bas lorsque les messages sont mis à jour
   useEffect(() => {
     if (messages.length > 0) {
       flatListRef.current?.scrollToEnd({ animated: true });
@@ -92,7 +89,6 @@ const ChatScreen = ({ route }: any) => {
       );
       console.log('Fetched messages:', response.data);
 
-      // Trier les messages du plus ancien au plus récent
       const sortedMessages = response.data.sort((a: Message, b: Message) =>
         new Date(a.sendDate).getTime() - new Date(b.sendDate).getTime()
       );
@@ -107,14 +103,13 @@ const ChatScreen = ({ route }: any) => {
     if (inputMessage.trim() === '') return;
     
     const newMessage: Message = {
-      id: Date.now(), // Utiliser un ID temporaire basé sur le timestamp
+      id: Date.now(),
       content: inputMessage,
       senderId: userId!,
       receiverId: receiverId,
       sendDate: new Date().toISOString(),
     };
   
-    // Ajouter le message à l'état messages
     setMessages((prevMessages) => [...prevMessages, newMessage]);
   
     const socket = getSocket();
@@ -162,7 +157,6 @@ const ChatScreen = ({ route }: any) => {
   );
 };
 
-// Styles mis à jour
 const styles = StyleSheet.create({
   container: {
     flex: 1,

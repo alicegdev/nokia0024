@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
 import Slider from '@react-native-community/slider';
 import * as Brightness from 'expo-brightness';
 import styles from './styles';

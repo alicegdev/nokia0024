@@ -5,8 +5,6 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import styles from "./styles";
 import Header from "../SnakeIII/Header";
 import axios from "axios";
-
-// Define the Missile interface
 interface Missile {
   x: number;
   y: number;
@@ -64,10 +62,8 @@ const SpaceBlast = () => {
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderGrant: () => {
-        // Resume the game on touch
         setIsPaused(false);
 
-        // Start shooting missiles
         shootingInterval.current = setInterval(() => {
           setMissiles((missiles) => [
             ...missiles,
@@ -88,7 +84,6 @@ const SpaceBlast = () => {
         shipPositionRef.current = { ...shipPosition, x: newShipX };
       },
       onPanResponderRelease: () => {
-        // Stop shooting missiles when touch ends
         if (shootingInterval.current) {
           clearInterval(shootingInterval.current);
           shootingInterval.current = null;
@@ -103,7 +98,6 @@ const SpaceBlast = () => {
     }
   }, [isGameOver]);
 
-  // Spawn enemies at regular intervals
   useEffect(() => {
     if (!isGameOver) {
       enemySpawnInterval.current = setInterval(() => {
@@ -120,7 +114,6 @@ const SpaceBlast = () => {
     };
   }, [isPaused, isGameOver]);
 
-  // Dynamically adjust enemy movement speed based on score
   useEffect(() => {
     if (!isPaused) {
       const moveEnemies = () => {
@@ -157,7 +150,6 @@ const SpaceBlast = () => {
     }
   }, [score, isGameOver, isPaused]);
 
-  // Move missiles at a regular interval
   useEffect(() => {
     if (!isGameOver) {
       missileMovementInterval.current = setInterval(() => {
@@ -178,7 +170,6 @@ const SpaceBlast = () => {
     };
   }, [isPaused, isGameOver]);
 
-  // Check for collisions between missiles and enemies
   useEffect(() => {
     const newMissiles = missiles.filter(
       (missile) =>

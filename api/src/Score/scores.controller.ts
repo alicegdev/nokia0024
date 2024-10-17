@@ -32,9 +32,7 @@ export const addScore = async (req: Request, res: Response, next: NextFunction) 
     }
 };
 
-// Create a new user
 export const getScores = async (req: Request, res: Response, next: NextFunction) => {
-   // Get a user by id
     try {
         const { gameId } = req.params;
         const scores = await prisma.score.findMany({
@@ -59,7 +57,6 @@ export const getScores = async (req: Request, res: Response, next: NextFunction)
     }
 };
 
-// Get all users
 export const getGames = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const games = await prisma.game.findMany();

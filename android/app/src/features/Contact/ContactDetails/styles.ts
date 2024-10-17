@@ -1,8 +1,8 @@
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-  root: {
+  container: {
     flex: 1,
-
+    padding: 20,
   },
 });

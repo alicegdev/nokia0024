@@ -14,7 +14,6 @@ const CameraScreen = () => {
   const cameraRef = useRef<CameraView>(null);
   const navigation: any = useNavigation();
 
-  // Fetch the latest photo
   useEffect(() => {
     async function fetchLatestPhoto() {
       try {
@@ -73,7 +72,6 @@ const CameraScreen = () => {
         ]).start(() => setOverlayVisible(false));
 
         const asset = await MediaLibrary.createAssetAsync(photo.uri);
-        // console.log('Photo saved!', asset);
         setLatestPhoto(asset.uri);
       } catch (e) {
         console.error('Error saving photo', e);
@@ -84,9 +82,6 @@ const CameraScreen = () => {
   return (
     <View style={styles.container}>
       <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
-        {/* <TouchableOpacity style={styles.closeButton} onPress={() => navigation.navigate('HomePage')}>
-          <Text style={styles.text}>x</Text>
-        </TouchableOpacity> */}
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Gallery')}>
             {latestPhoto ? (

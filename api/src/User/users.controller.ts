@@ -100,7 +100,6 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
     }
 };
 
-// Delete a user by id
 export const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;

@@ -21,7 +21,6 @@ export default function App() {
       try {
         const hasLaunched = await AsyncStorage.getItem("hasLaunched");
         if (hasLaunched == null) {
-          // Si l'application n'a jamais été lancée
           await AsyncStorage.setItem("hasLaunched", "true");
           setIsFirstLaunch(true);
         } else {
@@ -36,14 +35,13 @@ export default function App() {
   }, []);
 
   if (isFirstLaunch === null) {
-    // Optionnel : Afficher un écran de chargement pendant que AsyncStorage est vérifié
     return null;
   }
 
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
-    }, 5000); // Simule un chargement de 5 secondes
+    }, 5000);
   }, []);
 
   if (isLoading) {

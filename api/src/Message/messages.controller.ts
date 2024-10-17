@@ -1,11 +1,10 @@
 import { Request, Response } from 'express';
 import prisma from '../db/index';
 
-// Send a message via REST API
 export const sendMessage = async (req: Request, res: Response) => {
   const { receiverId, content } = req.body;
   console.log(`Controller : sending message to ${receiverId}: ${content}`);
-  const senderId = req.body.userId; // Retrieved from auth middleware
+  const senderId = req.body.userId;
   console.log(`Controller : sender ID: ${senderId}`);
 
   try {
@@ -24,13 +23,11 @@ export const sendMessage = async (req: Request, res: Response) => {
   }
 };
 
-// Récupérer les messages entre deux utilisateurs
 export const getMessages = async (req: Request, res: Response) => {
   console.log('Controller : fetching messages between sender and receiver');
   const { senderId, receiverId } = req.params;
   console.log(senderId, receiverId);
   console.log(`Controller : fetching messages between ${senderId} and ${receiverId}`);
-  // si senderId ou receiverId est NaN, renvoyer une erreur
   if (isNaN(parseInt(senderId)) || isNaN(parseInt(receiverId))) {
     return res.status(400).json({ error: 'Invalid senderId or receiverId' });
   }

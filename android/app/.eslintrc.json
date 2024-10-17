@@ -19,6 +19,6 @@
     "react-native"
   ],
   "rules": {
-    // vos règles ESLint ici
+    // Règles ESLint
   }
 }

@@ -3,15 +3,15 @@ import { Animated, StyleSheet, Text, PanResponder, Dimensions, View } from 'reac
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { color } from 'src/styles';
-import { AuthContext } from '../contexts/AuthContext'; // Adapté à ton nouveau contexte
+import { AuthContext } from '../contexts/AuthContext';
 
 const clamp = (value: number, min: number, max: number) => {
   return Math.min(Math.max(value, min), max);
 };
 
 const AuthOverlay = () => {
-  const { state, logout } = useContext(AuthContext); // Utilisation de state et logout à partir du contexte
-  const { isLoggedIn, isTokenExpired, isAuthChecked } = state; // Récupération des valeurs d'état à partir de state
+  const { state, logout } = useContext(AuthContext);
+  const { isLoggedIn, isTokenExpired, isAuthChecked } = state;
   console.log("State " + state);
   const animationValue = useRef(new Animated.Value(isTokenExpired ? 1 : 0)).current;
   const navigation: any = useNavigation();
@@ -24,7 +24,6 @@ const AuthOverlay = () => {
   const position = useRef(new Animated.ValueXY({ x: 20, y: screenHeight - 180 })).current;
   const currentPosition = useRef({ x: 20, y: screenHeight - 180 });
 
-  // Ajouter un listener pour suivre la position actuelle
   useEffect(() => {
     const listenerId = position.addListener(({ x, y }) => {
       currentPosition.current = { x, y };
@@ -129,14 +128,12 @@ useEffect(() => {
       navigation.navigate('Signin');
     } else if (isLoggedIn) {
       console.log('AuthOverlay - User is logged in and token is valid');
-      // Vous pouvez ouvrir un menu utilisateur ici si vous le souhaitez
     } else {
       console.log('AuthOverlay - User is not logged in');
       navigation.navigate('Signin');
     }
   }, [isLoggedIn, isTokenExpired, logout, navigation]);
 
-  // Définir les dimensions pour l'animation
   const animatedWidth = animationValue.interpolate({
     inputRange: [0, 1],
     outputRange: [60, 300],

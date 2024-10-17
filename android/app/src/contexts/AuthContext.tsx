@@ -56,8 +56,8 @@ export type AuthContextType = {
 export const AuthContext = createContext<AuthContextType>({
   state: initialState,
   dispatch: (action) => { },
-  login: async () => Promise.resolve(),  // Dummy async function
-  logout: async () => Promise.resolve()  // Dummy async function
+  login: async () => Promise.resolve(),
+  logout: async () => Promise.resolve()
 });
 
 interface AuthProviderProps {
@@ -116,7 +116,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       await AsyncStorage.setItem('token', token);
       console.log('AuthProvider - Token stored');
-      await checkAuth();  // Appelle immédiatement checkAuth après la connexion
+      await checkAuth();
     } catch (error) {
       console.error('AuthProvider - Error during login:', error);
     }

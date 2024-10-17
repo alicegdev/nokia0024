@@ -19,6 +19,7 @@ const DeleteAccount = () => {
       try {
         const response = await axios.delete(
           `${process.env.EXPO_PUBLIC_URL}/users/${userId}`,
+
           {
             headers: {
               Authorization: token,
@@ -28,9 +29,9 @@ const DeleteAccount = () => {
 
         if (response.status === 200) {
           setSuccessMessage("Your account has been deleted successfully.");
-          dispatch({ type: "LOGOUT" }); // Logout after account deletion
+          dispatch({ type: "LOGOUT" });
           setTimeout(() => {
-            navigation.navigate("HomePage"); // Redirect to home after deletion
+            navigation.navigate("HomePage");
           }, 2000);
         }
       } catch (error) {

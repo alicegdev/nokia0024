@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import useFonts from "src/hooks/useFonts";
-import { Image, TouchableOpacity, View, ActivityIndicator } from "react-native";
+import { Image, TouchableOpacity, View, ActivityIndicator, Text } from "react-native";
 import { Screen } from "src/components";
 import styles from "./styles";
 import { navFooters } from "src/constants";

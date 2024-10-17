@@ -1,5 +1,5 @@
-// src/contexts/MessagesContext.tsx
 import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
+
 import { io } from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from './AuthContext';
@@ -44,7 +44,6 @@ export const MessagesProvider: React.FC<MessageProviderProps> = ({ children }) =
       const handleReceiveMessage = (message: Message) => {
         console.log('New message received via socket:', message);
 
-        // Update unread messages state
         setUnreadMessages(prevState => {
           const conversationId = message.senderId.toString();
           const count = prevState[conversationId] || 0;

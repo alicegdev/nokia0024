@@ -16,10 +16,10 @@
     }
   },
   "include": [
-    "src/**/*" // Inclure tous les fichiers TypeScript dans le répertoire src
+    "src/**/*"
   ],
   "exclude": [
-    "node_modules", // Exclure le répertoire node_modules
-    "build" // Exclure le répertoire build
+    "node_modules",
+    "build"
   ]
 }

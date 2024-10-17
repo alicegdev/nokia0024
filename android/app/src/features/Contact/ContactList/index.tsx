@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, SectionList, TouchableOpacity, StyleSheet, Alert, Modal } from 'react-native';
+import { View, Text, SectionList, TouchableOpacity, Alert, Modal } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native'; 
 import axios from 'axios';
-import * as Contacts from 'expo-contacts'; // Expo Contacts pour gérer les contacts du téléphone
-import { MaterialIcons } from '@expo/vector-icons'; // Pour utiliser des icônes
+import * as Contacts from 'expo-contacts';
+import { MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { color, spacing } from "src/styles";
+import { color } from "src/styles";
 import * as Linking from 'expo-linking';
+import styles from './styles';
 
 interface Contact {
   isRegisteredUser: boolean;
@@ -20,14 +21,12 @@ interface Contact {
   source: 'db' | 'phone';
 }
 
-// Fonction utilitaire pour trier et regrouper les contacts
 const groupContactsByLetter = (contacts: Contact[]) => {
   const groupedContacts: { [key: string]: Contact[] } = {};
 
   contacts.forEach((contact) => {
     const firstChar = contact.firstName.charAt(0).toUpperCase();
 
-    // Vérifier si c'est un chiffre, une lettre ou un caractère spécial
     if (/[0-9]/.test(firstChar)) {
       if (!groupedContacts["#"]) groupedContacts["#"] = [];
       groupedContacts["#"].push(contact);
@@ -40,9 +39,8 @@ const groupContactsByLetter = (contacts: Contact[]) => {
     }
   });
 
-  // Convertir en tableau de sections, trié par ordre alphabétique et numérique
   const sortedSections = Object.keys(groupedContacts)
-    .sort() // Trier les sections par clé (A-Z, 0-9, caractères spéciaux)
+    .sort()
     .map((key) => ({
       title: key,
       data: groupedContacts[key].sort((a, b) =>
@@ -57,7 +55,7 @@ const ContactList = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [phoneContacts, setPhoneContacts] = useState<Contact[]>([]);
   const navigation = useNavigation();
-  const isFocused = useIsFocused(); // Hook pour savoir si l'écran est en focus
+  const isFocused = useIsFocused();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
 
@@ -180,7 +178,6 @@ const ContactList = () => {
             return contact;
           }
         } catch (error) {
-          // Si l'utilisateur n'est pas trouvé, aucune action n'est nécessaire
           return contact;
         }
       })
@@ -189,7 +186,6 @@ const ContactList = () => {
     return updatedContacts;
   };
 
-// Delete a contact with confirmation
 const deleteContact = (contact: Contact) => {
   if (contact.source === 'db') {
     Alert.alert(
@@ -212,7 +208,6 @@ const deleteContact = (contact: Contact) => {
   }
 };
 
-// Separate async function to handle deletion
 const handleDelete = async (contact: Contact) => {
   const token = await AsyncStorage.getItem('token');
   try {
@@ -221,13 +216,12 @@ const handleDelete = async (contact: Contact) => {
         Authorization: token,
       },
     });
-    await fetchData(); // Refresh the list after deletion
+    await fetchData();
   } catch (error) {
     console.error(error);
   }
 };
 
-  // Ouvrir les détails d'un contact
   const openContactDetails = (contact: Contact) => {
       setSelectedContact(contact);
       setModalVisible(true);
@@ -270,10 +264,8 @@ const handleDelete = async (contact: Contact) => {
 
   };
 
-  // Uniquement contacts du téléphone
   const combinedContacts = [...contacts, ...phoneContacts];
 
-  // Trier les contacts par ordre alphabétique et les regrouper en sections
   const sections = groupContactsByLetter(combinedContacts);
 
   const renderItem = ({ item }: { item: Contact }) => (
@@ -389,112 +381,5 @@ const handleDelete = async (contact: Contact) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: color.menu,
-  },
-  header: {
-    paddingTop: 60,
-    paddingBottom: 10,
-    paddingHorizontal: 20,
-    backgroundColor: color.menu,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontFamily: 'Nokia',
-    color: color.relief,
-  },
-  item: {
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: color.relief,
-  },
-  contactRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  contactInfoContainer: {
-    flex: 1,
-  },
-  contactName: {
-    fontSize: 16,
-    fontFamily: 'Nokia',
-    color: color.relief,
-  },
-  actionsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  iconButton: {
-    marginLeft: 15,
-  },
-  sectionHeader: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    backgroundColor: color.relief,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    color: color.menu,
-  },
-  buttonContainer: {
-    padding: 20,
-    alignItems: 'center',
-  },
-  button: {
-    backgroundColor: color.relief,
-    paddingVertical: 12,
-    paddingHorizontal: 25,
-    borderRadius: 25,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontFamily: 'Nokia',
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    width: '80%',
-    backgroundColor: color.relief,
-    borderRadius: 10,
-    padding: 20,
-    alignItems: 'center',
-  },
-  modalTitle: {
-    fontSize: 20,
-    marginBottom: 10,
-    fontFamily: 'Nokia',
-    color: color.menu,
-  },
-  modalText: {
-    fontSize: 16,
-    marginBottom: 5,
-    fontFamily: 'Nokia',
-    color: color.menu,
-  },
-  closeButton: {
-    marginTop: 15,
-    backgroundColor: color.menu,
-    paddingVertical: 10,
-    paddingHorizontal: 25,
-    borderRadius: 25,
-  },
-  closeButtonText: {
-    color: color.relief,
-    fontSize: 16,
-    fontFamily: 'Nokia',
-  },
-});
 
 export default ContactList;

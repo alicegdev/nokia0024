@@ -2,7 +2,6 @@ import { getAllUsers } from '../users.controller';
 import prisma from '../../db/index';
 import { Request, Response } from 'express';
 
-// Mock de prisma
 jest.mock('../../db/index', () => ({
     user: {
         findMany: jest.fn(),
