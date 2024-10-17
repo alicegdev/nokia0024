@@ -12,4 +12,3 @@ app/.idea
 android/app/.idea
 android/app/.env
 android/app/eas.json
-api/nginx
