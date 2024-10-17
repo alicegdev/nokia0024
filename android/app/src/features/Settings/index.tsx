@@ -21,6 +21,7 @@ const allSettings = [
   { key: "Brightness", name: "Brightness", isPrivate: false },
   { key: "Signin", name: "Signin", isPrivate: false },
   { key: "Logout", name: "Logout", isPrivate: true },
+  { key: "Privacy", name: "Privacy", isPrivate: false }
 ];
 
 const Settings = () => {
