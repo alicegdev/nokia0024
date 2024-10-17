@@ -18,7 +18,7 @@ const DeleteAccount = () => {
     if (token && userId) {
       try {
         const response = await axios.delete(
-          `https://n0kia-0024.com/users/${userId}`,
+          `${process.env.EXPO_PUBLIC_URL}/users/${userId}`,
           {
             headers: {
               Authorization: token,

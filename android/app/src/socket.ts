@@ -6,7 +6,7 @@ let socket: any;
 
 export const initializeSocket = async () => {
   const token = await AsyncStorage.getItem('token');
-  socket = io('https://n0kia-0024.com', {
+  socket = io(`${process.env.EXPO_PUBLIC_URL}`, {
     path: '/socket.io',
     auth: {
       token,

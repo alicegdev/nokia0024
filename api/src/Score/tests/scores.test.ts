@@ -47,12 +47,12 @@ describe('Score Controller', () => {
 
             expect(prisma.score.create).toHaveBeenCalledWith({
                 data: {
-                    score: 100,
                     gameId: 1,
-                    userId: 1,
+                    score: 100,
+                    userId: 1
                 },
             });
-            expect(res.json).toHaveBeenCalledWith({ "message": "Score sent." });
+            expect(res.json).toHaveBeenCalledWith({"gameId": 1, "id": 1, "score": 100, "userId": 1,});
         });
 
         it('should return 500 if an error occurs', async () => {

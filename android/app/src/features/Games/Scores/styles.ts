@@ -2,15 +2,18 @@ import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: "center",
+    flex: 4,
+    width:"100%",
+    justifyContent: "space-around",
     alignItems: "center",
     backgroundColor: "#f8f9fa",
+    fontFamily: 'Nokia'
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
+    fontFamily: 'Nokia'
   },
   item: {
     flexDirection: "row",
@@ -25,9 +28,10 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   score: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: "600",
     color: "#007bff",
+    fontFamily: 'Nokia'
   },
 });
 
