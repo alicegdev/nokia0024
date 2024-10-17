@@ -1,8 +1,10 @@
 include:
 - local: 'api/api-ci.yml'
+- local: 'android/app/app-ci.yml'
 
 stages:
 - backend_tests
 - build_image
 - publish
 - deploy
+- front_preview_build
