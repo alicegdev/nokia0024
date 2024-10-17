@@ -20,9 +20,9 @@ export const addScore = async (req: Request, res: Response, next: NextFunction) 
 
         const scoreToAdd = await prisma.score.create({
             data: {
-                score: score,
-                gameId: gameId,
-                userId: userId
+                score,
+                gameId,
+                userId
             }
         });
         res.status(200).json(scoreToAdd);
