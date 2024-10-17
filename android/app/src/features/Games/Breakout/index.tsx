@@ -9,13 +9,13 @@ import styles from "./styles";
 import SpaceBlastStage from "./Components/SpaceBlastStage";
 
 type Brick = {
-    posX: number;
-    posY: number;
-    width: number;
-    height: number;
-    isVisible: boolean;
-  };
-  
+  posX: number;
+  posY: number;
+  width: number;
+  height: number;
+  isVisible: boolean;
+};
+
 const screenWidth = 400;
 const screenHeight = 780;
 const rightBorderReduction = 12;
@@ -24,7 +24,7 @@ const ballSize = 15;
 const brickWidth = 50;
 const brickHeight = 20;
 const numBricksPerRow = Math.floor(
-  (screenWidth - rightBorderReduction) / (brickWidth + 10)
+  (screenWidth - rightBorderReduction) / (brickWidth + 10),
 );
 
 const initBricks = (levelRow: number) => {
@@ -64,7 +64,7 @@ const Breakout: React.FC = () => {
   });
   const [ballVelocity, setBallVelocity] = useState({ vx: 10, vy: -10 });
   const [paddlePosition, setPaddlePosition] = useState(
-    screenWidth / 2 - paddleWidth / 2
+    screenWidth / 2 - paddleWidth / 2,
   );
   const [bricks, setBricks] = useState(initBricks(2));
 
@@ -76,11 +76,11 @@ const Breakout: React.FC = () => {
         let newPosX = gestureState.moveX - paddleWidth / 2;
         newPosX = Math.max(
           0,
-          Math.min(screenWidth - rightBorderReduction - paddleWidth, newPosX)
+          Math.min(screenWidth - rightBorderReduction - paddleWidth, newPosX),
         );
         setPaddlePosition(newPosX);
       },
-    })
+    }),
   ).current;
 
   useEffect(() => {
@@ -91,12 +91,18 @@ const Breakout: React.FC = () => {
       if (!isPaused && !isGameOver) {
         let newPosX = ballPosition.x + ballVelocity.vx;
         let newPosY = ballPosition.y + ballVelocity.vy;
-  
-        if (newPosX <= 0 || newPosX >= screenWidth - rightBorderReduction - ballSize) {
+
+        if (
+          newPosX <= 0 ||
+          newPosX >= screenWidth - rightBorderReduction - ballSize
+        ) {
           setBallVelocity((prev) => ({ ...prev, vx: -prev.vx }));
-          newPosX = Math.max(0, Math.min(screenWidth - rightBorderReduction - ballSize, newPosX));
+          newPosX = Math.max(
+            0,
+            Math.min(screenWidth - rightBorderReduction - ballSize, newPosX),
+          );
         }
-  
+
         if (newPosY <= 0) {
           setBallVelocity((prev) => ({ ...prev, vy: -prev.vy }));
           newPosY = Math.max(0, newPosY);
@@ -109,16 +115,24 @@ const Breakout: React.FC = () => {
             const paddleCenter = paddlePosition + paddleWidth / 2;
             const ballCenter = newPosX + ballSize / 2;
             if (ballCenter < paddleCenter) {
-              setBallVelocity((prev) => ({ vx: -Math.abs(prev.vx), vy: -Math.abs(prev.vy) }));
+              setBallVelocity((prev) => ({
+                vx: -Math.abs(prev.vx),
+                vy: -Math.abs(prev.vy),
+              }));
             } else {
-              setBallVelocity((prev) => ({ vx: Math.abs(prev.vx), vy: -Math.abs(prev.vy) }));
+              setBallVelocity((prev) => ({
+                vx: Math.abs(prev.vx),
+                vy: -Math.abs(prev.vy),
+              }));
             }
             newPosY = screenHeight - 40 - ballSize;
+          } else {
+            setIsGameOver(true);
           }
         }
-  
+
         setBallPosition({ x: newPosX, y: newPosY });
-  
+
         let updatedBricks = bricks.map((brick) => {
           if (
             brick.isVisible &&
@@ -133,14 +147,13 @@ const Breakout: React.FC = () => {
           }
           return brick;
         });
-  
+
         setBricks(updatedBricks);
       }
     }, 10);
-  
+
     return () => clearInterval(interval);
   }, [ballPosition, ballVelocity, isPaused, paddlePosition, bricks]);
-  
 
   useEffect(() => {
     const allBricksDestroyed = bricks.every((brick) => !brick.isVisible);
@@ -177,7 +190,7 @@ const Breakout: React.FC = () => {
   const pauseGame = () => {
     setIsPaused(!isPaused);
   };
-  
+
   const reloadGame = () => {
     setPaddlePosition(screenWidth / 2 - paddleWidth / 2);
     setBallPosition({
