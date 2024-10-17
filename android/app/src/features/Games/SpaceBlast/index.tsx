@@ -44,11 +44,6 @@ const SpaceBlast = () => {
   const handleGameOver = async () => {
     setIsVisible(true);
     setFinalScore(score);
-    try {
-      await axios.post(`${process.env.EXPO_PUBLIC_URL}/score`);
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   const reloadGame = () => {
