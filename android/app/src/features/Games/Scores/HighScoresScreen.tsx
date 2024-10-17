@@ -14,51 +14,55 @@ const HighScoresScreen = ({ game, gameName, score }: HighScoresProps) => {
   const [scores, setScores] = useState([]);
   const { state } = useContext(AuthContext);
   const token = state.token;
-  const userId = state.userId;
 
   const sendScore = async () => {
-    if (token) {
-      try {
-        const response = await axios.post(
-          "${process.env.EXPO_PUBLIC_URL}/scores/add",
-          { score, gameId: game, userId },
-          {
-            headers: {
-              Authorization: token,
-            },
-          },
-        );
-        console.log(response);
-      } catch (error) {
-        console.error("Error sending score" + error);
-      }
-      fetchScores(token);
-    } else {
+    if (!token) {
       Alert.alert(
         "Warning",
         "Not logged in, your current score won't be sent.",
       );
+      return;
+    }
+    try {
+      const payload = { score, gameId: game, userId: state.userId };
+      console.log("Sending payload:", payload);
+
+      const response = await axios.post(
+        `${process.env.EXPO_PUBLIC_URL}/scores/add`,
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+        },
+      );
+      console.log("Score sent successfully:", response.data);
+    } catch (error) {
+      console.error("Error sending score", error);
+      Alert.alert(
+        "Error",
+        "Failed to send score: " + (error || "Unknown error"),
+      );
     }
   };
 
-  const fetchScores = async (token: string) => {
-    console.log("Game id: " + game);
+  const fetchScores = async () => {
     try {
-      const response = await axios.get(`${process.env.EXPO_PUBLIC_URL}/scores/${game}`, {
-        headers: {
-          Authorization: token,
-        }
-      });
+      const response = await axios.get(
+        `${process.env.EXPO_PUBLIC_URL}/scores/${game}`,
+      );
       setScores(response.data);
-      console.log(response);
+      console.log("Scores fetched successfully:", response.data);
     } catch (error) {
-      console.error("Error fetching scores" + error);
+      console.error("Error fetching scores", error);
     }
   };
 
   useEffect(() => {
     sendScore();
-  }, []);
+    fetchScores();
+  }, [token]);
 
   const renderItem = ({ item }: { item: { name: string; score: number } }) => (
     <View style={styles.item}>
@@ -68,7 +72,7 @@ const HighScoresScreen = ({ game, gameName, score }: HighScoresProps) => {
   );
 
   return (
-    <View style={styles.container}>
+    <View>
       <Text style={styles.title}>{gameName}</Text>
       <Text style={styles.title}>High Scores</Text>
       <FlatList

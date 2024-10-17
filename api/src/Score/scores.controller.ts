@@ -10,7 +10,6 @@ if (!secretKey) {
     throw new Error('TOKEN_SECRET_KEY is not defined');
 }
 
-// Create a new user
 export const addScore = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { score, gameId, userId } = req.body;
@@ -19,14 +18,14 @@ export const addScore = async (req: Request, res: Response, next: NextFunction) 
             return res.status(400).json({ error: 'score, gameId, and userId are required' });
         }
 
-        await prisma.score.create({
+        const scoreToAdd = await prisma.score.create({
             data: {
                 score,
                 gameId,
                 userId
             }
         });
-        res.status(200).json({message: "Score sent."});
+        res.status(200).json(scoreToAdd);
     } catch (error) {
         console.log("Error adding score, " + error)
         res.status(500).json({ error: 'Something went wrong' });
