@@ -19,14 +19,12 @@ import prisma from './db';
 const debug = debugLib('src:server');
 const app = express();
 
-// Configurer l'application Express (middlewares, routes, etc.)
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // **Assurez-vous que le middleware static est placé APRÈS la configuration de Socket.IO**
-// app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', userRouter);
@@ -34,12 +32,10 @@ app.use('/contacts', contactRoutes);
 app.use('/messages', messageRoutes);
 app.use('/scores', scoreRoutes);
 
-// Créer le serveur HTTP
 const httpServer = createServer(app);
 
-// Créer le serveur Socket.IO et l'attacher au serveur HTTP
 const io = new Server(httpServer, {
-  path: '/socket.io', // Assurez-vous que le chemin est correct
+  path: '/socket.io',
   cors: {
     origin: "*",
     methods: ["GET", "POST", "DELETE", "PATCH"]
@@ -48,10 +44,8 @@ const io = new Server(httpServer, {
 
 const secretKey = process.env.TOKEN_SECRET_KEY;
 
-// Stockage des utilisateurs connectés : userId -> socketId
 const connectedUsers = new Map<string, string>();
 
-// Middleware d'authentification pour Socket.IO
 io.use((socket, next) => {
   const token = socket.handshake.auth.token;
   if (!token) {
@@ -68,7 +62,6 @@ io.use((socket, next) => {
   });
 });
 
-// Gestion des connexions Socket.IO
 io.on('connection', (socket) => {
   const userId = socket.data.userId;
   console.log(`User connected: ${userId}`);
@@ -76,7 +69,6 @@ io.on('connection', (socket) => {
   connectedUsers.set(userId.toString(), socket.id);
   console.log('Connected users:', connectedUsers);
 
-  // Gérer l'envoi de messages
   socket.on('sendMessage', async ({ receiverId, content }) => {
     console.log(`Sending message to ${receiverId}: ${content}`);
     try {
@@ -94,7 +86,7 @@ io.on('connection', (socket) => {
       console.log('Message created:', message);
 
       const receiverSocketId = connectedUsers.get(receiverId.toString());
-      console.log(`Receiver socket ID: ${receiverSocketId}`); // undefined
+      console.log(`Receiver socket ID: ${receiverSocketId}`);
 
       if (receiverSocketId) {
         io.to(receiverSocketId).emit('receiveMessage', message);
@@ -105,7 +97,6 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Gérer la déconnexion
   socket.on('disconnect', () => {
     connectedUsers.delete(userId);
     console.log(`User disconnected: ${userId}`);
@@ -114,13 +105,12 @@ io.on('connection', (socket) => {
 
 type QueryEvent = {
   timestamp: Date
-  query: string // Query sent to the database
-  params: string // Query parameters
-  duration: number // Time elapsed (in milliseconds) between client issuing query and database responding - not only time taken to run query
+  query: string
+  params: string
+  duration: number
   target: string
 }
 
-// Démarrer le serveur HTTP
 const port = normalizePort(process.env.PORT || '5050');
 httpServer.listen(port, () => {
   console.log(`Server is running on port ${port}`);
@@ -134,7 +124,6 @@ function normalizePort(val: string) {
 }
 
 function onError(error: NodeJS.ErrnoException) {
-  // Gestion des erreurs du serveur HTTP
 }
 
 function onListening() {

@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import prisma from '../db/index';
 
-// Get all contacts
 export const getAllContacts = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = req.body.userId;
@@ -20,7 +19,6 @@ export const getAllContacts = async (req: Request, res: Response, next: NextFunc
     }
 };
 
-// Get a contact by id
 export const getContactById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
@@ -39,20 +37,17 @@ export const getContactById = async (req: Request, res: Response, next: NextFunc
     }
 };
 
-// Create a new contact
 export const createContact = async (req: Request, res: Response, next: NextFunction) => {
     try {
         console.log(req.body);
         const { firstName, lastName, phoneNumber, email, isFavorite } = req.body;
 
-        // Récupérer l'ID de l'utilisateur connecté
         const userId = req.body.userId;
         console.log('userId:', userId);
 
         let contactUserId = null;
 
         if (email) {
-            // Rechercher un utilisateur avec cet email
             const user = await prisma.user.findUnique({
                 where: { email },
             });
@@ -69,8 +64,8 @@ export const createContact = async (req: Request, res: Response, next: NextFunct
                 phoneNumber,
                 email,
                 isFavorite: isFavorite || false,
-                userId: contactUserId, // Utilisateur associé au contact (peut être null)
-                ownerId: parseInt(userId), // ID de l'utilisateur connecté
+                userId: contactUserId,
+                ownerId: parseInt(userId),
             },
         });
 
@@ -82,14 +77,12 @@ export const createContact = async (req: Request, res: Response, next: NextFunct
 };
 
 
-// Update a contact by id
 export const updateContact = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
         const { firstName, lastName, phoneNumber, email, isFavorite } = req.body;
 
 
-        // Récupérer le contact actuel
         const currentContact = await prisma.contact.findUnique({
             where: { id: parseInt(id) },
         });
@@ -98,12 +91,10 @@ export const updateContact = async (req: Request, res: Response, next: NextFunct
             return res.status(404).json({ error: 'Contact not found' });
         }
 
-        let userId = currentContact.userId; // Conserver le userId actuel par défaut
+        let userId = currentContact.userId;
 
-        // Vérifier si l'email a changé
         if (email !== currentContact.email) {
             if (email) {
-                // Rechercher un utilisateur avec le nouvel email
                 const user = await prisma.user.findUnique({
                     where: { email },
                 });
@@ -111,10 +102,10 @@ export const updateContact = async (req: Request, res: Response, next: NextFunct
                 if (user) {
                     userId = user.id;
                 } else {
-                    userId = null; // Aucun utilisateur trouvé pour le nouvel email
+                    userId = null;
                 }
             } else {
-                userId = null; // Email supprimé, donc pas d'utilisateur associé
+                userId = null;
             }
         }
 
@@ -126,7 +117,7 @@ export const updateContact = async (req: Request, res: Response, next: NextFunct
                 phoneNumber,
                 email,
                 isFavorite,
-                userId, // Mettre à jour le userId
+                userId,
             },
         });
 
@@ -137,7 +128,6 @@ export const updateContact = async (req: Request, res: Response, next: NextFunct
     }
 };
 
-// Delete a contact by id
 export const deleteContact = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;

@@ -34,7 +34,7 @@ export default StyleSheet.create({
     position: 'absolute',
     right: -6,
     top: -3,
-    backgroundColor: 'red',
+    backgroundColor: color.badge,
     borderRadius: 6,
     width: 12,
     height: 12,

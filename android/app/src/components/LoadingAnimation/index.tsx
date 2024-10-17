@@ -1,4 +1,3 @@
-// LoadingAnimation.js
 import React, { useEffect, useRef } from 'react';
 import { Animated, View, Text } from 'react-native';
 import LeftHand from './LeftHand';

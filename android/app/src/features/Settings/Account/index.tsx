@@ -27,7 +27,7 @@ const Account = () => {
   const { state } = useContext(AuthContext);
   const token = state.token;
   const userId = state.userId;
-  const navigation:any = useNavigation();  // Hook for navigation
+  const navigation:any = useNavigation();
 
   const menuLinks = [
     { key: "ChangePassword", label: "Change password" },

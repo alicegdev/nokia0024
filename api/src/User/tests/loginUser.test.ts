@@ -4,7 +4,6 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-// Mock de prisma et des dépendances
 jest.mock('../../db/index', () => ({
     user: {
         findUnique: jest.fn(),
@@ -36,17 +35,14 @@ describe('loginUser', () => {
     });
 
     it('should return a token for valid user', async () => {
-        // Mock de prisma.user.findUnique
         (prisma.user.findUnique as jest.Mock).mockResolvedValue({
             id: 1,
             email: 'test@example.com',
             password: 'hashedPassword123',
         });
 
-        // Mock de bcrypt.compare
         (bcrypt.compare as jest.Mock).mockResolvedValue(true);
 
-        // Mock de jwt.sign
         (jwt.sign as jest.Mock).mockReturnValue('fakeToken');
 
         await loginUser(req as Request, res as Response, jest.fn());
@@ -60,7 +56,6 @@ describe('loginUser', () => {
     });
 
     it('should return 404 if user is not found', async () => {
-        // Mock de prisma.user.findUnique qui retourne null
         (prisma.user.findUnique as jest.Mock).mockResolvedValue(null);
 
         await loginUser(req as Request, res as Response, jest.fn());
@@ -76,7 +71,6 @@ describe('loginUser', () => {
             password: 'hashedPassword123',
         });
 
-        // Mock de bcrypt.compare qui retourne faux
         (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
         await loginUser(req as Request, res as Response, jest.fn());

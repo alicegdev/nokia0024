@@ -1,4 +1,3 @@
-// src/socket.ts
 import { io } from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

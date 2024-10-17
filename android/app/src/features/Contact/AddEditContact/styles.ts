@@ -75,7 +75,7 @@ export default StyleSheet.create({
     borderBottomRightRadius: 5,
     borderTopWidth: 0,
   },
-  saveButton: {
+  favoriteButton: {
     backgroundColor: color.relief,
     paddingVertical: 12,
     paddingHorizontal: 25,
@@ -83,53 +83,24 @@ export default StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
   },
-  saveButtonText: {
+  favoriteActive: {
+    backgroundColor: "green",
+  },
+  favoriteButtonText: {
     color: "#fff",
     fontSize: 16,
     fontFamily: "Nokia",
   },
-  switchButton: {
+  saveButton: {
+    backgroundColor: color.relief,
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 25,
     alignItems: "center",
-    marginTop: 10,
   },
-  switchButtonText: {
-    color: color.relief,
+  saveButtonText: {
+    color: "#fff",
     fontSize: 16,
     fontFamily: "Nokia",
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: color.menu,
-    borderRadius: 20,
-    padding: 50,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center",
-    fontFamily: "Nokia",
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    margin: 10,
-    elevation: 2,
-  },
-  buttonClose: {
-    backgroundColor: color.relief,
   },
 });

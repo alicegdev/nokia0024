@@ -30,7 +30,6 @@ router.patch('/:id',
 
 router.delete('/:id', verifyToken, deleteUser);
 
-// Routes
 router.get('/', getAllUsers);
 router.get('/by-email/:email', getUserByEmail);
 

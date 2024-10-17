@@ -15,10 +15,10 @@ interface AudioContextType {
   seekSound: (positionMillis: number) => Promise<void>;
   currentTrack: Track | null;
   isPlaying: boolean;
-  playbackPosition: string; // Formatted time for display
-  playbackPositionMillis: number; // Milliseconds for functional use
-  playbackDuration: string; // Formatted time for display
-  playbackDurationMillis: number; // Milliseconds for functional use
+  playbackPosition: string;
+  playbackPositionMillis: number;
+  playbackDuration: string;
+  playbackDurationMillis: number;
 }
 
 const AudioContext = createContext<AudioContextType | null>(null);

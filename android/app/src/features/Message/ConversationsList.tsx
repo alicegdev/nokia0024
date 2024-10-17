@@ -13,8 +13,7 @@ import {
 import { useNavigation, useIsFocused } from '@react-navigation/native'; 
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { MaterialIcons } from '@expo/vector-icons'; 
-import { color, spacing } from "src/styles";
+import { color } from "src/styles";
 import { jwtDecode } from 'jwt-decode';
 
 interface Conversation {
@@ -212,7 +211,7 @@ const styles = StyleSheet.create({
   unreadDot: {
     width: 10,
     height: 10,
-    backgroundColor: 'red',
+    backgroundColor: color.badge,
     borderRadius: 5,
     marginTop: 5,
   },

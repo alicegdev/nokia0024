@@ -3,7 +3,6 @@ import { createUser } from '../users.controller';
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 
-// Mock de Prisma et bcrypt
 jest.mock('../../db/index', () => ({
     user: {
         create: jest.fn(),

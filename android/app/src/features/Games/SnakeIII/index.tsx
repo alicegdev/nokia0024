@@ -70,7 +70,7 @@ export default function Snake(): JSX.Element {
 
   const moveSnake = () => {
     const snakeHead = snake[0];
-    const newHead = { ...snakeHead }; // creating a copy
+    const newHead = { ...snakeHead };
 
     if (checkGameOver(snakeHead, GAME_BOUNDS)) {
       setIsGameOver(true);
@@ -82,10 +82,10 @@ export default function Snake(): JSX.Element {
         newHead.y -= 1;
         break;
       case "down":
-        newHead.y += 1; // Fix to increment y for moving down
+        newHead.y += 1;
         break;
       case "left":
-        newHead.x -= 1; // Fix to decrement x for moving left
+        newHead.x -= 1;
         break;
       case "right":
         newHead.x += 1;

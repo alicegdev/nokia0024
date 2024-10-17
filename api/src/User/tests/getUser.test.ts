@@ -2,7 +2,6 @@ import prisma from '../../db/index';
 import { getUserById } from '../users.controller';
 import { Request, Response } from 'express';
 
-// Mock de Prisma
 jest.mock('../../db/index', () => ({
     user: {
         findUnique: jest.fn(),

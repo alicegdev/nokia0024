@@ -2,7 +2,6 @@ import prisma from '../../db/index';
 import { deleteUser } from '../users.controller';
 import { Request, Response } from 'express';
 
-// Mock de Prisma
 jest.mock('../../db/index', () => ({
     user: {
         delete: jest.fn(),
