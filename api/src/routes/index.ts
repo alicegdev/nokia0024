@@ -38,6 +38,14 @@ router.get('/', (req: Request, res: Response, next: NextFunction) => {
   `);
 });
 
+router.get('/delete-account', (req: Request, res: Response, next: NextFunction) => {
+  res.send(`Deleting an account on Nokia 0024
+    
+    To delete your account, please sign in, go to your settings in the app and click "Account", "Delete account".
+    Every data referencing your account will be removed immediately : your personal info but also messages, contacts that you've received or sent.
+  `);
+});
+
 router.get('/health', (req: Request, res: Response, next: NextFunction) => {
   res.sendStatus(200);
 });
