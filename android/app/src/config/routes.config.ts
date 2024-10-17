@@ -20,6 +20,7 @@ import Brightness from "src/features/Settings/Brightness";
 import DeleteAccount from "src/features/Settings/Account/DeleteAccount";
 import ChangePassword from "src/features/Settings/Account/ChangePassword";
 import ConversationsList from "src/features/Message/ConversationsList";
+import Privacy from "src/features/Settings/Privacy";
 
 
 // Ordered by folder
@@ -57,6 +58,7 @@ const routesConfig = [
   { name: 'DeleteAccount', component: DeleteAccount },
   { name: 'ChangePassword', component: ChangePassword},
   { name: 'Brightness', component: Brightness },
+  { name: 'Privacy', component: Privacy },
 ];
 
 export default routesConfig;
