@@ -62,6 +62,6 @@ model Score {
   score  Int
   gameId Int
   userId Int
-  Game   Game @relation(fields: [gameId], references: [id])
-  User   User @relation(fields: [userId], references: [id])
+  game   Game @relation(fields: [gameId], references: [id])
+  user   User @relation(fields: [userId], references: [id])
 }
