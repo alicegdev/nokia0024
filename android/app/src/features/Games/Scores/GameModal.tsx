@@ -1,7 +1,6 @@
 import * as React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import Modal from "react-native-modal";
-import HighScoresScreen from "./HighScoresScreen";
 import { useNavigation } from "@react-navigation/native";
 import { color } from "src/styles";
 
@@ -33,12 +32,13 @@ export default function GameModal({
   return (
     <Modal isVisible={true} style={styles.modal}>
       {isGameOver ? (
-        <HighScoresScreen game={game} gameName={gameName} score={score} />
-      ) : (
         <View style={styles.container}>
           <Text style={styles.title}>{gameName}</Text>
+          <Text style={styles.scoreText}>{"YOUR SCORE : " + score.toString()}</Text>
         </View>
-      )}
+      ) : <View style={styles.container}>
+          <Text style={styles.title}>{gameName}</Text>
+        </View> }
       <TouchableOpacity style={styles.button} onPress={handlePress}>
         <Text style={styles.buttonText}>
           {isGameOver ? "RESTART" : "START"}
@@ -73,6 +73,12 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: color.relief,
     marginBottom: 10,
+    fontFamily: "Nokia",
+  },
+  scoreText: {
+    fontSize: 18,
+    color: color.relief,
+    marginTop: 10,
     fontFamily: "Nokia",
   },
   button: {
