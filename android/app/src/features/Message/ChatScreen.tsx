@@ -66,7 +66,7 @@ const ChatScreen = ({ route }: any) => {
         socket.off('receiveMessage', handleReceiveMessage);
       };
     }
-  }, [userId]);
+  }, [userId, messages]);
 
   useEffect(() => {
     if (messages.length > 0) {

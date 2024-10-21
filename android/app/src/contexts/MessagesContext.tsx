@@ -33,7 +33,6 @@ export const MessagesProvider: React.FC<MessageProviderProps> = ({ children }) =
   const [unreadMessages, setUnreadMessages] = useState<{ [conversationId: string]: number }>({});
   const { state } = useContext(AuthContext);
   const userId = state.userId;
-  initializeSocket();
 
   useEffect(() => {
     console.log('MessagesProvider mounted');
