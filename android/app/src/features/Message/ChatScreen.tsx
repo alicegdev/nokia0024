@@ -52,7 +52,6 @@ const ChatScreen = ({ route }: any) => {
       const socket = getSocket();
 
       const handleReceiveMessage = (message: Message) => {
-        console.log('Received message:', message);
         if (
           (message.senderId === receiverId && message.receiverId === userId) ||
           (message.senderId === userId && message.receiverId === receiverId)

@@ -24,8 +24,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// **Assurez-vous que le middleware static est placé APRÈS la configuration de Socket.IO**
-
 app.use('/', indexRouter);
 app.use('/users', userRouter);
 app.use('/contacts', contactRoutes);
@@ -64,16 +62,12 @@ io.use((socket, next) => {
 
 io.on('connection', (socket) => {
   const userId = socket.data.userId;
-  console.log(`User connected: ${userId}`);
 
   connectedUsers.set(userId.toString(), socket.id);
-  console.log('Connected users:', connectedUsers);
 
   socket.on('sendMessage', async ({ receiverId, content }) => {
-    console.log(`Sending message to ${receiverId}: ${content}`);
     try {
       const senderId = socket.data.userId;
-      console.log(`Sender ID: ${senderId}`);
 
       const message = await prisma.message.create({
         data: {
@@ -83,14 +77,11 @@ io.on('connection', (socket) => {
           sendDate: new Date(),
         },
       });
-      console.log('Message created:', message);
 
       const receiverSocketId = connectedUsers.get(receiverId.toString());
-      console.log(`Receiver socket ID: ${receiverSocketId}`);
 
       if (receiverSocketId) {
         io.to(receiverSocketId).emit('receiveMessage', message);
-        console.log(`Message sent from ${senderId} to ${receiverId}`);
       }
     } catch (error) {
       console.error('Error sending message:', error);
@@ -99,7 +90,6 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     connectedUsers.delete(userId);
-    console.log(`User disconnected: ${userId}`);
   });
 });
 
